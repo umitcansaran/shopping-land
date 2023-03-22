@@ -36,6 +36,7 @@ urlpatterns = [
     path('product/<str:pk>/', views.ProductViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})),
     path('myproducts/', views.MyProductsViewSet.as_view({'get': 'list'})),
     path('latest-products/', views.LatestProducts.as_view(), name='latest-products'),
+    path('product/stocks/<int:product_id>/', views.ListProductStocks.as_view()),
 
     # REVIEW
     path('product/<str:pk>/reviews/', views.createProductReview, name="create-review"),

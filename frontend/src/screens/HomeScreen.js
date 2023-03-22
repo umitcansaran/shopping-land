@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Nav, Row, Carousel, Col, Button, Image } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Nav, Row, Col, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux'
 import { listProductCategories } from '../store/actions/categoriesActions'
 import { listProducts, listReviews, listLatestProducts } from '../store/actions/productActions'
@@ -12,6 +11,7 @@ import Reviews from '../components/Reviews';
 import News from '../components/News';
 import SearchBox from '../components/SearchBox';
 import ProductCard from '../components/ProductCard';
+import ProductCarousel from '../components/ProductCarousel';
 
 export default function HomeScreen() {
 
@@ -19,8 +19,8 @@ export default function HomeScreen() {
     const [showResult, setShowResult] = useState(false)
 
     const dispatch = useDispatch()
+
     const { categories } = useSelector(state => state.productCategories)
-    const { latestProducts } = useSelector(state => state.latestProductsList)
 
     useEffect(() => {
         dispatch(listProductCategories())
@@ -55,31 +55,15 @@ export default function HomeScreen() {
         )
         }
         <Row >
-        {
-            (!showResult && value === '') && (
-                <Row >
-        < Reviews />
-        <Col md={6}>
-            <Carousel pause='hover' style={{ backgroundColor:'#1e478a' }} className='text-center main-carousel'>
-                    {latestProducts.map((product) => {
-                        return (
-                        <Carousel.Item key={product.id}>
-                            <Link to={`/product/${product.id}`}>
-                                    <h4 style={{ color:'#e8e8e8', letterSpacing:'0.06rem'}} className='pt-1'>{product.brand}</h4>
-                                    <h5 style={{ color:'#e8e8e8', fontSize:'1rem' }}>{product.name}</h5>
-                                <Image className='main-carousel-img' src={product.image} alt={product.name} fluid /> 
-                                <h5 className='pt-2' style={{ color:'#e8e8e8'}}>CHF {Math.trunc(product.price)}</h5>
-                            </Link>
-                        </Carousel.Item>
-                        )
-                        })}
-            </Carousel>
-        </Col>
-        < News />
-        
-        </Row>
-            )
-        }
+            {
+                (!showResult && value === '') && (
+            <Row >
+                < Reviews />
+                < ProductCarousel />
+                < News />
+            </Row>
+                )
+            }
             <Row className='my-2'>
                     <Col lg={2} xl={2} className='m-4'>
                         {categories.map((category) => {
@@ -99,11 +83,10 @@ export default function HomeScreen() {
                                 })}
                                 </>      
                         })}
-                    </Col>
+                    </Col>  
                    < ProductCard />
             </Row>  
     </Row>
-    
     </>
   );
 }

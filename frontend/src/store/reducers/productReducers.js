@@ -22,6 +22,10 @@ import {
     PRODUCT_DETAILS_SUCCESS,
     PRODUCT_DETAILS_FAIL,
 
+    PRODUCT_STOCKS_REQUEST,
+    PRODUCT_STOCKS_SUCCESS,
+    PRODUCT_STOCKS_FAIL,
+
     PRODUCT_DELETE_REQUEST,
     PRODUCT_DELETE_SUCCESS,
     PRODUCT_DELETE_FAIL,
@@ -144,6 +148,21 @@ export const productDetailsReducer = (state = { product: {} }, action) => {
     }
 }
 
+export const productStocksReducer = (state = { stocks: [] }, action) => {
+    switch (action.type) {
+        case PRODUCT_STOCKS_REQUEST:
+            return { loading: true, ...state }
+
+        case PRODUCT_STOCKS_SUCCESS:
+            return { loading: false, stocks: action.payload }
+
+        case PRODUCT_STOCKS_FAIL:
+            return { loading: false, error: action.payload }
+
+        default:
+            return state
+    }
+}
 
 export const productDeleteReducer = (state = {}, action) => {
     switch (action.type) {

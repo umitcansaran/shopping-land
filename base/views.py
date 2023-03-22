@@ -65,6 +65,18 @@ class ProductViewSet(ModelViewSet):
         else:
             permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
+    
+class ListProductStocks(ListAPIView):
+    """
+    List all the stocks of a products (int: product_id)
+    """
+    serializer_class = StockSerializer
+
+    def get_queryset(self):
+        queryset = Stock.objects.all()
+        product_id = self.kwargs.get('product_id')
+        queryset = queryset.filter(product=product_id)
+        return queryset
 
 
 @api_view(['GET'])
