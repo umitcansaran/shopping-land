@@ -5,7 +5,7 @@ import Rating from '../components/Rating'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import { Row, Col, Image, Badge, ListGroup, Button, Card, Form, Container } from 'react-bootstrap'
-import { listProductDetails, createProductReview, listReviews } from '../store/actions/productActions'
+import { listProductDetails, listProductStocks, createProductReview, listReviews } from '../store/actions/productActions'
 import { myDetails, listUsers, listProfiles } from '../store/actions/userActions'
 import { PRODUCT_CREATE_REVIEW_RESET } from '../store/constants/productConstants'
 
@@ -24,6 +24,7 @@ function ProductScreen() {
     const params = useParams()
 
     const { product, error, loading } = useSelector(state => state.productDetails)
+    const { stocks } = useSelector(state => state.productStocks)
     const { user } = useSelector(state => state.myDetails) 
     const { profiles } = useSelector(state => state.profileList)
     const { reviews } = useSelector(state => state.reviewList)
@@ -37,15 +38,12 @@ function ProductScreen() {
             dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
         }
         dispatch(listProductDetails(params.id))
+        dispatch(listProductStocks(params.id))
         dispatch(myDetails())
         dispatch(listReviews())
         dispatch(listUsers())
         dispatch(listProfiles())
-    },[dispatch, params, successProductReview])
-
-    const checkStocks = product.stocks && product.stocks.filter((stock) => {
-        return stock.number > 0
-    })    
+    },[dispatch, params, successProductReview]) 
 
     const productReviews = reviews.filter((review) => review.product.id === product.id)
 
@@ -126,25 +124,26 @@ function ProductScreen() {
                                                 <Row>
                                                     <Col>Status:</Col>
                                                     <Col>
-                                                        {checkStocks && checkStocks.length > 0 ? 'In Stock' : 'Out of Stock'}
+                                                        {stocks && stocks.length > 0 ? 'In Stock' : 'Out of Stock'}
                                                     </Col>
                                                 </Row>
                                             </ListGroup.Item>
 
-                                            {checkStocks && checkStocks.length > 0  && (
+                                            {stocks && stocks.length > 0  && (
                                                 <>
                                                 <ListGroup.Item>
                                                 <Row>
                                                     <Col>Select a store:</Col>
                                                 </Row>
-                                                {checkStocks.map((stock, index)=>{
+                                                {stocks.map((stock, index)=>{
+
                                                     return (
                                                         <>
                                                     <Row className='my-2'>
                                                     <Col md={9}>
                                                     
                                                         <Button variant="light" style={{ width:'100%', textAlign:'left', fontSize:'0.8rem', textTransform:'unset' }} onClick={()=>{
-                                                            Object.keys(checkStocks).forEach(key => {
+                                                            Object.keys(stocks).forEach(key => {
                                                                 selectedStore[key] = false;
                                                                 setSelectedStore({
                                                                     ...selectedStore,
@@ -203,7 +202,7 @@ function ProductScreen() {
                                                 <Button
                                                     onClick={addToCartHandler}
                                                     className='btn-block'
-                                                    disabled={checkStocks && checkStocks.length === 0}
+                                                    disabled={stocks && stocks.length === 0}
                                                     type='button'>
                                                     Add to Cart
                                                 </Button>
