@@ -1,0 +1,70 @@
+main {
+  min-height: 80vh;
+}
+
+h1 {
+  font-size: 1.8rem;
+  padding: 1rem 0;
+}
+
+h2 {
+  font-size: 1.4rem;
+  padding: 0.5rem 0;
+}
+
+.rating span {
+  margin: 0.1rem;
+}
+
+.carousel-item-next,
+.carousel-item-prev,
+.carousel-item.active {
+  display: flex;
+}
+.carousel-caption {
+  position: absolute;
+  top: 0;
+}
+
+.carousel-caption h2 {
+  color: #fff;
+}
+
+.main-carousel-img {
+  height: 16rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.carousel a {
+  margin: 0 auto;
+}
+
+.carousel {
+  height: 25rem;
+  width: 100%;
+  margin: auto;
+}
+
+@media (max-width: 900px) {
+  .carousel-caption h2 {
+    font-size: 2.5vw;
+  }
+}
+
+.card-img-top {
+  width: 100%;
+  height: auto;
+  max-height: 25rem !important;
+  object-fit: cover;
+}
+
+.main-product-card:hover {
+  border: 0.1rem solid #537adc;
+}
+
+#adminmenu {
+  color: rgb(70, 69, 69)
+}
+
+
