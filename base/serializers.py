@@ -85,7 +85,6 @@ class ProductSerializer(ModelSerializer):
         queryset=User.objects.all(),
         slug_field='username',
     )
-    stocks = StockSerializer(many=True, read_only = True)
 
     class Meta:
         model = Product
