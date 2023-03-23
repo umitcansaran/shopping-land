@@ -1,22 +1,9 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Carousel, Col } from 'react-bootstrap';
 import Rating from '../components/Rating'
 import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux'
-import { listProducts, listReviews } from '../store/actions/productActions'
 
-function Reviews() {
-
-    const dispatch = useDispatch()
-
-    const { reviews } = useSelector(state => state.reviewList)
-
-    const latestReviews = reviews.slice(0, 4);
-
-    useEffect(() => {
-        dispatch(listProducts())
-        dispatch(listReviews())
-    }, [dispatch])
+function Reviews({ latestReviews }) {
     
   return (
     <Col md={3} className='pt-3'>
