@@ -18,9 +18,17 @@ import {
     STORE_DETAILS_SUCCESS,
     STORE_DETAILS_FAIL,
 
+    STORE_STOCKS_REQUEST,
+    STORE_STOCKS_SUCCESS,
+    STORE_STOCKS_FAIL,
+
     STORES_BY_USER_REQUEST,
     STORES_BY_USER_SUCCESS,
     STORES_BY_USER_FAIL,
+
+    STORE_DELETE_REQUEST,
+    STORE_DELETE_SUCCESS,
+    STORE_DELETE_FAIL,
 
 } from '../constants/storeConstants'
 
@@ -114,6 +122,22 @@ export const storeDetailsReducer = (state = { store: {} }, action) => {
     }
 }
 
+export const storeStocksReducer = (state = { stocks: [] }, action) => {
+    switch (action.type) {
+        case STORE_STOCKS_REQUEST:
+            return { loading: true, ...state }
+
+        case STORE_STOCKS_SUCCESS:
+            return { loading: false, stocks: action.payload }
+
+        case STORE_STOCKS_FAIL:
+            return { loading: false, error: action.payload }
+
+        default:
+            return state
+    }
+}
+
 export const storesByUserReducer = (state = { stores: [] }, action) => {
     switch (action.type) {
         case STORES_BY_USER_REQUEST:
@@ -129,3 +153,16 @@ export const storesByUserReducer = (state = { stores: [] }, action) => {
             return state
     }
 }
+
+export const storeDeleteReducer = (state = {}, action) => {
+    switch (action.type) {
+      case STORE_DELETE_REQUEST:
+        return { loading: true }
+      case STORE_DELETE_SUCCESS:
+        return { loading: false, success: true }
+      case STORE_DELETE_FAIL:
+        return { loading: false, error: action.payload }
+      default:
+        return state
+    }
+  }

@@ -55,7 +55,9 @@ import {
     storeListReducer,
     storeMyListReducer,
     storeDetailsReducer,
-    storesByUserReducer
+    storeStocksReducer,
+    storesByUserReducer,
+    storeDeleteReducer,
 } from './storeReducers'
 
 export const reducers = combineReducers({
@@ -101,7 +103,8 @@ export const reducers = combineReducers({
   storeList: storeListReducer,
   storeMyList: storeMyListReducer,
   storeDetails: storeDetailsReducer,
+  storeStocks: storeStocksReducer,
   createStore: createStoreReducer,
   storesByUser: storesByUserReducer,  
-  
+  storeDelete: storeDeleteReducer
 });

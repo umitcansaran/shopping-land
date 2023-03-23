@@ -78,6 +78,18 @@ class ListProductStocks(ListAPIView):
         queryset = queryset.filter(product=product_id)
         return queryset
     
+class ListStoreStocks(ListAPIView):
+    """
+    List all the stocks of a store (int: store_id)
+    """
+    serializer_class = StockSerializer
+
+    def get_queryset(self):
+        queryset = Stock.objects.all()
+        store_id = self.kwargs.get('store_id')
+        queryset = queryset.filter(store=store_id)
+        return queryset
+    
 class ListProductReviews(ListAPIView):
     """
     List all the stocks of a products (int: product_id)
@@ -89,7 +101,6 @@ class ListProductReviews(ListAPIView):
         product_id = self.kwargs.get('product_id')
         queryset = queryset.filter(product=product_id)
         return queryset
-
 
 @api_view(['GET'])
 def getProduct(request, pk):
@@ -237,7 +248,7 @@ class Search(ListAPIView):
 
 class MyStoresViewSet(ModelViewSet):
     """
-    A simple ViewSet for listing or retrieving my stores.
+    A simple ViewSet for listing my stores.
     """
 
     serializer_class = StoreSerializer

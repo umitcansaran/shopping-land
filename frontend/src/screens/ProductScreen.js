@@ -30,6 +30,7 @@ function ProductScreen() {
     const { profiles } = useSelector(state => state.profileList)
     const { userInfo } = useSelector(state => state.userLogin)
     const { loading: loadingProductReview, error: errorProductReview, success: successProductReview } = useSelector(state => state.productReviewCreate)
+    console.log(stocks, 'stocks')
 
     useEffect(()=>{
         if (successProductReview) {

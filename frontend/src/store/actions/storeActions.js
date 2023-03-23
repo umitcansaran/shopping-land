@@ -21,6 +21,10 @@ import {
     STORE_DETAILS_SUCCESS,
     STORE_DETAILS_FAIL,
 
+    STORE_STOCKS_REQUEST,
+    STORE_STOCKS_SUCCESS,
+    STORE_STOCKS_FAIL,
+
     STORES_BY_USER_REQUEST,
     STORES_BY_USER_SUCCESS,
     STORES_BY_USER_FAIL,
@@ -119,7 +123,6 @@ export const createStore = (form_data) => async (dispatch, getState) => {
 }
 
 export const deleteStore = (id) => async (dispatch, getState) => {
-    console.log('in da delete ', id)
     try {
         dispatch({
             type: STORE_DELETE_REQUEST
@@ -131,13 +134,12 @@ export const deleteStore = (id) => async (dispatch, getState) => {
 
         const config = {
             headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
+                Authorization: `Bearer ${userInfo.access}`
             }
         }
 
-        const { data } = await axios.delete(
-            `${baseUrl}/api/store/${id}/`
+        await axios.delete(
+            `${baseUrl}/api/store/${id}/`, config
         )
 
         dispatch({
@@ -169,6 +171,27 @@ export const listStoreDetails = (id) => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: STORE_DETAILS_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const listStoreStocks = (id) => async (dispatch) => {
+    try {
+        dispatch({ type: STORE_STOCKS_REQUEST })
+
+        const { data } = await axios.get(`${baseUrl}/api/store/stocks/${id}`)
+
+        dispatch({
+            type: STORE_STOCKS_SUCCESS,
+            payload: data
+        })
+
+    } catch (error) {
+        dispatch({
+            type: STORE_STOCKS_FAIL,
             payload: error.response && error.response.data.detail
                 ? error.response.data.detail
                 : error.message,
