@@ -100,18 +100,11 @@ class SearchStockSerializer(ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    # product = ProductSerializer(many=False)
-    product = serializers.SerializerMethodField(read_only=True)
+    product = ProductSerializer(many=False)
 
     class Meta:
         model = Review
         fields = '__all__'
-
-    def get_product(self, obj):
-        product = obj.product
-        serializer = ProductSerializer(product, many=False)
-
-        return serializer.data
 
 
 class UserSerializer(ModelSerializer):
