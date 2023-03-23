@@ -100,7 +100,6 @@ class SearchStockSerializer(ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    # product = ProductSerializer(many=False)
     product = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
