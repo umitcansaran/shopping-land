@@ -114,7 +114,7 @@ export const storeDetailsReducer = (state = { store: {} }, action) => {
     }
 }
 
-export const storesByUserReducer = (state = {}, action) => {
+export const storesByUserReducer = (state = { stores: [] }, action) => {
     switch (action.type) {
         case STORES_BY_USER_REQUEST:
             return { loading: true }

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { baseUrl } from "../store/constants";
 import axios from 'axios'
-import { Container, Button, Row, Col, Image, ListGroup, Form } from 'react-bootstrap'
+import { Button, Row, Col, Form } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { listProductCategories, listProductSubcategories } from '../store/actions/categoriesActions'
+import { listProductCategories } from '../store/actions/categoriesActions'
 import { myDetails } from '../store/actions/userActions'
 import { useNavigate } from 'react-router-dom';
 import FormContainer from '../components/FormContainer';
@@ -18,24 +18,17 @@ function AddProductScreen() {
     const [ category, setCategory ] = useState('')
     const [ subcategory, setSubcategory ] = useState('')
 
-
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const { categories } = useSelector(state => state.productCategories)
     const { user } = useSelector(state => state.myDetails) 
-    console.log(user)
 
-    const selectedCategory = categories.find(selectedCategory => selectedCategory.name === category)
+    const selectedCategory = categories.find(selectedCategory => selectedCategory.id === Number(category))
 
     useEffect(() => {
         dispatch(myDetails())
         dispatch(listProductCategories())
     }, [dispatch])
-
-
-// const filterOptionHandler = (event) => {
-//     dispatch(search({ type: 'product', searchString: event.target.value}))
-// }
 
     const submitHandler = async e => {
         e.preventDefault();
@@ -90,7 +83,7 @@ function AddProductScreen() {
                 value={category}
                 onChange={(e) => {setCategory(e.target.value)}}>
                     <option>Select</option>
-                {categories.map( category => <option key={category.id}>{category.name}</option>)}
+                {categories.map( category => <option value={category.id} key={category.id}>{category.name}</option>)}
               </Form.Select>
             </Form.Group>
             {
@@ -104,7 +97,7 @@ function AddProductScreen() {
                         value={subcategory}
                         onChange={(e) => {setSubcategory(e.target.value)}}>
                             <option>Select</option>
-                        {selectedCategory.subcategories.map( category => <option key={category.id}>{category.name}</option>)}
+                        {selectedCategory.subcategories.map( category => <option value={category.id} key={category.id}>{category.name}</option>)}
                     </Form.Select>
                     </Form.Group>
             }       

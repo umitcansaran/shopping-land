@@ -161,7 +161,6 @@ export const productMyListReducer = (state = { myProducts: [] }, action) => {
 
 
 export const productDetailsReducer = (state = { product: {} }, action) => {
-    console.log(state.product)
     switch (action.type) {
         case PRODUCT_DETAILS_REQUEST:
             return { loading: true, ...state }

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { listProductCategories } from '../store/actions/categoriesActions'
 import { listProducts, listReviews, listLatestProducts } from '../store/actions/productActions'
 import { search } from '../store/actions/searchAction'
-import { listStores } from '../store/actions/storeActions'
+import { listStoresByUser } from '../store/actions/storeActions'
 import { listUsers, getProfileDetails } from '../store/actions/userActions'
 import { PROFILE_DETAILS_RESET } from '../store/constants/userConstants'
 import { CFormCheck } from '@coreui/react';
@@ -20,17 +20,18 @@ export default function RetailerScreen() {
     const params = useParams()
 
     const { products } = useSelector(state => state.productList)
-    const { stores } = useSelector(state => state.storeList)
+    const { stores } = useSelector(state => state.storesByUser)
     const { profile } = useSelector(state => state.profileDetails)
+    console.log(products)
 
     useEffect(() => {
         dispatch({ type: PROFILE_DETAILS_RESET })
         dispatch(getProfileDetails(params.id))
+        dispatch(listStoresByUser(params.id))
         dispatch(listProductCategories())
         dispatch(listProducts())
         dispatch(listLatestProducts())
         dispatch(listReviews())
-        dispatch(listStores())
         dispatch(listUsers())
     }, [dispatch, params.id])
 
@@ -51,8 +52,6 @@ export default function RetailerScreen() {
         setStoreName(store)
         setRadioSearchValue('')
     }
-
-    const storeNames = stores.filter(store => store.owner_name === profile.name)
 
   return (
     <>
@@ -101,7 +100,7 @@ export default function RetailerScreen() {
                 onChange={(e) => radioSearchHandler(e)}
                 />
             </Form>
-                        {storeNames.map(store => {
+                        {stores && stores.map(store => {
                             return ( <CFormCheck 
                                     type="radio" 
                                     name="flexRadioDefault" 

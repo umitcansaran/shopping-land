@@ -348,16 +348,10 @@ def createProductReview(request, pk):
 
         return Response('Review Added')
 
-# @api_view(['GET'])
-# def getLatestReviews(request):
-#     reviews = Review.objects.all().order_by('-createdAt')
-#     serializer = ReviewSerializer(reviews, many=True)
-#     return Response(serializer.data)
-
 
 class Reviews(ListAPIView):
     """
-    GET: Get the list of all the categories.
+    GET: Get all the reviews.
     """
     queryset = Review.objects.all().order_by('-createdAt')
     serializer_class = ReviewSerializer

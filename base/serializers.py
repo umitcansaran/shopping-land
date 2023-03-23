@@ -73,14 +73,6 @@ class StoreSerializer(ModelSerializer):
 
 
 class ProductSerializer(ModelSerializer):
-    category = serializers.SlugRelatedField(
-        queryset=ProductCategory.objects.all(),
-        slug_field='name',
-    )
-    subcategory = serializers.SlugRelatedField(
-        queryset=ProductSubcategory.objects.all(),
-        slug_field='name',
-    )
     seller = serializers.SlugRelatedField(
         queryset=User.objects.all(),
         slug_field='username',
@@ -100,7 +92,6 @@ class SearchStockSerializer(ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    # product = ProductSerializer(many=False)
     product = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
