@@ -5,7 +5,7 @@ import Rating from '../components/Rating'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import { Row, Col, Image, Badge, ListGroup, Button, Card, Form, Container } from 'react-bootstrap'
-import { listProductDetails, listProductStocks, createProductReview, listReviews } from '../store/actions/productActions'
+import { listProductDetails, listProductStocks, listProductReviews, createProductReview } from '../store/actions/productActions'
 import { myDetails, listUsers, listProfiles } from '../store/actions/userActions'
 import { PRODUCT_CREATE_REVIEW_RESET } from '../store/constants/productConstants'
 
@@ -25,9 +25,9 @@ function ProductScreen() {
 
     const { product, error, loading } = useSelector(state => state.productDetails)
     const { stocks } = useSelector(state => state.productStocks)
+    const { reviews } = useSelector(state => state.productReviews)
     const { user } = useSelector(state => state.myDetails) 
     const { profiles } = useSelector(state => state.profileList)
-    const { reviews } = useSelector(state => state.reviewList)
     const { userInfo } = useSelector(state => state.userLogin)
     const { loading: loadingProductReview, error: errorProductReview, success: successProductReview } = useSelector(state => state.productReviewCreate)
 
@@ -39,13 +39,11 @@ function ProductScreen() {
         }
         dispatch(listProductDetails(params.id))
         dispatch(listProductStocks(params.id))
+        dispatch(listProductReviews(params.id))
         dispatch(myDetails())
-        dispatch(listReviews())
         dispatch(listUsers())
         dispatch(listProfiles())
     },[dispatch, params, successProductReview]) 
-
-    const productReviews = reviews.filter((review) => review.product.id === product.id)
 
     const seller = profiles && profiles.find(profile => profile.name === product.seller)
 
@@ -191,7 +189,7 @@ function ProductScreen() {
                                                 </ListGroup.Item>
                                             </>
                                             )}
-
+                                            
                                             {/* { user && user.profile[0].status === 'STORE_OWNER' && (
                                             <ListGroup.Item>
                                                 <Message variant='danger'>Seller accounts are not able to make purchases.</Message>
@@ -215,10 +213,10 @@ function ProductScreen() {
                             <Row>
                                 <Col md={6}>
                                     <h4>Reviews</h4>
-                                    {productReviews && productReviews.length === 0 && <Message variant='info'>No Reviews</Message>}
+                                    {reviews && reviews.length === 0 && <Message variant='info'>No Reviews</Message>}
 
                                     <ListGroup variant='flush'>
-                                        {productReviews && productReviews.map((review, index) => (
+                                        {reviews && reviews.map((review, index) => (
                                             <ListGroup.Item key={index}>
                                                 <strong>{review.name}</strong>
                                                 <Rating value={review.rating} color='#f8e825' />

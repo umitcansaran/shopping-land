@@ -15,6 +15,10 @@ import {
     LATEST_PRODUCTS_LIST_SUCCESS,
     LATEST_PRODUCTS_LIST_FAIL,
 
+    LATEST_REVIEWS_LIST_REQUEST,
+    LATEST_REVIEWS_LIST_SUCCESS,
+    LATEST_REVIEWS_LIST_FAIL,
+
     PRODUCT_SEARCH_SUCCESS,
     MY_PRODUCTS_SEARCH_SUCCESS,
 
@@ -25,6 +29,10 @@ import {
     PRODUCT_STOCKS_REQUEST,
     PRODUCT_STOCKS_SUCCESS,
     PRODUCT_STOCKS_FAIL,
+
+    PRODUCT_REVIEWS_REQUEST,
+    PRODUCT_REVIEWS_SUCCESS,
+    PRODUCT_REVIEWS_FAIL,
 
     PRODUCT_DELETE_REQUEST,
     PRODUCT_DELETE_SUCCESS,
@@ -106,6 +114,26 @@ export const latestProductsListReducer = (state = { latestProducts: [] }, action
     }
 }
 
+export const latestReviewsListReducer = (state = { latestReviews: [] }, action) => {
+    console.log(state)
+    switch (action.type) {
+        case LATEST_REVIEWS_LIST_REQUEST:
+            return { loading: true, latestReviews: [] }
+
+        case LATEST_REVIEWS_LIST_SUCCESS:
+            return {
+                loading: false,
+                latestReviews: action.payload,
+            }
+
+        case LATEST_REVIEWS_LIST_FAIL:
+            return { loading: false, error: action.payload }
+
+        default:
+            return state
+    }
+}
+
 export const productMyListReducer = (state = { myProducts: [] }, action) => {
     switch (action.type) {
         case PRODUCT_MY_LIST_REQUEST:
@@ -157,6 +185,22 @@ export const productStocksReducer = (state = { stocks: [] }, action) => {
             return { loading: false, stocks: action.payload }
 
         case PRODUCT_STOCKS_FAIL:
+            return { loading: false, error: action.payload }
+
+        default:
+            return state
+    }
+}
+
+export const productReviewsReducer = (state = { reviews: [] }, action) => {
+    switch (action.type) {
+        case PRODUCT_REVIEWS_REQUEST:
+            return { loading: true, ...state }
+
+        case PRODUCT_REVIEWS_SUCCESS:
+            return { loading: false, reviews: action.payload }
+
+        case PRODUCT_REVIEWS_FAIL:
             return { loading: false, error: action.payload }
 
         default:

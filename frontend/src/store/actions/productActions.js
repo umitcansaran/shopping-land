@@ -13,6 +13,10 @@ import {
     LATEST_PRODUCTS_LIST_SUCCESS,
     LATEST_PRODUCTS_LIST_FAIL,
 
+    LATEST_REVIEWS_LIST_REQUEST,
+    LATEST_REVIEWS_LIST_SUCCESS,
+    LATEST_REVIEWS_LIST_FAIL,
+
     PRODUCT_DETAILS_REQUEST,
     PRODUCT_DETAILS_SUCCESS,
     PRODUCT_DETAILS_FAIL,
@@ -20,6 +24,10 @@ import {
     PRODUCT_STOCKS_REQUEST,
     PRODUCT_STOCKS_SUCCESS,
     PRODUCT_STOCKS_FAIL,
+
+    PRODUCT_REVIEWS_REQUEST,
+    PRODUCT_REVIEWS_SUCCESS,
+    PRODUCT_REVIEWS_FAIL,
 
     PRODUCT_CREATE_REQUEST,
     PRODUCT_CREATE_SUCCESS,
@@ -154,6 +162,27 @@ export const listLatestProducts = () => async (dispatch) => {
     }
 }
 
+export const listLatestReviews = () => async (dispatch) => {
+    try {
+        dispatch({ type: LATEST_REVIEWS_LIST_REQUEST })
+
+        const { data } = await axios.get(`${baseUrl}/api/latest-reviews/`)
+
+        dispatch({
+            type: LATEST_REVIEWS_LIST_SUCCESS,
+            payload: data
+        })
+
+    } catch (error) {
+        dispatch({
+            type: LATEST_REVIEWS_LIST_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
 export const listProductDetails = (id) => async (dispatch) => {
     try {
         dispatch({ type: PRODUCT_DETAILS_REQUEST })
@@ -189,6 +218,27 @@ export const listProductStocks = (id) => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: PRODUCT_STOCKS_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const listProductReviews = (id) => async (dispatch) => {
+    try {
+        dispatch({ type: PRODUCT_REVIEWS_REQUEST })
+
+        const { data } = await axios.get(`${baseUrl}/api/product/reviews/${id}`)
+
+        dispatch({
+            type: PRODUCT_REVIEWS_SUCCESS,
+            payload: data
+        })
+
+    } catch (error) {
+        dispatch({
+            type: PRODUCT_REVIEWS_FAIL,
             payload: error.response && error.response.data.detail
                 ? error.response.data.detail
                 : error.message,

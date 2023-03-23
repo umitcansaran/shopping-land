@@ -40,7 +40,9 @@ urlpatterns = [
 
     # REVIEW
     path('product/<str:pk>/reviews/', views.createProductReview, name="create-review"),
-    path('reviews/', views.Reviews.as_view(), name='latest-reviews'),
+    path('reviews/', views.Reviews.as_view(), name='reviews'),
+    path('latest-reviews/', views.LatestReviews.as_view(), name='latest-reviews'),
+    path('product/reviews/<int:product_id>/', views.ListProductReviews.as_view()),
 
     # STOCK
     path('stocks/', views.StockViewSet.as_view({'get': 'list'})),

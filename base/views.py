@@ -77,6 +77,18 @@ class ListProductStocks(ListAPIView):
         product_id = self.kwargs.get('product_id')
         queryset = queryset.filter(product=product_id)
         return queryset
+    
+class ListProductReviews(ListAPIView):
+    """
+    List all the stocks of a products (int: product_id)
+    """
+    serializer_class = ReviewSerializer
+
+    def get_queryset(self):
+        queryset = Review.objects.all()
+        product_id = self.kwargs.get('product_id')
+        queryset = queryset.filter(product=product_id)
+        return queryset
 
 
 @api_view(['GET'])
@@ -353,10 +365,17 @@ class Reviews(ListAPIView):
 
 class LatestProducts(ListAPIView):
     """
-    GET: Get the list of all the categories.
+    GET: Get most recently added five products.
     """
     queryset = Product.objects.all().order_by('-createdAt')[:5]
     serializer_class = ProductSerializer
+
+class LatestReviews(ListAPIView):
+    """
+    GET: Get most recently added five reviews.
+    """
+    queryset = Review.objects.all().order_by('-createdAt')[:5]
+    serializer_class = ReviewSerializer
 
 
 @api_view(['POST'])
