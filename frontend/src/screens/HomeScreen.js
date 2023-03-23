@@ -50,7 +50,7 @@ export default function HomeScreen() {
     <>
         < SearchBox searchHandler={searchHandler} value={value} setValue={setValue} placeholder='Search for a product, brand or retailer name..' color='#1e478a' width='50%' />
         < HomeCategoriesBar categories={categories} categoryFilterHandler={categoryFilterHandler} />
-        {
+        {/* {
         showResult && (
             <Button onClick={() => setShowResult(false)} variant='secondary' className='mx-2'>Back</Button>
         )
@@ -69,7 +69,7 @@ export default function HomeScreen() {
                 < HomeSidebar categories={categories} categoryFilterHandler={categoryFilterHandler} />
                 < ProductCard products={products} profiles={profiles} />
             </Row>  
-        </Row>
+        </Row> */}
     </>
   );
 }
