@@ -7,6 +7,7 @@ import { listProducts, listReviews, listLatestProducts } from '../store/actions/
 import { search } from '../store/actions/searchAction'
 import { listStores } from '../store/actions/storeActions'
 import { listUsers, getProfileDetails } from '../store/actions/userActions'
+import { PROFILE_DETAILS_RESET } from '../store/constants/userConstants'
 import { CFormCheck } from '@coreui/react';
 
 export default function RetailerScreen() {
@@ -23,6 +24,7 @@ export default function RetailerScreen() {
     const { profile } = useSelector(state => state.profileDetails)
 
     useEffect(() => {
+        dispatch({ type: PROFILE_DETAILS_RESET })
         dispatch(getProfileDetails(params.id))
         dispatch(listProductCategories())
         dispatch(listProducts())

@@ -7,7 +7,7 @@ import Message from '../components/Message'
 import { Row, Col, Image, Badge, ListGroup, Button, Card, Form, Container } from 'react-bootstrap'
 import { listProductDetails, listProductStocks, listProductReviews, createProductReview } from '../store/actions/productActions'
 import { myDetails, listUsers, listProfiles } from '../store/actions/userActions'
-import { PRODUCT_CREATE_REVIEW_RESET } from '../store/constants/productConstants'
+import { PRODUCT_CREATE_REVIEW_RESET, PRODUCT_DETAILS_RESET } from '../store/constants/productConstants'
 
 function ProductScreen() {
 
@@ -37,6 +37,7 @@ function ProductScreen() {
             setComment('')
             dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
         }
+        dispatch({ type: PRODUCT_DETAILS_RESET })
         dispatch(listProductDetails(params.id))
         dispatch(listProductStocks(params.id))
         dispatch(listProductReviews(params.id))
@@ -282,9 +283,7 @@ function ProductScreen() {
                             </Row>
                         </div>
                     )
-
             }
-
         </Container >
     )
 }

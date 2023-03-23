@@ -25,6 +25,7 @@ import {
     PRODUCT_DETAILS_REQUEST,
     PRODUCT_DETAILS_SUCCESS,
     PRODUCT_DETAILS_FAIL,
+    PRODUCT_DETAILS_RESET,
 
     PRODUCT_STOCKS_REQUEST,
     PRODUCT_STOCKS_SUCCESS,
@@ -115,7 +116,6 @@ export const latestProductsListReducer = (state = { latestProducts: [] }, action
 }
 
 export const latestReviewsListReducer = (state = { latestReviews: [] }, action) => {
-    console.log(state)
     switch (action.type) {
         case LATEST_REVIEWS_LIST_REQUEST:
             return { loading: true, latestReviews: [] }
@@ -161,6 +161,7 @@ export const productMyListReducer = (state = { myProducts: [] }, action) => {
 
 
 export const productDetailsReducer = (state = { product: {} }, action) => {
+    console.log(state.product)
     switch (action.type) {
         case PRODUCT_DETAILS_REQUEST:
             return { loading: true, ...state }
@@ -170,6 +171,9 @@ export const productDetailsReducer = (state = { product: {} }, action) => {
 
         case PRODUCT_DETAILS_FAIL:
             return { loading: false, error: action.payload }
+
+        case PRODUCT_DETAILS_RESET:
+            return { product: {} }
 
         default:
             return state

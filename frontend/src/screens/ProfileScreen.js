@@ -37,8 +37,6 @@ function ProfileScreen() {
         }
       }
 
-      console.log(user)
-
   return (
     <>
     {
