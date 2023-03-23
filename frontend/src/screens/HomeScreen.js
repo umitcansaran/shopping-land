@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { Row, Button } from 'react-bootstrap';
+import { Nav, Row, Col, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux'
 import { listProductCategories } from '../store/actions/categoriesActions'
-import { listLatestProducts, listLatestReviews, listProducts } from '../store/actions/productActions'
+import { listProducts, listReviews, listLatestProducts } from '../store/actions/productActions'
+import { search } from '../store/actions/searchAction'
 import { listStores } from '../store/actions/storeActions'
+import { listUsers, listProfiles } from '../store/actions/userActions'
+import { CFormCheck } from '@coreui/react';
 import Reviews from '../components/Reviews';
 import News from '../components/News';
 import SearchBox from '../components/SearchBox';
 import ProductCard from '../components/ProductCard';
 import ProductCarousel from '../components/ProductCarousel';
-import HomeSidebar from '../components/HomeSidebar';
-import HomeCategoriesBar from '../components/HomeCategoriesBar';
-import { listProfiles } from '../store/actions/userActions';
-import { search } from '../store/actions/searchAction';
 
 export default function HomeScreen() {
 
@@ -22,24 +21,16 @@ export default function HomeScreen() {
     const dispatch = useDispatch()
 
     const { categories } = useSelector(state => state.productCategories)
-    const { products } = useSelector(state => state.productList)
-    const { profiles } = useSelector(state => state.profileList)
-    const { latestReviews } = useSelector(state => state.latestReviewsList)
-    const { latestProducts } = useSelector(state => state.latestProductsList)
 
     useEffect(() => {
         dispatch(listProductCategories())
-        dispatch(listLatestProducts())
-        dispatch(listStores())
         dispatch(listProducts())
+        dispatch(listLatestProducts())
+        dispatch(listReviews())
+        dispatch(listStores())
+        dispatch(listUsers())
         dispatch(listProfiles())
-        dispatch(listLatestReviews())
     }, [dispatch])
-
-    const searchHandler = (e) => {
-        setValue(e.target.value)
-        dispatch(search({ type: 'all', searchString: e.target.value }))
-    }
 
     const categoryFilterHandler = (keyword) => {
         setShowResult(true)
@@ -48,8 +39,16 @@ export default function HomeScreen() {
 
   return (
     <>
-        < SearchBox searchHandler={searchHandler} value={value} setValue={setValue} placeholder='Search for a product, brand or retailer name..' color='#1e478a' width='50%' />
-        < HomeCategoriesBar categories={categories} categoryFilterHandler={categoryFilterHandler} />
+        < SearchBox value={value} setValue={setValue} type='all' placeholder='Search for a product, brand or retailer name..' color='#1e478a' width='50%' />
+        <Nav className='justify-content-evenly'>
+            {categories.map((category)=>{
+            return (
+                  <Nav.Item key={category.id}>
+                    <Nav.Link onClick={()=>{categoryFilterHandler(category.name)}}>{category.name}</Nav.Link>
+                  </Nav.Item>
+            )
+        })}
+        </Nav>
         {
         showResult && (
             <Button onClick={() => setShowResult(false)} variant='secondary' className='mx-2'>Back</Button>
@@ -59,17 +58,35 @@ export default function HomeScreen() {
             {
                 (!showResult && value === '') && (
             <Row >
-                < Reviews latestReviews={latestReviews} />
-                < ProductCarousel latestProducts={latestProducts} />
+                < Reviews />
+                < ProductCarousel />
                 < News />
             </Row>
                 )
             }
             <Row className='my-2'>
-                < HomeSidebar categories={categories} categoryFilterHandler={categoryFilterHandler} />
-                < ProductCard products={products} profiles={profiles} />
+                    <Col lg={2} xl={2} className='m-4'>
+                        {categories.map((category) => {
+                            return <>
+                                <h5 className='my-3' style={{ color:'#1e478a' }} key={category.id}>{category.name}</h5>
+                                {category.subcategories.map((subcategory) => {
+                                    return <CFormCheck 
+                                    type="radio" 
+                                    name="flexRadioDefault" 
+                                    id="flexRadioDefault1" 
+                                    label={subcategory.name}
+                                    style={{ backgroundColor:'#1e478a' }}
+                                    onChange={() => {categoryFilterHandler(subcategory.name)}}
+                                    className='my-2'
+                                    key={subcategory.id}
+                                    />
+                                })}
+                                </>      
+                        })}
+                    </Col>  
+                   < ProductCard />
             </Row>  
-        </Row>
+    </Row>
     </>
   );
 }

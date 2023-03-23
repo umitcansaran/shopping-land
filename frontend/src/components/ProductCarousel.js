@@ -1,8 +1,12 @@
 import React from 'react'
 import { Carousel, Col, Image } from 'react-bootstrap'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-function ProductCarousel({ latestProducts }) {
+
+function ProductCarousel() {
+
+    const { latestProducts } = useSelector(state => state.latestProductsList)
 
   return (
     <Col md={6}>
