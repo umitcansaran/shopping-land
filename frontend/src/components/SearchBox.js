@@ -1,7 +1,7 @@
 import React from 'react'
 import { Row, Form } from 'react-bootstrap';
 
-export default function SearchBox({ searchHandler, type, placeholder, color, value, setValue, width }) {
+export default function SearchBox({ searchHandler, type, placeholder, color, value, width }) {
 
     return (
     <Row style={{ backgroundColor: color, height:'3rem' }}>

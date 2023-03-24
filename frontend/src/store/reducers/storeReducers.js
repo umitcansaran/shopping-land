@@ -21,6 +21,7 @@ import {
     STORE_STOCKS_REQUEST,
     STORE_STOCKS_SUCCESS,
     STORE_STOCKS_FAIL,
+    STORE_STOCKS_RESET,
 
     STORES_BY_USER_REQUEST,
     STORES_BY_USER_SUCCESS,
@@ -29,6 +30,7 @@ import {
     STORE_DELETE_REQUEST,
     STORE_DELETE_SUCCESS,
     STORE_DELETE_FAIL,
+    STORE_DELETE_RESET
 
 } from '../constants/storeConstants'
 
@@ -133,6 +135,9 @@ export const storeStocksReducer = (state = { stocks: [] }, action) => {
         case STORE_STOCKS_FAIL:
             return { loading: false, error: action.payload }
 
+        case STORE_STOCKS_RESET:
+            return {}
+
         default:
             return state
     }
@@ -156,13 +161,16 @@ export const storesByUserReducer = (state = { stores: [] }, action) => {
 
 export const storeDeleteReducer = (state = {}, action) => {
     switch (action.type) {
-      case STORE_DELETE_REQUEST:
-        return { loading: true }
-      case STORE_DELETE_SUCCESS:
-        return { loading: false, success: true }
-      case STORE_DELETE_FAIL:
-        return { loading: false, error: action.payload }
-      default:
-        return state
+        case STORE_DELETE_REQUEST:
+            return { loading: true }
+        case STORE_DELETE_SUCCESS:
+            return { loading: false, success: true }
+        case STORE_DELETE_FAIL:
+            return { loading: false, error: action.payload }
+        case STORE_DELETE_RESET:
+            return {}
+
+        default:
+            return state
     }
   }

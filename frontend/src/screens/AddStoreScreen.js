@@ -9,6 +9,8 @@ import { STORE_CREATE_RESET } from '../store/constants/storeConstants'
 import styled from "styled-components";
 import FormContainer from "../components/FormContainer";
 import AddressInputField from "../components/AddressInputField";
+import Loader from "../components/Loader";
+import Notification from "../components/Notification";
 export default function AddStoreScreen() {
 
   const [viewState, setViewState] = useState({
@@ -39,16 +41,16 @@ export default function AddStoreScreen() {
 
   const { categories } = useSelector(state => state.productCategories)
   const { user } = useSelector(state => state.myDetails)
-  const { success: createStoreSuccess } = useSelector(state => state.createStore)
+  const { loading: createStoreLoading, success: createStoreSuccess } = useSelector(state => state.createStore)
 
   useEffect(() => {
     if (createStoreSuccess) {
-      navigate('/mystores')
+      navigate('/mystores', {state: { createStoreSuccess: true }})
       dispatch({ type: STORE_CREATE_RESET })
     }
     dispatch(listProductCategories())    
     dispatch(myDetails())
-  }, [dispatch, createStoreSuccess])
+  }, [dispatch, createStoreSuccess, navigate])
 
   const onChange = ({ target: { name, value } }) => {
     setState({...state, [name]: value})
@@ -205,9 +207,10 @@ export default function AddStoreScreen() {
               </Button>
             </Form>
           </Col>
-      </Row>
-        
+      </Row>   
       </FormContainer>
+      { createStoreLoading && < Loader /> }
+      { createStoreSuccess && < Notification status='success' title='Success' message='Store Created!'/> }
       </>
     );
   }
