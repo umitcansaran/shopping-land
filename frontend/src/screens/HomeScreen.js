@@ -45,7 +45,7 @@ export default function HomeScreen() {
   return (
     <>
         < SearchBox value={value} setValue={setValue} type='all' placeholder='Search for a product, brand or retailer name..' color='#1e478a' width='50%' />
-        {/* < HomeCategoriesBar categories={categories} categoryFilterHandler={categoryFilterHandler} /> */}
+        < HomeCategoriesBar categories={categories} categoryFilterHandler={categoryFilterHandler} />
         {
         showResult && (
             <Button onClick={() => setShowResult(false)} variant='secondary' className='mx-2'>Back</Button>
