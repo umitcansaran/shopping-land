@@ -35,11 +35,17 @@ class StockSerializer(ModelSerializer):
 
 
 class ProductCategorySerializer(ModelSerializer):
-    subcategories = ProductSubcategorySerializer(many=True)
+    subcategory = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = ProductCategory
-        fields = '__all__'
+        fields = '__all__' 
+
+    def get_subcategory(self, obj):
+        subcategories = obj.subcategories
+        serializer = ProductSubcategorySerializer(subcategories, many=True)
+
+        return serializer.data
 
 
 class ProfileSerializer(ModelSerializer):
@@ -73,14 +79,17 @@ class StoreSerializer(ModelSerializer):
 
 
 class ProductSerializer(ModelSerializer):
-    seller = serializers.SlugRelatedField(
-        queryset=User.objects.all(),
-        slug_field='username',
-    )
+    seller = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = '__all__' 
+
+    def get_seller(self, obj):
+        return {
+            'id': obj.seller.id,
+            'name': obj.seller.username
+        }
   
 
 class SearchStockSerializer(ModelSerializer):
@@ -92,17 +101,17 @@ class SearchStockSerializer(ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    # product = serializers.SerializerMethodField(read_only=True)
+    product = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Review
-        fields = '__all__'
+        fields = '__all__' 
 
-    # def get_product(self, obj):
-    #     product = obj.product
-    #     serializer = ProductSerializer(product, many=False)
+    def get_product(self, obj):
+        product = obj.product
+        serializer = ProductSerializer(product, many=False)
 
-    #     return serializer.data
+        return serializer.data
 
 
 class UserSerializer(ModelSerializer):

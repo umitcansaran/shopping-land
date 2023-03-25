@@ -9,7 +9,7 @@ function HomeSidebar({ categories, categoryFilterHandler }) {
         {categories.map((category) => {
             return <>
                 <h5 className='my-3' style={{ color:'#1e478a' }} key={category.id}>{category.name}</h5>
-                {category.subcategories.map((subcategory) => {
+                {category.subcategory.map((subcategory) => {
                     return <CFormCheck 
                     type="radio" 
                     name="flexRadioDefault" 
