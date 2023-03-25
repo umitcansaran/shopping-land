@@ -17,14 +17,14 @@ import {
     MY_PRODUCTS_SEARCH_SUCCESS,
     MY_PRODUCTS_SEARCH_FAIL,
 
-    STOCK_SEARCH_REQUEST,
-    STOCK_SEARCH_SUCCESS,
-    STOCK_SEARCH_FAIL,
+    STORE_STOCKS_SEARCH_REQUEST,
+    STORE_STOCKS_SEARCH_SUCCESS,
+    STORE_STOCKS_SEARCH_FAIL,
 
 } from '../constants/searchConstants'
 
 export const search = (searchData) => async (dispatch, getState) => {
-
+    
     if(searchData.type === 'stores') {
         try {
             dispatch({
@@ -205,21 +205,20 @@ export const search = (searchData) => async (dispatch, getState) => {
     if(searchData.type === 'product_in_my_store') {
         try {
             dispatch({
-                type: STOCK_SEARCH_REQUEST
+                type: STORE_STOCKS_SEARCH_REQUEST
             })
     
             const { data } = await axios.get(`${ baseUrl }/api/search/?type=${searchData.type}&store_name=${searchData.store}&search_string=${searchData.searchString}`)
-            // const result = data.filter((data) => data.number > 0).map(result => result.product)
-            const result = data.filter((data) => data.number > 0)
+            // const result = data.filter((data) => data.number > 0)
                        
             dispatch({
-                type: STOCK_SEARCH_SUCCESS,
-                payload: result
+                type: STORE_STOCKS_SEARCH_SUCCESS,
+                payload: data
             })
     
         } catch (error) {
             dispatch({
-                type: STOCK_SEARCH_FAIL,
+                type: STORE_STOCKS_SEARCH_FAIL,
                 payload: error.response && error.response.data.detail
                     ? error.response.data.detail
                     : error.message,

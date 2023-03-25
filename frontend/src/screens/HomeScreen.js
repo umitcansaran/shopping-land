@@ -13,6 +13,8 @@ import HomeSidebar from '../components/HomeSidebar';
 import HomeCategoriesBar from '../components/HomeCategoriesBar';
 import { listProfiles } from '../store/actions/userActions';
 import { search } from '../store/actions/searchAction';
+import { PRODUCT_LIST_RESET } from '../store/constants/productConstants';
+import Loader from '../components/Loader';
 
 export default function HomeScreen() {
 
@@ -21,11 +23,11 @@ export default function HomeScreen() {
 
     const dispatch = useDispatch()
 
-    const { categories } = useSelector(state => state.productCategories)
-    const { products } = useSelector(state => state.productList)
-    const { profiles } = useSelector(state => state.profileList)
-    const { latestReviews } = useSelector(state => state.latestReviewsList)
-    const { latestProducts } = useSelector(state => state.latestProductsList)
+    const { categories, loading:a } = useSelector(state => state.productCategories)
+    const { products, loading:b } = useSelector(state => state.productList)
+    const { profiles, loading:c } = useSelector(state => state.profileList)
+    const { latestReviews, loading:d } = useSelector(state => state.latestReviewsList)
+    const { latestProducts, loading:e } = useSelector(state => state.latestProductsList)
 
     useEffect(() => {
         dispatch(listProductCategories())
@@ -36,11 +38,6 @@ export default function HomeScreen() {
         dispatch(listLatestReviews())
     }, [dispatch])
 
-    const searchHandler = (e) => {
-        setValue(e.target.value)
-        dispatch(search({ type: 'all', searchString: e.target.value }))
-    }
-
     const categoryFilterHandler = (keyword) => {
         setShowResult(true)
         dispatch(search({ type: 'products', searchString: keyword }))
@@ -48,7 +45,11 @@ export default function HomeScreen() {
 
   return (
     <>
-        < SearchBox searchHandler={searchHandler} value={value} setValue={setValue} placeholder='Search for a product, brand or retailer name..' color='#1e478a' width='50%' />
+    { ( a && b && c && d && e ) ? (
+        < Loader />
+        ) : (
+            <>
+            < SearchBox value={value} setValue={setValue} type='all' placeholder='Search for a product, brand or retailer name..' color='#1e478a' width='50%' />
         < HomeCategoriesBar categories={categories} categoryFilterHandler={categoryFilterHandler} />
         {
         showResult && (
@@ -57,7 +58,7 @@ export default function HomeScreen() {
         }
         <Row >
             {
-                (!showResult && value === '') && (
+                (!showResult && value.length < 2) && (
             <Row >
                 < Reviews latestReviews={latestReviews} />
                 < ProductCarousel latestProducts={latestProducts} />
@@ -70,6 +71,8 @@ export default function HomeScreen() {
                 < ProductCard products={products} profiles={profiles} />
             </Row>  
         </Row>
+        </>
+        )}
     </>
   );
 }

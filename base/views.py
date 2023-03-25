@@ -169,7 +169,7 @@ class Search(ListAPIView):
             elif search_type == 'product_in_store':
                 return SearchStockSerializer
             elif search_type == 'product_in_my_store':
-                return SearchStockSerializer
+                return StockSerializer
             elif search_type == 'my_products':
                 return ProductSerializer
 
@@ -203,14 +203,11 @@ class Search(ListAPIView):
                 return queryset
             if search_type == 'all':
                 queryset = Product.objects.all()
-                if search_string is not None:
-                    queryset = queryset.filter(Q(
-                       Q(brand__icontains=search_string) |
-                       Q(name__icontains=search_string) |
-                       Q(seller__username__icontains=search_string) |
-                       Q(subcategory__name__icontains=search_string) |
-                       Q(category__name__icontains=search_string)
-                    ))
+                queryset = queryset.filter(Q(
+                    Q(brand__icontains=search_string) |
+                    Q(name__icontains=search_string) |
+                    Q(seller__username__icontains=search_string)
+                ))
                 return queryset
             if search_type == 'product_in_store':
                 if store_name is not None:

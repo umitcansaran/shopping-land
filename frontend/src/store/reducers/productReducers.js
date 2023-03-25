@@ -6,6 +6,7 @@ import {
     REVIEW_LIST_REQUEST,
     REVIEW_LIST_SUCCESS,
     REVIEW_LIST_FAIL,
+    PRODUCT_LIST_RESET,
 
     PRODUCT_MY_LIST_REQUEST,
     PRODUCT_MY_LIST_SUCCESS,
@@ -90,6 +91,9 @@ export const productListReducer = (state = { products: [] }, action) => {
 
         case PRODUCT_LIST_FAIL:
             return { loading: false, error: action.payload }
+
+        case PRODUCT_LIST_RESET:
+            return {}
 
         default:
             return state

@@ -1,7 +1,20 @@
 import React from 'react'
 import { Row, Form } from 'react-bootstrap';
+import { useDispatch } from 'react-redux'
+import { search } from '../store/actions/searchAction'
 
-export default function SearchBox({ searchHandler, type, placeholder, color, value, width }) {
+export default function SearchBox({ type, placeholder, color, value, setValue, width }) {
+
+    const dispatch = useDispatch()
+
+    const searchHandler = (e) => {
+        setValue(e.target.value)
+        if (value.length < 2) {
+            setTimeout(() => {
+                dispatch(search({ type: type, searchString: e.target.value }))
+            }, 1000)
+        }
+    }
 
     return (
     <Row style={{ backgroundColor: color, height:'3rem' }}>

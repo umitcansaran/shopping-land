@@ -6,7 +6,6 @@ import Footer from './components/Footer'
 import HomeScreen from "./screens/HomeScreen"
 import RegisterScreen from "./screens/RegisterScreen";
 import LoginScreen from './screens/LoginScreen'
-import ProductsScreen from "./screens/ProductsScreen";
 import RetailersScreen from "./screens/RetailersScreen";
 import AddProductScreen from "./screens/AddProductScreen";
 import AddStoreScreen from './screens/AddStoreScreen'
@@ -41,7 +40,6 @@ function App() {
         <Route path="/retailers/:id" element={<RetailerScreen />} />
         <Route path="/profile" element={<ProfileScreen />} />
         <Route path="/cart" element={<CartScreen />} />
-        <Route path='/products' element={<ProductsScreen />} />
         <Route path='/product/:id' element={<ProductScreen />} />
         <Route path='/mystores' element={<MyStoresScreen />} />
         <Route path='/myproducts' element={<MyProductsScreen />} />

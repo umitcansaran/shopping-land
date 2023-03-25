@@ -35,7 +35,10 @@ import {
 } from '../constants/storeConstants'
 
 import {
-    MY_STORES_LIST_SUCCESS
+    MY_STORES_LIST_SUCCESS,
+
+    STORE_STOCKS_SEARCH_SUCCESS,
+
 } from '../constants/searchConstants'
 
 
@@ -134,6 +137,12 @@ export const storeStocksReducer = (state = { stocks: [] }, action) => {
 
         case STORE_STOCKS_FAIL:
             return { loading: false, error: action.payload }
+
+        case STORE_STOCKS_SEARCH_SUCCESS:
+            return {
+                loading: false,
+                stocks: action.payload,
+            }
 
         case STORE_STOCKS_RESET:
             return {}

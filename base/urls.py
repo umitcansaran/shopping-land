@@ -51,8 +51,6 @@ urlpatterns = [
     path('product/stocks/<int:product_id>/', views.ListProductStocks.as_view()),
     path('store/stocks/<int:store_id>/', views.ListStoreStocks.as_view()),
 
-
-
     # CATEGORIES
     path('product-categories/', views.ProductCategory.as_view(), name='categories'),
     path('product-subcategories/', views.ProductSubcategory.as_view(), name='sub-categories'),
