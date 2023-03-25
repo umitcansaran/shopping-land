@@ -8,24 +8,23 @@ import {
   Image,
   Container,
 } from "react-bootstrap";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { listProductCategories } from "../store/actions/categoriesActions";
 import {
-  listProducts,
   listReviews,
   listLatestProducts,
   listProductsByUser,
 } from "../store/actions/productActions";
 import { search } from "../store/actions/searchAction";
 import { listStoresByUser } from "../store/actions/storeActions";
-import { listUsers, getProfileDetails } from "../store/actions/userActions";
+import { getProfileDetails } from "../store/actions/userActions";
 import { PROFILE_DETAILS_RESET } from "../store/constants/userConstants";
 import { CFormCheck } from "@coreui/react";
 import ProductCard from "../components/ProductCard";
+import SearchBox from "../components/SearchBox";
 
 export default function SellerScreen() {
-  const [mainSearchValue, setMainSearchValue] = useState("");
+  const [value, setValue] = useState("");
   const [radioSearchValue, setRadioSearchValue] = useState("");
   const [storeName, setStoreName] = useState("");
 
@@ -45,12 +44,6 @@ export default function SellerScreen() {
     dispatch(listReviews());
   }, [dispatch, params.id]);
 
-  const mainSearchHandler = (e) => {
-    e.preventDefault();
-    setMainSearchValue(e.target.value);
-    dispatch(search({ type: "products_by_seller", seller: profile.id, searchString: e.target.value }));
-  };
-
   const radioSearchHandler = (e) => {
     setRadioSearchValue(e.target.value);
     dispatch(
@@ -69,21 +62,15 @@ export default function SellerScreen() {
 
   return (
     <>
-      <Row style={{ backgroundColor: "#1e478a", height: "3rem" }}>
-        <Form
-          className="d-flex justify-content-center my-2"
-          style={{ height: "2rem" }}
-        >
-          <Form.Control
-            type="search"
-            placeholder="Search for a product, store or brand.."
-            aria-label="Search"
-            style={{ width: "50%" }}
-            value={mainSearchValue}
-            onChange={(e) => mainSearchHandler(e)}
-          />
-        </Form>
-      </Row>
+      <SearchBox
+        value={value}
+        setValue={setValue}
+        type="products_by_seller"
+        seller_id={profile.id}
+        placeholder="Search for a product, brand or retailer name.."
+        color="#1e478a"
+        width="50%"
+      />
       <Container>
         <Row
           className="mt-3 justify-content-center pb-2"

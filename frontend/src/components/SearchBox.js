@@ -3,7 +3,7 @@ import { Row, Form } from 'react-bootstrap';
 import { useDispatch } from 'react-redux'
 import { search } from '../store/actions/searchAction'
 
-export default function SearchBox({ type, placeholder, color, value, setValue, width }) {
+export default function SearchBox({ type, placeholder, color, value, setValue, width, seller_id=null }) {
 
     const dispatch = useDispatch()
 
@@ -11,7 +11,7 @@ export default function SearchBox({ type, placeholder, color, value, setValue, w
         setValue(e.target.value)
         if (value.length < 2) {
             setTimeout(() => {
-                dispatch(search({ type: type, searchString: e.target.value }))
+                dispatch(search({ type: type, seller_id: seller_id, searchString: e.target.value }))
             }, 1000)
         }
     }

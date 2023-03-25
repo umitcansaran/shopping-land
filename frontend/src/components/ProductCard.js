@@ -56,7 +56,7 @@ export default function ProductCard({ product }) {
             </Card.Text>
             <Card.Text style={{ fontSize: "1rem" }} className="text-center">
               Sold by{" "}
-              <Link to={`/retailers/${product.seller && product.seller.id}`}>
+              <Link to={`/seller/${product.seller && product.seller.id}`}>
                 {product.seller && product.seller.name}
               </Link>
             </Card.Text>

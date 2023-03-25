@@ -179,7 +179,7 @@ class Search(ListAPIView):
         search_type = self.request.query_params.get('type', None)
         search_string = self.request.query_params.get('search_string', None)
         store_name = self.request.query_params.get('store_name', None)
-        seller_name = self.request.query_params.get('seller_name', None)
+        seller_id = self.request.query_params.get('seller_id', None)
         if search_type is not None:
             if search_type == 'stores':
                 queryset = Store.objects.all()
@@ -213,8 +213,8 @@ class Search(ListAPIView):
                 ))
                 return queryset
             if search_type == 'products_by_seller':
-                if seller_name is not None:
-                    queryset = Product.objects.filter(seller=seller_name)
+                if seller_id is not None:
+                    queryset = Product.objects.filter(seller=seller_id)
                     queryset = queryset.filter(Q(
                         Q(brand__icontains=search_string) |
                         Q(name__icontains=search_string)

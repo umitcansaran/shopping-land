@@ -212,7 +212,7 @@ export const search = (searchData) => async (dispatch, getState) => {
                 type: PRODUCTS_BY_USER_REQUEST
             })
     
-            const { data } = await axios.get(`${ baseUrl }/api/search/?type=${searchData.type}&seller_name=${searchData.seller}&search_string=${searchData.searchString}`)
+            const { data } = await axios.get(`${ baseUrl }/api/search/?type=${searchData.type}&seller_id=${searchData.seller_id}&search_string=${searchData.searchString}`)
             // const result = data.filter((data) => data.number > 0)
                        
             dispatch({
