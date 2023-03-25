@@ -3,8 +3,9 @@ import { Button, Row, Col, Image, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { search } from "../store/actions/searchAction";
 import { listProductCategories } from "../store/actions/categoriesActions";
-import { listProfiles } from "../store/actions/userActions";
+import { listProfiles, listSellerProfiles } from "../store/actions/userActions";
 import { Link } from "react-router-dom";
+import Loader from "../components/Loader";
 
 export default function SellersScreen() {
   const [showResult, setShowResult] = useState(false);
@@ -12,14 +13,11 @@ export default function SellersScreen() {
   const dispatch = useDispatch();
 
   const { categories } = useSelector((state) => state.productCategories);
-  const { profiles } = useSelector((state) => state.profileList);
-
-  const storeOwners =
-    profiles && profiles.filter((profile) => profile.status === "STORE_OWNER");
+  const { profiles, loading } = useSelector((state) => state.sellerProfiles);
 
   useEffect(() => {
     dispatch(listProductCategories());
-    dispatch(listProfiles());
+    dispatch(listSellerProfiles());
   }, [dispatch]);
 
   const filterOptionHandler = (event) => {
@@ -47,39 +45,42 @@ export default function SellersScreen() {
           })}
         </Form.Select>
       </Row>
-      <p className="text-center">
-        Click on an logo to access the seller's page..
-      </p>
-
-      {showResult && (
-        <Button
-          variant="secondary"
-          onClick={() => filterResetHandler()}
-          className="m-2"
-        >
-          Back
-        </Button>
+      <h2 className="text-center">Select a seller</h2>
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          {showResult && (
+            <Button
+              variant="secondary"
+              onClick={() => filterResetHandler()}
+              className="m-2"
+            >
+              Back
+            </Button>
+          )}
+          <Row className="align-items-center">
+            {profiles &&
+              profiles.map((profile, index) => {
+                return (
+                  <>
+                    <Col md={2}>
+                      <Link to={`/seller/${profile.id}`}>
+                        <Image
+                          className="p-2"
+                          src={profile.image}
+                          alt={profile.name}
+                          key={index}
+                          style={{ width: "60%", margin: "3rem" }}
+                        />
+                      </Link>
+                    </Col>
+                  </>
+                );
+              })}
+          </Row>
+        </>
       )}
-      <Row className="align-items-center">
-        {storeOwners &&
-          storeOwners.map((profile, index) => {
-            return (
-              <>
-                <Col md={2}>
-                  <Link to={`/seller/${profile.id}`}>
-                    <Image
-                      className="p-2"
-                      src={profile.image}
-                      alt={profile.name}
-                      key={index}
-                      style={{ width: "60%", margin: "3rem" }}
-                    />
-                  </Link>
-                </Col>
-              </>
-            );
-          })}
-      </Row>
     </>
   );
 }

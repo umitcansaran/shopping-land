@@ -90,6 +90,17 @@ class ListStoreStocks(ListAPIView):
         queryset = queryset.filter(store=store_id)
         return queryset
     
+class ListSellerProfiles(ListAPIView):
+    """
+    List all the seller profiles
+    """
+    serializer_class = ProfileSerializer
+
+    def get_queryset(self):
+        queryset = Profile.objects.all()
+        queryset = queryset.filter(status='STORE_OWNER')
+        return queryset
+    
 class ListProductReviews(ListAPIView):
     """
     List all the stocks of a products (int: product_id)

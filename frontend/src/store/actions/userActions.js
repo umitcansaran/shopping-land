@@ -27,6 +27,10 @@ import {
     PROFILE_DETAILS_SUCCESS,
     PROFILE_DETAILS_FAIL,
 
+    SELLER_PROFILES_REQUEST,
+    SELLER_PROFILES_SUCCESS,
+    SELLER_PROFILES_FAIL,
+
     MY_DETAILS_REQUEST,
     MY_DETAILS_SUCCESS,
     MY_DETAILS_FAIL,
@@ -237,6 +241,31 @@ export const listProfiles = () => async (dispatch, getState) => {
     } catch (error) {
         dispatch({
             type: PROFILE_LIST_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const listSellerProfiles = () => async (dispatch) => {
+    try {
+        dispatch({
+            type: SELLER_PROFILES_REQUEST
+        })
+        
+        const { data } = await axios.get(
+            `${baseUrl}/api/profiles/sellers/`
+            )
+            
+        dispatch({
+            type: SELLER_PROFILES_SUCCESS,
+            payload: data
+        })
+
+    } catch (error) {
+        dispatch({
+            type: SELLER_PROFILES_FAIL,
             payload: error.response && error.response.data.detail
                 ? error.response.data.detail
                 : error.message,

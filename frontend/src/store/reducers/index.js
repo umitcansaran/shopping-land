@@ -10,6 +10,7 @@ import {
   userDeleteReducer,
   profileListReducer,
   profileDetailsReducer,
+  sellerProfilesReducer,
 } from './userReducers'
 
 import { 
@@ -68,6 +69,7 @@ export const reducers = combineReducers({
   profile: profileReducer,
   profileList: profileListReducer,
   profileDetails: profileDetailsReducer,
+  sellerProfiles: sellerProfilesReducer,
   myDetails: myDetailsReducer,
   userDetails: userDetailsReducer,
   userList: userListReducer,
