@@ -15,14 +15,16 @@ import {
   listProducts,
   listReviews,
   listLatestProducts,
+  listProductsByUser,
 } from "../store/actions/productActions";
 import { search } from "../store/actions/searchAction";
 import { listStoresByUser } from "../store/actions/storeActions";
 import { listUsers, getProfileDetails } from "../store/actions/userActions";
 import { PROFILE_DETAILS_RESET } from "../store/constants/userConstants";
 import { CFormCheck } from "@coreui/react";
+import ProductCard from "../components/ProductCard";
 
-export default function RetailerScreen() {
+export default function SellerScreen() {
   const [mainSearchValue, setMainSearchValue] = useState("");
   const [radioSearchValue, setRadioSearchValue] = useState("");
   const [storeName, setStoreName] = useState("");
@@ -30,25 +32,22 @@ export default function RetailerScreen() {
   const dispatch = useDispatch();
   const params = useParams();
 
-  const { products } = useSelector((state) => state.productList);
   const { stores } = useSelector((state) => state.storesByUser);
+  const { products } = useSelector((state) => state.productsByUser);
+
   const { profile } = useSelector((state) => state.profileDetails);
-  console.log(products);
 
   useEffect(() => {
     dispatch({ type: PROFILE_DETAILS_RESET });
     dispatch(getProfileDetails(params.id));
     dispatch(listStoresByUser(params.id));
+    dispatch(listProductsByUser(params.id));
     dispatch(listProductCategories());
     dispatch(listProducts());
     dispatch(listLatestProducts());
     dispatch(listReviews());
     dispatch(listUsers());
   }, [dispatch, params.id]);
-
-  const retailerProducts = products.filter(
-    (product) => product.seller === profile.name
-  );
 
   const mainSearchHandler = (e) => {
     e.preventDefault();
@@ -158,77 +157,14 @@ export default function RetailerScreen() {
         </Col>
         <Col>
           <Row>
-            {retailerProducts.map((product, index) => {
-              return (
-                <Col sm={12} md={6} lg={4} xl={3} className="gx-3 gy-2">
-                  <Card
-                    className="main-product-card"
-                    key={product.id}
-                    style={{ padding: "0.2rem 0.2rem 0rem 0.2rem" }}
-                  >
-                    <Row
-                      style={{
-                        height: "25rem",
-                        alignItems: "center",
-                        margin: "0",
-                      }}
-                    >
-                      <Link to={`/product/${product.id}`}>
-                        <Card.Img
-                          src={product.image}
-                          variant="top"
-                          className="card-img-top"
-                        />
-                      </Link>
-                    </Row>
-                    <Row>
-                      <Card.Body>
-                        <Link to={`/product/${product.id}`}>
-                          <Card.Title
-                            className="text-center"
-                            style={{
-                              letterSpacing: "0.06rem",
-                              color: "#1e478a",
-                            }}
-                          >
-                            <strong>{product.brand}</strong>
-                          </Card.Title>
-                          <Card.Title
-                            className="text-center"
-                            style={{ fontSize: "1rem", color: "black" }}
-                          >
-                            {product.name}
-                          </Card.Title>
-                        </Link>
-                        {product.description ? (
-                          <Card.Text
-                            style={{
-                              fontSize: "1rem",
-                              textAlign: "center",
-                              margin: "0",
-                            }}
-                          >
-                            {product.description.length > 27
-                              ? product.description.substring(0, 27) + "..."
-                              : product.description}
-                          </Card.Text>
-                        ) : (
-                          <Card.Text style={{ fontSize: "0.9rem" }}>
-                            Product has no description.
-                          </Card.Text>
-                        )}
-                        <Card.Text
-                          className="text-center m-0"
-                          style={{ fontSize: "1.3rem" }}
-                        >
-                          <strong>CHF {Math.trunc(product.price)}</strong>
-                        </Card.Text>
-                      </Card.Body>
-                    </Row>
-                  </Card>
-                </Col>
-              );
-            })}
+            {products &&
+              products.map((product, index) => {
+                return (
+                  <Col sm={12} md={6} lg={4} xl={3} className="gx-3 gy-2">
+                    <ProductCard product={product} key={index} />
+                  </Col>
+                );
+              })}
           </Row>
         </Col>
       </Row>

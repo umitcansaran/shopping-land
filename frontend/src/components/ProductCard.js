@@ -2,7 +2,7 @@ import React from "react";
 import { Card, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-export default function ProductCard({ loading, product, profiles }) {
+export default function ProductCard({ product }) {
   return (
     <>
       <Card

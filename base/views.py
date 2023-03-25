@@ -259,7 +259,7 @@ class MyStoresViewSet(ModelViewSet):
 
 class ListStoresByUser(ListAPIView):
     """
-    List all the stores of a retailer (int: user_id)
+    List all the stores of a seller (int: user_id)
     """
     serializer_class = StoreSerializer
 
@@ -267,6 +267,18 @@ class ListStoresByUser(ListAPIView):
         queryset = Store.objects.all()
         user = self.kwargs.get('user_id')
         queryset = queryset.filter(owner=user)
+        return queryset
+    
+class ListProductssByUser(ListAPIView):
+    """
+    List all the products of a seller (int: user_id)
+    """
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        queryset = Product.objects.all()
+        user = self.kwargs.get('user_id')
+        queryset = queryset.filter(seller=user)
         return queryset
 
 

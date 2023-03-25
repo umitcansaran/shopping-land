@@ -18,7 +18,6 @@ import HomeCategoriesBar from "../components/HomeCategoriesBar";
 import { listProfiles } from "../store/actions/userActions";
 import { search } from "../store/actions/searchAction";
 import { PRODUCT_LIST_RESET } from "../store/constants/productConstants";
-import Loader from "../components/Loader";
 
 export default function HomeScreen() {
   const [value, setValue] = useState("");
@@ -88,9 +87,7 @@ export default function HomeScreen() {
             categoryFilterHandler={categoryFilterHandler}
           />
                <Col>
-        { productLoading ? (
-            < Loader />
-        ) : (
+       
             <Row>
                 {products && products.map((product) => {
                 return (
@@ -99,11 +96,10 @@ export default function HomeScreen() {
                                 product={product}
                                 profiles={profiles}/>
                         </Col>
-            )                    
+                    )                
                         })} 
             </Row>
-         )
-        }
+    
     </Col>
         </Row>
       </Row>

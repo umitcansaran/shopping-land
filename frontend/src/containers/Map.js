@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Map, { Marker, Popup } from "react-map-gl";
 import { Col, Form, Row } from "react-bootstrap";
-import "../screens/HomeScreen.css";
+import "./map.css";
 import { search } from "../store/actions/searchAction";
 import { listStores } from "../store/actions/storeActions";
 import { listProductCategories } from "../store/actions/categoriesActions";

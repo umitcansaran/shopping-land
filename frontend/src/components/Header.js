@@ -33,7 +33,7 @@ const Header = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav"/>
         <Navbar.Collapse id="basic-navbar-nav" >
           <Nav className='me-auto' >
-            <Nav.Link as={Link} className='ms-5' to="/retailers" style={{ color:'rgb(70, 69, 69)'}}><i className="fa-solid fa-store" style={{ color:'#1e478a' }}></i> Sellers List</Nav.Link>
+            <Nav.Link as={Link} className='ms-5' to="/sellers" style={{ color:'rgb(70, 69, 69)'}}><i className="fa-solid fa-store" style={{ color:'#1e478a' }}></i> Sellers List</Nav.Link>
             <Nav.Link as={Link} className='ms-5' to="/map" style={{ color:'rgb(70, 69, 69)' }}><i className="fa-solid fa-location-dot" style={{ color:'#1e478a' }}></i> Find a Store</Nav.Link>
             </Nav>
             <Nav>

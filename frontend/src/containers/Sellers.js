@@ -6,7 +6,7 @@ import { listProductCategories } from "../store/actions/categoriesActions";
 import { listProfiles } from "../store/actions/userActions";
 import { Link } from "react-router-dom";
 
-function RetailersScreen() {
+export default function SellersScreen() {
   const [showResult, setShowResult] = useState(false);
 
   const dispatch = useDispatch();
@@ -66,7 +66,7 @@ function RetailersScreen() {
             return (
               <>
                 <Col md={2}>
-                  <Link to={`/retailers/${profile.id}`}>
+                  <Link to={`/seller/${profile.id}`}>
                     <Image
                       className="p-2"
                       src={profile.image}
@@ -83,5 +83,3 @@ function RetailersScreen() {
     </>
   );
 }
-
-export default RetailersScreen;
