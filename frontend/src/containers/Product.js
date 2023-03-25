@@ -21,11 +21,7 @@ import {
   listProductReviews,
   createProductReview,
 } from "../store/actions/productActions";
-import {
-  myDetails,
-  listUsers,
-  listProfiles,
-} from "../store/actions/userActions";
+import { myDetails } from "../store/actions/userActions";
 import {
   PRODUCT_CREATE_REVIEW_RESET,
   PRODUCT_DETAILS_RESET,
@@ -50,7 +46,6 @@ function ProductScreen() {
   const { stocks } = useSelector((state) => state.productStocks);
   const { reviews } = useSelector((state) => state.productReviews);
   const { user } = useSelector((state) => state.myDetails);
-  const { profiles } = useSelector((state) => state.profileList);
   const { userInfo } = useSelector((state) => state.userLogin);
   const {
     loading: loadingProductReview,
@@ -69,12 +64,7 @@ function ProductScreen() {
     dispatch(listProductStocks(params.id));
     dispatch(listProductReviews(params.id));
     dispatch(myDetails());
-    dispatch(listUsers());
-    dispatch(listProfiles());
   }, [dispatch, params, successProductReview]);
-
-  const seller =
-    profiles && profiles.find((profile) => profile.name === product.seller);
 
   const storeInfo = (e, store, stock) => {
     setQuantity(Number(e.target.value));
@@ -141,7 +131,7 @@ function ProductScreen() {
 
                 <ListGroup.Item>
                   Sold by{" "}
-                  <Link to={`/retailers/${product.seller && product.seller.id}`}>
+                  <Link to={`/seller/${product.seller && product.seller.id}`}>
                     {product.seller && product.seller.name}
                   </Link>
                 </ListGroup.Item>
@@ -255,7 +245,10 @@ function ProductScreen() {
                     </>
                   )}
 
-                  {/* { user && user.profile[0].status === 'STORE_OWNER' && (
+                  {/* 
+                  // Add to cart feature is active during development. 
+                  Visitors can log in with the provided credentials and test both the admin panel and the checkout steps.
+                  { user && user.profile[0].status === 'STORE_OWNER' && (
                                             <ListGroup.Item>
                                                 <Message variant='danger'>Seller accounts are not able to make purchases.</Message>
                                             </ListGroup.Item>

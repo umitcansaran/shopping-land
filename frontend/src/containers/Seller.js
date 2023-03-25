@@ -34,7 +34,6 @@ export default function SellerScreen() {
 
   const { stores } = useSelector((state) => state.storesByUser);
   const { products } = useSelector((state) => state.productsByUser);
-
   const { profile } = useSelector((state) => state.profileDetails);
 
   useEffect(() => {
@@ -42,17 +41,14 @@ export default function SellerScreen() {
     dispatch(getProfileDetails(params.id));
     dispatch(listStoresByUser(params.id));
     dispatch(listProductsByUser(params.id));
-    dispatch(listProductCategories());
-    dispatch(listProducts());
     dispatch(listLatestProducts());
     dispatch(listReviews());
-    dispatch(listUsers());
   }, [dispatch, params.id]);
 
   const mainSearchHandler = (e) => {
     e.preventDefault();
     setMainSearchValue(e.target.value);
-    dispatch(search({ type: "all", searchString: e.target.value }));
+    dispatch(search({ type: "products_by_seller", seller: profile.id, searchString: e.target.value }));
   };
 
   const radioSearchHandler = (e) => {
@@ -82,7 +78,7 @@ export default function SellerScreen() {
             type="search"
             placeholder="Search for a product, store or brand.."
             aria-label="Search"
-            style={{ width: "50%", borderRadius: "30px 30px 30px 30px" }}
+            style={{ width: "50%" }}
             value={mainSearchValue}
             onChange={(e) => mainSearchHandler(e)}
           />

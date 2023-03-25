@@ -21,6 +21,10 @@ import {
     STORE_STOCKS_SEARCH_SUCCESS,
     STORE_STOCKS_SEARCH_FAIL,
 
+    PRODUCTS_BY_USER_REQUEST,
+    PRODUCTS_BY_USER_SUCCESS,
+    PRODUCTS_BY_USER_FAIL,
+
 } from '../constants/searchConstants'
 
 export const search = (searchData) => async (dispatch, getState) => {
@@ -141,31 +145,6 @@ export const search = (searchData) => async (dispatch, getState) => {
         }
     }
 
-    if(searchData.type === 'product_in_store') {
-        try {
-            dispatch({
-                type: PRODUCT_SEARCH_REQUEST
-            })
-    
-            const { data } = await axios.get(`${ baseUrl }/api/search/?type=${searchData.type}&store_name=${searchData.store}&search_string=${searchData.searchString}`)
-            const result = data.filter((data) => data.number > 0).map(result => result.product)
-            console.log('result', result)
-           
-            dispatch({
-                type: PRODUCT_SEARCH_SUCCESS,
-                payload: result
-            })
-    
-        } catch (error) {
-            dispatch({
-                type: PRODUCT_SEARCH_FAIL,
-                payload: error.response && error.response.data.detail
-                    ? error.response.data.detail
-                    : error.message,
-            })
-        }
-    }
-
     if(searchData.type === 'my_products') {
         try {
             dispatch({
@@ -225,6 +204,30 @@ export const search = (searchData) => async (dispatch, getState) => {
             })
         }
     }
+
+    if(searchData.type === 'products_by_seller') {
+        console.log(searchData)
+        try {
+            dispatch({
+                type: PRODUCTS_BY_USER_REQUEST
+            })
     
+            const { data } = await axios.get(`${ baseUrl }/api/search/?type=${searchData.type}&seller_name=${searchData.seller}&search_string=${searchData.searchString}`)
+            // const result = data.filter((data) => data.number > 0)
+                       
+            dispatch({
+                type: PRODUCTS_BY_USER_SUCCESS,
+                payload: data
+            })
+    
+        } catch (error) {
+            dispatch({
+                type: PRODUCTS_BY_USER_FAIL,
+                payload: error.response && error.response.data.detail
+                    ? error.response.data.detail
+                    : error.message,
+            })
+        }
+    }
 }
 
