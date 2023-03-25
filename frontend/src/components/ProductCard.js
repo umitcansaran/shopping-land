@@ -1,11 +1,15 @@
 import React from 'react'
 import { Card, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import Loader from './Loader';
 
-export default function ProductCard({ products, profiles }) {
+export default function ProductCard({ loading, products, profiles }) {
 
   return (
         <Col>
+        { loading ? (
+            < Loader />
+        ) : (
             <Row>
                 {products && products.map((product) => {
                     const seller = profiles && profiles.find(profile => profile.name === product.seller)
@@ -50,6 +54,8 @@ export default function ProductCard({ products, profiles }) {
                 )                    
                             })} 
             </Row>
+        )
+    }
         </Col>
   );
 }

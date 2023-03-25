@@ -14,7 +14,6 @@ import HomeCategoriesBar from '../components/HomeCategoriesBar';
 import { listProfiles } from '../store/actions/userActions';
 import { search } from '../store/actions/searchAction';
 import { PRODUCT_LIST_RESET } from '../store/constants/productConstants';
-import Loader from '../components/Loader';
 
 export default function HomeScreen() {
 
@@ -23,11 +22,11 @@ export default function HomeScreen() {
 
     const dispatch = useDispatch()
 
-    const { categories, loading:a } = useSelector(state => state.productCategories)
-    const { products, loading:b } = useSelector(state => state.productList)
-    const { profiles, loading:c } = useSelector(state => state.profileList)
-    const { latestReviews, loading:d } = useSelector(state => state.latestReviewsList)
-    const { latestProducts, loading:e } = useSelector(state => state.latestProductsList)
+    const { categories } = useSelector(state => state.productCategories)
+    const { products, loading: productLoading } = useSelector(state => state.productList)
+    const { profiles } = useSelector(state => state.profileList)
+    const { latestReviews, loading: reviewLoading } = useSelector(state => state.latestReviewsList)
+    const { latestProducts } = useSelector(state => state.latestProductsList)
 
     useEffect(() => {
         dispatch(listProductCategories())
@@ -45,12 +44,8 @@ export default function HomeScreen() {
 
   return (
     <>
-    { ( a && b && c && d && e ) ? (
-        < Loader />
-        ) : (
-            <>
-            < SearchBox value={value} setValue={setValue} type='all' placeholder='Search for a product, brand or retailer name..' color='#1e478a' width='50%' />
-        < HomeCategoriesBar categories={categories} categoryFilterHandler={categoryFilterHandler} />
+        < SearchBox value={value} setValue={setValue} type='all' placeholder='Search for a product, brand or retailer name..' color='#1e478a' width='50%' />
+        {/* < HomeCategoriesBar categories={categories} categoryFilterHandler={categoryFilterHandler} /> */}
         {
         showResult && (
             <Button onClick={() => setShowResult(false)} variant='secondary' className='mx-2'>Back</Button>
@@ -60,7 +55,7 @@ export default function HomeScreen() {
             {
                 (!showResult && value.length < 2) && (
             <Row >
-                < Reviews latestReviews={latestReviews} />
+                < Reviews loading={reviewLoading} latestReviews={latestReviews} />
                 < ProductCarousel latestProducts={latestProducts} />
                 < News />
             </Row>
@@ -68,11 +63,9 @@ export default function HomeScreen() {
             }
             <Row className='my-2'>
                 < HomeSidebar categories={categories} categoryFilterHandler={categoryFilterHandler} />
-                < ProductCard products={products} profiles={profiles} />
+                < ProductCard loading={productLoading} products={products} profiles={profiles} />
             </Row>  
         </Row>
-        </>
-        )}
     </>
   );
 }
