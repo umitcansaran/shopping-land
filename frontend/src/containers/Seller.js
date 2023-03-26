@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Card,
   Row,
   Col,
   ListGroup,
@@ -60,13 +59,17 @@ export default function SellerScreen() {
     setRadioSearchValue("");
   };
 
+  const searchProps = {
+    type: "products_by_seller",
+    seller_id: profile.id
+  }
+
   return (
     <>
       <SearchBox
+        searchProps={searchProps}
         value={value}
         setValue={setValue}
-        type="products_by_seller"
-        seller_id={profile.id}
         placeholder="Search for a product, brand or retailer name.."
         color="#1e478a"
         width="50%"

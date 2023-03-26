@@ -8,7 +8,6 @@ import {
   Row,
   Col,
   Image,
-  Badge,
   ListGroup,
   Button,
   Card,
@@ -25,7 +24,9 @@ import { myDetails } from "../store/actions/userActions";
 import {
   PRODUCT_CREATE_REVIEW_RESET,
   PRODUCT_DETAILS_RESET,
+  PRODUCT_STOCKS_RESET,
 } from "../store/constants/productConstants";
+import StocksCart from "../components/StocksCart";
 
 function ProductScreen() {
   const [quantity, setQuantity] = useState(0);
@@ -43,7 +44,9 @@ function ProductScreen() {
   const { product, error, loading } = useSelector(
     (state) => state.productDetails
   );
-  const { stocks } = useSelector((state) => state.productStocks);
+  const { stocks } = useSelector(
+    (state) => state.productStocks
+  );
   const { reviews } = useSelector((state) => state.productReviews);
   const { user } = useSelector((state) => state.myDetails);
   const { userInfo } = useSelector((state) => state.userLogin);
@@ -60,11 +63,14 @@ function ProductScreen() {
       dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
     }
     dispatch({ type: PRODUCT_DETAILS_RESET });
+    dispatch({ type: PRODUCT_STOCKS_RESET });
     dispatch(listProductDetails(params.id));
     dispatch(listProductStocks(params.id));
     dispatch(listProductReviews(params.id));
     dispatch(myDetails());
   }, [dispatch, params, successProductReview]);
+
+  console.log("stocks", stocks);
 
   const storeInfo = (e, store, stock) => {
     setQuantity(Number(e.target.value));
@@ -161,88 +167,13 @@ function ProductScreen() {
                   </ListGroup.Item>
 
                   {stocks && stocks.length > 0 && (
-                    <>
-                      <ListGroup.Item>
-                        <Row>
-                          <Col>Select a store:</Col>
-                        </Row>
-                        {stocks.map((stock, index) => {
-                          return (
-                            <>
-                              <Row className="my-2">
-                                <Col md={9}>
-                                  <Button
-                                    variant="light"
-                                    style={{
-                                      width: "100%",
-                                      textAlign: "left",
-                                      fontSize: "0.8rem",
-                                      textTransform: "unset",
-                                    }}
-                                    onClick={() => {
-                                      Object.keys(stocks).forEach((key) => {
-                                        selectedStore[key] = false;
-                                        setSelectedStore({
-                                          ...selectedStore,
-                                          [index]: true,
-                                        });
-                                      });
-                                    }}
-                                  >
-                                    <Row>
-                                      <Col
-                                        className="d-flex justify-content-start align-items-center"
-                                        style={{ color: "#233fa6" }}
-                                      >
-                                        {stock.store_name}
-                                      </Col>
-                                      <Col>
-                                        Stock{" "}
-                                        <Badge
-                                          bg="success"
-                                          className="d-flex justify-content-start"
-                                        >
-                                          {stock.number}
-                                        </Badge>
-                                      </Col>
-                                    </Row>
-                                  </Button>
-                                </Col>
-                                {selectedStore[index] && (
-                                  <Col
-                                    md={3}
-                                    className="d-flex align-items-center"
-                                  >
-                                    <Form.Select
-                                      as="select"
-                                      value={quantity}
-                                      onChange={(e) =>
-                                        storeInfo(
-                                          e,
-                                          stock.store_name,
-                                          Number(stock.number)
-                                        )
-                                      }
-                                    >
-                                      <option key={0} value={0}>
-                                        0
-                                      </option>
-                                      {[...Array(stock.number).keys()].map(
-                                        (x) => (
-                                          <option key={x + 1} value={x + 1}>
-                                            {x + 1}
-                                          </option>
-                                        )
-                                      )}
-                                    </Form.Select>
-                                  </Col>
-                                )}
-                              </Row>
-                            </>
-                          );
-                        })}
-                      </ListGroup.Item>
-                    </>
+                    <StocksCart
+                      stocks={stocks}
+                      selectedStore={selectedStore}
+                      setSelectedStore={setSelectedStore}
+                      quantity={quantity}
+                      storeInfo={storeInfo}
+                    />
                   )}
 
                   {/* 

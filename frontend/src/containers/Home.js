@@ -17,7 +17,6 @@ import HomeSidebar from "../components/HomeSidebar";
 import HomeCategoriesBar from "../components/HomeCategoriesBar";
 import { listProfiles } from "../store/actions/userActions";
 import { search } from "../store/actions/searchAction";
-import { PRODUCT_LIST_RESET } from "../store/constants/productConstants";
 
 export default function HomeScreen() {
   const [value, setValue] = useState("");
@@ -26,15 +25,13 @@ export default function HomeScreen() {
   const dispatch = useDispatch();
 
   const { categories } = useSelector((state) => state.productCategories);
-  const { products, loading: productLoading } = useSelector(
-    (state) => state.productList
-  );
+  const { products } = useSelector((state) => state.productList);
   const { profiles } = useSelector((state) => state.profileList);
   const { latestReviews, loading: reviewLoading } = useSelector(
     (state) => state.latestReviewsList
   );
   const { latestProducts } = useSelector((state) => state.latestProductsList);
-  console.log(products)
+  console.log(products);
 
   useEffect(() => {
     dispatch(listProductCategories());
@@ -50,12 +47,16 @@ export default function HomeScreen() {
     dispatch(search({ type: "products", searchString: keyword }));
   };
 
+  const searchProps = {
+    type: "all",
+  };
+
   return (
     <>
       <SearchBox
+        searchProps={searchProps}
         value={value}
         setValue={setValue}
-        type="all"
         placeholder="Search for a product, brand or retailer name.."
         color="#1e478a"
         width="50%"
@@ -86,21 +87,18 @@ export default function HomeScreen() {
             categories={categories}
             categoryFilterHandler={categoryFilterHandler}
           />
-               <Col>
-       
+          <Col>
             <Row>
-                {products && products.map((product) => {
-                return (
-                        <Col sm={12} md={6} lg={4} xl={3} className='gx-3 gy-2'>
-                            <ProductCard
-                                product={product}
-                                profiles={profiles}/>
-                        </Col>
-                    )                
-                        })} 
+              {products &&
+                products.map((product) => {
+                  return (
+                    <Col sm={12} md={6} lg={4} xl={3} className="gx-3 gy-2">
+                      <ProductCard product={product} profiles={profiles} />
+                    </Col>
+                  );
+                })}
             </Row>
-    
-    </Col>
+          </Col>
         </Row>
       </Row>
     </>

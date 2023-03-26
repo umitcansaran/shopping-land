@@ -1,233 +1,240 @@
 import { baseUrl } from "../constants";
-import axios from 'axios'
+import axios from "axios";
 import {
-    STORE_SEARCH_REQUEST,
-    STORE_SEARCH_SUCCESS,
-    STORE_SEARCH_FAIL,
-
-    PRODUCT_SEARCH_REQUEST,
-    PRODUCT_SEARCH_SUCCESS,
-    PRODUCT_SEARCH_FAIL,
-
-    PROFILE_SEARCH_REQUEST,
-    PROFILE_SEARCH_SUCCESS,
-    PROFILE_SEARCH_FAIL,
-
-    MY_PRODUCTS_SEARCH_REQUEST,
-    MY_PRODUCTS_SEARCH_SUCCESS,
-    MY_PRODUCTS_SEARCH_FAIL,
-
-    STORE_STOCKS_SEARCH_REQUEST,
-    STORE_STOCKS_SEARCH_SUCCESS,
-    STORE_STOCKS_SEARCH_FAIL,
-
-    PRODUCTS_BY_USER_REQUEST,
-    PRODUCTS_BY_USER_SUCCESS,
-    PRODUCTS_BY_USER_FAIL,
-
-} from '../constants/searchConstants'
+  STORE_SEARCH_REQUEST,
+  STORE_SEARCH_SUCCESS,
+  STORE_SEARCH_FAIL,
+  PRODUCT_SEARCH_REQUEST,
+  PRODUCT_SEARCH_SUCCESS,
+  PRODUCT_SEARCH_FAIL,
+  PROFILE_SEARCH_REQUEST,
+  PROFILE_SEARCH_SUCCESS,
+  PROFILE_SEARCH_FAIL,
+  MY_PRODUCTS_SEARCH_REQUEST,
+  MY_PRODUCTS_SEARCH_SUCCESS,
+  MY_PRODUCTS_SEARCH_FAIL,
+  STORE_STOCKS_SEARCH_REQUEST,
+  STORE_STOCKS_SEARCH_SUCCESS,
+  STORE_STOCKS_SEARCH_FAIL,
+  PRODUCTS_BY_USER_REQUEST,
+  PRODUCTS_BY_USER_SUCCESS,
+  PRODUCTS_BY_USER_FAIL,
+} from "../constants/searchConstants";
 
 export const search = (searchData) => async (dispatch, getState) => {
-    
-    if(searchData.type === 'stores') {
-        try {
-            dispatch({
-                type: STORE_SEARCH_REQUEST
-            })
-    
-            const { data } = await axios.get(`${ baseUrl }/api/search/?type=${searchData.type}&search_string=${searchData.searchString}`)
-    
-            dispatch({
-                type: STORE_SEARCH_SUCCESS,
-                payload: data
-            })
-    
-        } catch (error) {
-            dispatch({
-                type: STORE_SEARCH_FAIL,
-                payload: error.response && error.response.data.detail
-                    ? error.response.data.detail
-                    : error.message,
-            })
-        }
+  if (searchData.type === "stores") {
+    try {
+      dispatch({
+        type: STORE_SEARCH_REQUEST,
+      });
+
+      const { data } = await axios.get(
+        `${baseUrl}/api/search/?type=${searchData.type}&search_string=${searchData.searchString}`
+      );
+
+      dispatch({
+        type: STORE_SEARCH_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: STORE_SEARCH_FAIL,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
+      });
     }
+  }
 
-    if(searchData.type === 'map') {
-        try {
-            dispatch({
-                type: STORE_SEARCH_REQUEST
-            })
-    
-            const { data } = await axios.get(`${ baseUrl }/api/search/?type=${searchData.type}&search_string=${searchData.searchString}`)
-    
-            dispatch({
-                type: STORE_SEARCH_SUCCESS,
-                payload: data
-            })
-    
-        } catch (error) {
-            dispatch({
-                type: STORE_SEARCH_FAIL,
-                payload: error.response && error.response.data.detail
-                    ? error.response.data.detail
-                    : error.message,
-            })
-        }
+  if (searchData.type === "map") {
+    try {
+      dispatch({
+        type: STORE_SEARCH_REQUEST,
+      });
+
+      const { data } = await axios.get(
+        `${baseUrl}/api/search/?type=${searchData.type}&search_string=${searchData.searchString}`
+      );
+
+      dispatch({
+        type: STORE_SEARCH_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: STORE_SEARCH_FAIL,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
+      });
     }
+  }
 
-    if(searchData.type === 'products') {
-        try {
-            dispatch({
-                type: PRODUCT_SEARCH_REQUEST
-            })
-    
-            const { data } = await axios.get(`${ baseUrl }/api/search/?type=${searchData.type}&search_string=${searchData.searchString}`)
-    
-            dispatch({
-                type: PRODUCT_SEARCH_SUCCESS,
-                payload: data
-            })
-    
-        } catch (error) {
-            dispatch({
-                type: PRODUCT_SEARCH_FAIL,
-                payload: error.response && error.response.data.detail
-                    ? error.response.data.detail
-                    : error.message,
-            })
-        }
+  if (searchData.type === "products") {
+    try {
+      dispatch({
+        type: PRODUCT_SEARCH_REQUEST,
+      });
+
+      const { data } = await axios.get(
+        `${baseUrl}/api/search/?type=${searchData.type}&search_string=${searchData.searchString}`
+      );
+
+      dispatch({
+        type: PRODUCT_SEARCH_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: PRODUCT_SEARCH_FAIL,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
+      });
     }
+  }
 
-    if(searchData.type === 'profiles') {
-        try {
-            dispatch({
-                type: PROFILE_SEARCH_REQUEST
-            })
-    
-            const { data } = await axios.get(`${ baseUrl }/api/search/?type=${searchData.type}&search_string=${searchData.searchString}`)
-            console.log(data)
-    
-            dispatch({
-                type: PROFILE_SEARCH_SUCCESS,
-                payload: data
-            })
-    
-        } catch (error) {
-            dispatch({
-                type: PROFILE_SEARCH_FAIL,
-                payload: error.response && error.response.data.detail
-                    ? error.response.data.detail
-                    : error.message,
-            })
-        }
+  if (searchData.type === "profiles") {
+    try {
+      dispatch({
+        type: PROFILE_SEARCH_REQUEST,
+      });
+
+      const { data } = await axios.get(
+        `${baseUrl}/api/search/?type=${searchData.type}&search_string=${searchData.searchString}`
+      );
+      console.log(data);
+
+      dispatch({
+        type: PROFILE_SEARCH_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: PROFILE_SEARCH_FAIL,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
+      });
     }
+  }
 
-    if(searchData.type === 'all') {
-        try {
-            dispatch({
-                type: PRODUCT_SEARCH_REQUEST
-            })
-    
-            const { data } = await axios.get(`${ baseUrl }/api/search/?type=${searchData.type}&search_string=${searchData.searchString}`)
+  if (searchData.type === "all") {
+    try {
+      dispatch({
+        type: PRODUCT_SEARCH_REQUEST,
+      });
 
-            dispatch({
-                type: PRODUCT_SEARCH_SUCCESS,
-                payload: data
-            })
-    
-        } catch (error) {
-            dispatch({
-                type: PRODUCT_SEARCH_FAIL,
-                payload: error.response && error.response.data.detail
-                    ? error.response.data.detail
-                    : error.message,
-            })
-        }
+      const { data } = await axios.get(
+        `${baseUrl}/api/search/?type=${searchData.type}&search_string=${searchData.searchString}`
+      );
+
+      dispatch({
+        type: PRODUCT_SEARCH_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: PRODUCT_SEARCH_FAIL,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
+      });
     }
+  }
 
-    if(searchData.type === 'my_products') {
-        try {
-            dispatch({
-                type: MY_PRODUCTS_SEARCH_REQUEST
-            })
+  if (searchData.type === "my_products") {
+    try {
+      dispatch({
+        type: MY_PRODUCTS_SEARCH_REQUEST,
+      });
 
-            const {
-                userLogin: { userInfo },
-            } = getState()
-    
-            const config = {
-                headers: {
-                    'Content-type': 'application/json',
-                    Authorization: `Bearer ${userInfo.access}`
-                }
-            }
-    
-            const { data } = await axios.get(`${ baseUrl }/api/search/?type=${searchData.type}&store_name=${searchData.store}&search_string=${searchData.searchString}`,
-            config
-            )
-           
-            dispatch({
-                type: MY_PRODUCTS_SEARCH_SUCCESS,
-                payload: data
-            })
-    
-        } catch (error) {
-            dispatch({
-                type: MY_PRODUCTS_SEARCH_FAIL,
-                payload: error.response && error.response.data.detail
-                    ? error.response.data.detail
-                    : error.message,
-            })
-        }
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${userInfo.access}`,
+        },
+      };
+
+      const { data } = await axios.get(
+        `${baseUrl}/api/search/?type=${searchData.type}&store_name=${searchData.store}&search_string=${searchData.searchString}`,
+        config
+      );
+
+      dispatch({
+        type: MY_PRODUCTS_SEARCH_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: MY_PRODUCTS_SEARCH_FAIL,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
+      });
     }
+  }
 
-    if(searchData.type === 'product_in_my_store') {
-        try {
-            dispatch({
-                type: STORE_STOCKS_SEARCH_REQUEST
-            })
-    
-            const { data } = await axios.get(`${ baseUrl }/api/search/?type=${searchData.type}&store_name=${searchData.store}&search_string=${searchData.searchString}`)
-            // const result = data.filter((data) => data.number > 0)
-                       
-            dispatch({
-                type: STORE_STOCKS_SEARCH_SUCCESS,
-                payload: data
-            })
-    
-        } catch (error) {
-            dispatch({
-                type: STORE_STOCKS_SEARCH_FAIL,
-                payload: error.response && error.response.data.detail
-                    ? error.response.data.detail
-                    : error.message,
-            })
-        }
+  if (searchData.type === "product_in_my_store") {
+    try {
+      dispatch({
+        type: STORE_STOCKS_SEARCH_REQUEST,
+      });
+
+      const { data } = await axios.get(
+        `${baseUrl}/api/search/?type=${searchData.type}&store_name=${searchData.store}&search_string=${searchData.searchString}`
+      );
+      // const result = data.filter((data) => data.number > 0)
+
+      dispatch({
+        type: STORE_STOCKS_SEARCH_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: STORE_STOCKS_SEARCH_FAIL,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
+      });
     }
+  }
 
-    if(searchData.type === 'products_by_seller') {
-        console.log(searchData)
-        try {
-            dispatch({
-                type: PRODUCTS_BY_USER_REQUEST
-            })
-    
-            const { data } = await axios.get(`${ baseUrl }/api/search/?type=${searchData.type}&seller_id=${searchData.seller_id}&search_string=${searchData.searchString}`)
-            // const result = data.filter((data) => data.number > 0)
-                       
-            dispatch({
-                type: PRODUCTS_BY_USER_SUCCESS,
-                payload: data
-            })
-    
-        } catch (error) {
-            dispatch({
-                type: PRODUCTS_BY_USER_FAIL,
-                payload: error.response && error.response.data.detail
-                    ? error.response.data.detail
-                    : error.message,
-            })
-        }
+  if (searchData.type === "products_by_seller") {
+    console.log(searchData);
+    try {
+      dispatch({
+        type: PRODUCTS_BY_USER_REQUEST,
+      });
+
+      const { data } = await axios.get(
+        `${baseUrl}/api/search/?type=${searchData.type}&seller_id=${searchData.seller_id}&search_string=${searchData.searchString}`
+      );
+      // const result = data.filter((data) => data.number > 0)
+
+      dispatch({
+        type: PRODUCTS_BY_USER_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: PRODUCTS_BY_USER_FAIL,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
+      });
     }
-}
-
+  }
+};
