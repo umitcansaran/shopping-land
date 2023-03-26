@@ -39,7 +39,7 @@ import {
   PRODUCTS_BY_USER_FAIL,
 } from "../constants/productConstants";
 
-export const createProduct = () => async (dispatch, getState) => {
+export const createProduct = (formData) => async (dispatch, getState) => {
   try {
     dispatch({
       type: PRODUCT_CREATE_REQUEST,
@@ -56,7 +56,7 @@ export const createProduct = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.post(`/api/product/new/`, {}, config);
+    const { data } = await axios.post(`/api/product/new/`, formData);
     dispatch({
       type: PRODUCT_CREATE_SUCCESS,
       payload: data,

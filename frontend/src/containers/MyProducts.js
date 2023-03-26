@@ -1,47 +1,77 @@
 import React, { useEffect, useState } from "react";
 import {
-  Container,
   Table,
   Button,
   Badge,
-  Nav,
   Row,
   Col,
   ListGroup,
-  Image,
   Form,
 } from "react-bootstrap";
-import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { listMyProducts, deleteProduct } from "../store/actions/productActions";
 import { listMyStores } from "../store/actions/storeActions";
-import {
-  createStock,
-  updateStock,
-  deleteStock,
-} from "../store/actions/stockActions";
+import { createStock, updateStock } from "../store/actions/stockActions";
 import AddProductButton from "../components/AddProductButton";
-import { Navigate } from "react-router-dom";
 import SearchBox from "../components/SearchBox";
+import { useLocation } from "react-router-dom";
+import Notification from "../components/Notification";
+import DeletePopup from "../components/DeletePopup";
+import { PRODUCT_DELETE_RESET } from "../store/constants/productConstants";
 
 function MyProductsScreen() {
   const [value, setValue] = useState("");
-  const [deletedProduct, setDeletedProduct] = useState("");
   const [stockInput, setStockInput] = useState({});
   const [button, setButton] = useState({});
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [deleteWindow, setDeleteWindow] = useState(false);
+  const [productId, setProductId] = useState(null);
 
   const dispatch = useDispatch();
+  const location = useLocation();
+
+  const { createProductSuccess } = location.state ? location.state : false;
+
   const { myProducts } = useSelector((state) => state.productMyList);
   const { myStores } = useSelector((state) => state.storeMyList);
-
   const { stock: newStock } = useSelector((state) => state.createStock);
   const { stock: updatedStock } = useSelector((state) => state.stockUpdate);
+  const { success: deleteProductSuccess } = useSelector(
+    (state) => state.productDelete
+  );
+
+
 
   useEffect(() => {
+    if (createProductSuccess) {
+      setTimeout(() => {
+        window.history.replaceState({}, document.title);
+      }, 500);
+    }
+
     dispatch(listMyProducts());
     dispatch(listMyStores());
-  }, [dispatch, newStock, updatedStock, deletedProduct]);
+  }, [
+    dispatch,
+    createProductSuccess,
+    deleteProductSuccess,
+    newStock,
+    updatedStock,
+  ]);
+
+  useEffect(() => {
+    if (deleteConfirm === "yes") {
+      setDeleteConfirm(null);
+      setDeleteWindow(false);
+      setTimeout(() => {
+        dispatch(deleteProduct(productId));
+      }, 50);
+    }
+  }, [dispatch, deleteConfirm, productId]);
+
+  useEffect(() => {
+    dispatch({ type: PRODUCT_DELETE_RESET });
+  }, [dispatch]);
 
   const viewStockHandler = (index) => {
     Object.keys(button).forEach((key) => {
@@ -73,11 +103,9 @@ function MyProductsScreen() {
     });
   };
 
-  const deleteProductHandler = async (id) => {
-    if (window.confirm("Are you sure")) {
-      await dispatch(deleteProduct(id));
-    }
-    setDeletedProduct(id);
+  const deleteProductHandler = (id) => {
+    setDeleteWindow(true);
+    setProductId(id);
   };
 
   const deleteStockHandler = (checkProductStock) => {
@@ -93,7 +121,6 @@ function MyProductsScreen() {
     let stockNum = { number: stockInput[index] };
 
     if (checkProductStock) {
-      console.log("stockNum", stockNum);
       dispatch(updateStock(stockNum, checkProductStock.id));
       setStockInput({});
     } else {
@@ -102,13 +129,17 @@ function MyProductsScreen() {
     }
   };
 
+  const searchProps = {
+    type: "my_products",
+  };
+
   return (
     <>
       <AddProductButton />
       <SearchBox
+        searchProps={searchProps}
         value={value}
         setValue={setValue}
-        type="my_products"
         placeholder="Search for an id, name or brand.. "
         width="50%"
       />
@@ -138,7 +169,7 @@ function MyProductsScreen() {
                   <strong>{product.brand}</strong>
                 </td>
                 <td>{product.name}</td>
-                <td>CHF {product.price}</td>
+                <td>CHF {Math.trunc(product.price)}</td>
                 <td>{product.category}</td>
                 <td style={{ width: "9rem", textAlign: "center" }}>
                   {button[index] ? (
@@ -290,6 +321,24 @@ function MyProductsScreen() {
           ))}
         </tbody>
       </Table>
+      {deleteWindow && (
+        <DeletePopup
+          setDeleteWindow={setDeleteWindow}
+          setDeleteConfirm={setDeleteConfirm}
+        />
+      )}
+      {deleteProductSuccess && (
+        <Notification
+          status="success"
+          message="Product Deleted Successfully!"
+        />
+      )}
+      {createProductSuccess && (
+        <Notification
+          status="success"
+          message="Product Created Successfully!"
+        />
+      )}
     </>
   );
 }

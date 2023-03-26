@@ -72,7 +72,7 @@ function ProfileScreen() {
                   {user.email}
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  <strong>Status: </strong>Retailer
+                  <strong>Status: </strong>Seller
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <strong>Category: </strong>

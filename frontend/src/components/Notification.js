@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import './notification.css';
+import './Notification.css';
 
 function Notification({ message, status }) {
 

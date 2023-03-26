@@ -11,6 +11,7 @@ import FormContainer from "../components/FormContainer";
 import AddressInputField from "../components/AddressInputField";
 import Loader from "../components/Loader";
 import Notification from "../components/Notification";
+
 export default function AddStoreScreen() {
   const [viewState, setViewState] = useState({
     latitude: 46.738436,
@@ -50,7 +51,7 @@ export default function AddStoreScreen() {
     }
     dispatch(listProductCategories());
     dispatch(myDetails());
-  }, [dispatch, createStoreSuccess, navigate]);
+  }, [dispatch, navigate, createStoreSuccess]);
 
   const onChange = ({ target: { name, value } }) => {
     setState({ ...state, [name]: value });
@@ -65,7 +66,6 @@ export default function AddStoreScreen() {
       }
     }
     setState({ ...state, category: category });
-    console.log("addstorecat", category);
   };
 
   const handleImageChange = (e) => {
@@ -75,24 +75,24 @@ export default function AddStoreScreen() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let form_data = new FormData();
+    let formData = new FormData();
 
     for (var i = 0; i < state.category.length; i++) {
-      form_data.append("category", state.category[i]);
+      formData.append("category", state.category[i]);
     }
 
-    form_data.set("owner", user.id);
-    form_data.set("name", name);
-    form_data.set("address", state.address);
-    form_data.set("country", state.country);
-    form_data.set("city", state.city);
-    form_data.set("latitude", state.latitude);
-    form_data.set("longitude", state.longitude);
-    form_data.set("description", state.description);
-    form_data.set("phone", state.phone);
-    form_data.set("image", state.image);
+    formData.set("owner", user.id);
+    formData.set("name", name);
+    formData.set("address", state.address);
+    formData.set("country", state.country);
+    formData.set("city", state.city);
+    formData.set("latitude", state.latitude);
+    formData.set("longitude", state.longitude);
+    formData.set("description", state.description);
+    formData.set("phone", state.phone);
+    formData.set("image", state.image);
 
-    dispatch(createStore(form_data));
+    dispatch(createStore(formData));
   };
 
   return (

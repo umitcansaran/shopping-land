@@ -137,8 +137,8 @@ function ProductScreen() {
 
                 <ListGroup.Item>
                   Sold by{" "}
-                  <Link to={`/seller/${product.seller && product.seller.id}`}>
-                    {product.seller && product.seller.name}
+                  <Link to={`/seller/${product.seller_details && product.seller_details.id}`}>
+                    {product.seller_details && product.seller_details.name}
                   </Link>
                 </ListGroup.Item>
               </ListGroup>

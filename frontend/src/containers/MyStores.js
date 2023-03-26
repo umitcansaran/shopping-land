@@ -10,29 +10,28 @@ import MyStoreStocks from "../components/MyStoreStocks";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Notification from "../components/Notification";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { STORE_DELETE_RESET } from "../store/constants/storeConstants";
+import DeletePopup from "../components/DeletePopup";
 
 function MyStoresScreen() {
-  const [stockInput, setStockInput] = useState({});
   const [button, setButton] = useState({});
   const [value, setValue] = useState("");
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [deleteWindow, setDeleteWindow] = useState(false);
+  const [storeId, setStoreId] = useState(null);
 
   const dispatch = useDispatch();
   const location = useLocation();
-  const navigate = useNavigate();
 
   const { createStoreSuccess } = location.state ? location.state : false;
 
   const { myStores, loading: myStoresLoading } = useSelector(
     (state) => state.storeMyList
   );
-  const { stocks } = useSelector((state) => state.stockList);
-  const {
-    success: storeDeleteSuccess,
-    loading: storeDeleteLoading,
-    error,
-  } = useSelector((state) => state.storeDelete);
+  const { success: deleteStoreSuccess, error } = useSelector(
+    (state) => state.storeDelete
+  );
 
   useEffect(() => {
     if (createStoreSuccess) {
@@ -42,8 +41,17 @@ function MyStoresScreen() {
     }
     dispatch(listMyProducts());
     dispatch(listMyStores());
-    dispatch(listStocks());
-  }, [dispatch, navigate, createStoreSuccess, storeDeleteSuccess]);
+  }, [dispatch, createStoreSuccess, deleteStoreSuccess]);
+
+  useEffect(() => {
+    if (deleteConfirm === "yes") {
+      setDeleteConfirm(null);
+      setDeleteWindow(false);
+      setTimeout(() => {
+        dispatch(deleteStore(storeId));
+      }, 50);
+    }
+  }, [dispatch, deleteConfirm, storeId]);
 
   useEffect(() => {
     dispatch({ type: STORE_DELETE_RESET });
@@ -64,9 +72,6 @@ function MyStoresScreen() {
     Object.keys(button).forEach((key) => {
       button[key] = false;
     });
-    Object.keys(stockInput).forEach((key) => {
-      stockInput[key] = false;
-    });
     setButton({
       ...button,
       [index]: true,
@@ -83,9 +88,8 @@ function MyStoresScreen() {
   };
 
   const deleteStoreHandler = (id) => {
-    if (window.confirm("Are you sure")) {
-      dispatch(deleteStore(id));
-    }
+    setDeleteWindow(true);
+    setStoreId(id);
   };
 
   return (
@@ -159,7 +163,6 @@ function MyStoresScreen() {
                 </tr>
                 {button[index] && (
                   <MyStoreStocks
-                    stocks={stocks}
                     store={store}
                     searchHandler={searchHandler}
                     value={value}
@@ -170,7 +173,13 @@ function MyStoresScreen() {
           </tbody>
         </Table>
       )}
-      {storeDeleteSuccess && (
+      {deleteWindow && (
+        <DeletePopup
+          setDeleteWindow={setDeleteWindow}
+          setDeleteConfirm={setDeleteConfirm}
+        />
+      )}
+      {deleteStoreSuccess && (
         <Notification status="success" message="Store Deleted Successfully!" />
       )}
       {createStoreSuccess && (

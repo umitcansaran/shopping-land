@@ -1,4 +1,4 @@
-.notification {
+.delete-popup {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
@@ -11,7 +11,8 @@
   border-top-left-radius: 0;
 }
 
-.notification h2 {
+.delete-popup h2 {
+  text-align: center;
   font-size: 6;
   margin: 0;
 }
@@ -21,24 +22,9 @@
   color: white;
 }
 
-.error {
-  background-color: #ff4747;
-  color: white;
-}
-
-.transition {
-  visibility: hidden;
-  opacity: 0;
-  transition: visibility 0s 0.5s, opacity 0.5s linear;
-}
-
-.hidden {
-  visibility: hidden;
-}
-
 @media (min-width: 768px) {
-  .notification {
-    width: 20rem;
+  .delete-popup {
+    width: 15rem;
     left: calc(50% - 10rem);
     border-top-right-radius: 6px;
     border-top-left-radius: 6px;

@@ -5,12 +5,6 @@ from .models import Store, Profile, Product, ProductCategory, ProductSubcategory
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 
-class ProductSubcategorySerializer(ModelSerializer):
-
-    class Meta:
-        model = ProductSubcategory
-        fields = '__all__' 
-
 
 class StockSerializer(ModelSerializer):
     product_details = serializers.SerializerMethodField(read_only=True)
@@ -32,6 +26,12 @@ class StockSerializer(ModelSerializer):
     def get_store_name(self, obj):
         name = obj.store.name
         return name
+    
+class ProductSubcategorySerializer(ModelSerializer):
+
+    class Meta:
+        model = ProductSubcategory
+        fields = '__all__' 
 
 
 class ProductCategorySerializer(ModelSerializer):
@@ -79,17 +79,17 @@ class StoreSerializer(ModelSerializer):
 
 
 class ProductSerializer(ModelSerializer):
-    seller = serializers.SerializerMethodField(read_only=True)
+    seller_details = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Product
         fields = '__all__' 
 
-    def get_seller(self, obj):
+    def get_seller_details(self, obj):
         return {
             'id': obj.seller.id,
             'name': obj.seller.username
-        }
+            }
   
 
 class SearchStockSerializer(ModelSerializer):

@@ -87,7 +87,7 @@ export const listMyStores = () => async (dispatch, getState) => {
     }
 }
 
-export const createStore = (form_data) => async (dispatch, getState) => {
+export const createStore = (formData) => async (dispatch, getState) => {
 
     try {
         dispatch({
@@ -103,7 +103,7 @@ export const createStore = (form_data) => async (dispatch, getState) => {
 
         const { data } = await axios.post(
             `${baseUrl}/api/store/new/`,
-            form_data
+            formData
         )
 
         dispatch({

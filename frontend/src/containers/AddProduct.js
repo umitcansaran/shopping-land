@@ -7,8 +7,12 @@ import { listProductCategories } from "../store/actions/categoriesActions";
 import { myDetails } from "../store/actions/userActions";
 import { useNavigate } from "react-router-dom";
 import FormContainer from "../components/FormContainer";
+import { createProduct } from "../store/actions/productActions";
+import { PRODUCT_CREATE_RESET } from "../store/constants/productConstants";
+import Loader from "../components/Loader";
+import Notification from "../components/Notification";
 
-function AddProductScreen() {
+export default function AddProductScreen() {
   const [brand, setBrand] = useState("");
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
@@ -19,17 +23,24 @@ function AddProductScreen() {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const { categories } = useSelector((state) => state.productCategories);
   const { user } = useSelector((state) => state.myDetails);
+  const { loading: createProductLoading, success: createProductSuccess } =
+    useSelector((state) => state.productCreate);
 
   const selectedCategory = categories.find(
     (selectedCategory) => selectedCategory.id === Number(category)
   );
 
   useEffect(() => {
+    if (createProductSuccess) {
+      navigate("/myproducts", { state: { createProductSuccess: true } });
+      dispatch({ type: PRODUCT_CREATE_RESET });
+    }
     dispatch(myDetails());
     dispatch(listProductCategories());
-  }, [dispatch]);
+  }, [dispatch, navigate, createProductSuccess]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -44,22 +55,9 @@ function AddProductScreen() {
     formData.set("description", description);
     formData.set("category", category);
     formData.set("subcategory", subcategory);
-    formData.set("seller", user.username);
+    formData.set("seller", user.id);
 
-    try {
-      const config = {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      };
-
-      const { data } = await axios.post(
-        `${baseUrl}/api/product/new/`,
-        formData,
-        config
-      );
-      navigate("/myproducts");
-    } catch (error) {}
+    dispatch(createProduct(formData));
   };
 
   const handleImageChange = (e) => {
@@ -68,6 +66,7 @@ function AddProductScreen() {
   };
 
   return (
+    <>
     <FormContainer>
       <Row>
         <Col md="4" className="m-5" style={{ width: "70%" }}>
@@ -80,7 +79,7 @@ function AddProductScreen() {
                 <Form.Label>Category</Form.Label>
                 <Form.Select
                   required
-                  type="text"
+                  type="number"
                   name="category"
                   value={category}
                   onChange={(e) => {
@@ -108,9 +107,9 @@ function AddProductScreen() {
                     }}
                   >
                     <option>Select</option>
-                    {selectedCategory.subcategories.map((category) => (
-                      <option value={category.id} key={category.id}>
-                        {category.name}
+                    {selectedCategory.subcategory.map((subcategory) => (
+                      <option value={subcategory.id} key={subcategory.id}>
+                        {subcategory.name}
                       </option>
                     ))}
                   </Form.Select>
@@ -174,7 +173,14 @@ function AddProductScreen() {
         </Col>
       </Row>
     </FormContainer>
+    {createProductLoading && <Loader />}
+    {createProductSuccess && (
+      <Notification
+        status="success"
+        title="Success"
+        message="Product Created!"
+      />
+    )}
+    </>
   );
 }
-
-export default AddProductScreen;

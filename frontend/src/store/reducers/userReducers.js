@@ -181,7 +181,6 @@ export const profileDetailsReducer = (state = { profile: {} }, action) => {
 };
 
 export const sellerProfilesReducer = (state = { profiles: [] }, action) => {
-    console.log(state)
     switch (action.type) {
       case SELLER_PROFILES_REQUEST:
         return { ...state, loading: true };
