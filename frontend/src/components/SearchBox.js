@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Row, Form } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { search } from "../store/actions/searchAction";
+import { PRODUCT_LIST_RESET } from "../store/constants/productConstants";
 
 export default function SearchBox({
   searchProps,
@@ -17,6 +18,7 @@ export default function SearchBox({
 
   useEffect(() => {
     if (value.length > 1) {
+      dispatch({ type: PRODUCT_LIST_RESET });
       const timeout = setTimeout(() => {
         dispatch(search(rest));
       }, 1000);

@@ -10,7 +10,7 @@ export default function AddProductButton() {
 
     return (
       <>
-        <Row style={{ backgroundColor:'#1e478a', height:'3rem' }}>
+        <Row style={{ backgroundColor:'#495b7a', height:'2.5rem' }}>
         <Nav variant="pills" className="d-flex justify-content-center">
           <Nav.Item>
             <Nav.Link className='d-flex align-items-center' style={{ height:'2rem', borderRadius: '30px 30px 30px 30px' }} onClick={() => setSelect(!select)} eventKey="product">Add Product</Nav.Link>

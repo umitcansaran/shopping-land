@@ -85,7 +85,7 @@ export const search = (searchData) => async (dispatch, getState) => {
   if (searchData.type === "products") {
     try {
       dispatch({
-        type: PRODUCT_SEARCH_REQUEST,
+        type: PRODUCT_LIST_REQUEST,
       });
 
       const { data } = await axios.get(
@@ -93,12 +93,12 @@ export const search = (searchData) => async (dispatch, getState) => {
       );
 
       dispatch({
-        type: PRODUCT_SEARCH_SUCCESS,
+        type: PRODUCT_LIST_SUCCESS,
         payload: data,
       });
     } catch (error) {
       dispatch({
-        type: PRODUCT_SEARCH_FAIL,
+        type: PRODUCT_LIST_FAIL,
         payload:
           error.response && error.response.data.detail
             ? error.response.data.detail

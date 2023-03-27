@@ -178,7 +178,7 @@ function MyProductsScreen() {
                         closeStockHandler(index);
                       }}
                       stye={{ color: "#f2f5fa" }}
-                      className="btn-block"
+                      className="btn-block blue-button"
                     >
                       Close
                     </Button>
@@ -188,7 +188,7 @@ function MyProductsScreen() {
                         viewStockHandler(index);
                       }}
                       stye={{ color: "#f2f5fa" }}
-                      className="btn-block"
+                      className="btn-block blue-button"
                     >
                       View Stock
                     </Button>

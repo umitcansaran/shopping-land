@@ -67,4 +67,17 @@ h2 {
   color: rgb(70, 69, 69)
 }
 
+.blue-button {
+  background-color: #648dc3;
+  box-shadow: none;
+}
+
+.blue-button:focus {
+  background-color: #7d9bc1;
+}
+
+.blue-button:hover {
+  background-color: #7d9bc1;
+}
+
 

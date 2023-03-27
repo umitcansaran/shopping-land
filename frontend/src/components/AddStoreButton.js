@@ -20,7 +20,7 @@ export default function AddStoreButton() {
 
   return (
     <>
-      <Row style={{ backgroundColor: "#1e478a", height: "3rem" }}>
+      <Row style={{ backgroundColor: "#495b7a", height: "3rem" }}>
         <Nav variant="pills" className="d-flex justify-content-center">
           <Nav.Item>
             <Nav.Link

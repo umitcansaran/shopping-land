@@ -17,6 +17,8 @@ import HomeSidebar from "../components/HomeSidebar";
 import HomeCategoriesBar from "../components/HomeCategoriesBar";
 import { listProfiles } from "../store/actions/userActions";
 import { search } from "../store/actions/searchAction";
+import Loader from "../components/Loader";
+import { PRODUCT_LIST_RESET } from "../store/constants/productConstants";
 
 export default function HomeScreen() {
   const [value, setValue] = useState("");
@@ -25,7 +27,7 @@ export default function HomeScreen() {
   const dispatch = useDispatch();
 
   const { categories } = useSelector((state) => state.productCategories);
-  const { products } = useSelector((state) => state.productList);
+  const { products, loading } = useSelector((state) => state.productList);
   const { profiles } = useSelector((state) => state.profileList);
   const { latestReviews, loading: reviewLoading } = useSelector(
     (state) => state.latestReviewsList
@@ -42,6 +44,7 @@ export default function HomeScreen() {
   }, [dispatch]);
 
   const categoryFilterHandler = (keyword) => {
+    dispatch({ type: PRODUCT_LIST_RESET });
     setShowResult(true);
     dispatch(search({ type: "products", searchString: keyword }));
   };
@@ -59,9 +62,9 @@ export default function HomeScreen() {
         categories={categories}
         categoryFilterHandler={categoryFilterHandler}
       />
-      {showResult && (
+      {(showResult || value.length > 1) && (
         <Button
-          onClick={() => setShowResult(false)}
+          onClick={() => setShowResult(false) + setValue('')}
           variant="light"
           className="mx-2"
         >
