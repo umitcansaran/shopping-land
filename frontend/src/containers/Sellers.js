@@ -9,6 +9,7 @@ import Loader from "../components/Loader";
 
 export default function SellersScreen() {
   const [showResult, setShowResult] = useState(false);
+  const [refresh, setRefresh] = useState(true)
 
   const dispatch = useDispatch();
 
@@ -18,7 +19,7 @@ export default function SellersScreen() {
   useEffect(() => {
     dispatch(listProductCategories());
     dispatch(listSellerProfiles());
-  }, [dispatch]);
+  }, [dispatch, refresh]);
 
   const filterOptionHandler = (event) => {
     dispatch(search({ type: "profiles", searchString: event.target.value }));
@@ -28,11 +29,12 @@ export default function SellersScreen() {
   const filterResetHandler = () => {
     dispatch(listProfiles());
     setShowResult(false);
+    setRefresh(!refresh)
   };
 
   return (
     <>
-      <Row style={{ backgroundColor: "#1e478a", height: "3rem" }}>
+      <Row style={{ backgroundColor: "#495b7a", height: "3rem" }}>
         <Form.Select
           className="d-flex justify-content-center my-1"
           onChange={filterOptionHandler}

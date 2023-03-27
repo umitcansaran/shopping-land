@@ -5,7 +5,7 @@ function Loader() {
   return (
     <Spinner
       animation="border"
-      variant="primary"
+      variant="secondary"
       role="status"
       style={{
         height: "100px",

@@ -25,7 +25,7 @@ function MyProductsScreen() {
   const [button, setButton] = useState({});
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [deleteWindow, setDeleteWindow] = useState(false);
-  const [productId, setProductId] = useState(null);
+  const [productToDelete, setProductToDelete] = useState(null);
 
   const dispatch = useDispatch();
   const location = useLocation();
@@ -64,10 +64,10 @@ function MyProductsScreen() {
       setDeleteConfirm(null);
       setDeleteWindow(false);
       setTimeout(() => {
-        dispatch(deleteProduct(productId));
+        dispatch(deleteProduct(productToDelete.id));
       }, 50);
     }
-  }, [dispatch, deleteConfirm, productId]);
+  }, [dispatch, deleteConfirm, productToDelete]);
 
   useEffect(() => {
     dispatch({ type: PRODUCT_DELETE_RESET });
@@ -103,9 +103,9 @@ function MyProductsScreen() {
     });
   };
 
-  const deleteProductHandler = (id) => {
+  const deleteProductHandler = (product) => {
     setDeleteWindow(true);
-    setProductId(id);
+    setProductToDelete(product);
   };
 
   const deleteStockHandler = (checkProductStock) => {
@@ -197,7 +197,7 @@ function MyProductsScreen() {
                 <td style={{ width: "6rem", textAlign: "center" }}>
                   <Button
                     onClick={() => {
-                      deleteProductHandler(product.id);
+                      deleteProductHandler(product);
                     }}
                     stye={{ color: "#f2f5fa" }}
                     className="btn-block btn-danger"
@@ -325,6 +325,7 @@ function MyProductsScreen() {
         <DeletePopup
           setDeleteWindow={setDeleteWindow}
           setDeleteConfirm={setDeleteConfirm}
+          item={{ type: 'product', details: productToDelete }}
         />
       )}
       {deleteProductSuccess && (

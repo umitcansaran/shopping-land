@@ -31,7 +31,6 @@ export default function HomeScreen() {
     (state) => state.latestReviewsList
   );
   const { latestProducts } = useSelector((state) => state.latestProductsList);
-  console.log(products);
 
   useEffect(() => {
     dispatch(listProductCategories());
@@ -47,18 +46,13 @@ export default function HomeScreen() {
     dispatch(search({ type: "products", searchString: keyword }));
   };
 
-  const searchProps = {
-    type: "all",
-  };
-
   return (
     <>
       <SearchBox
-        searchProps={searchProps}
+        searchProps={{ type: "all" }}
         value={value}
         setValue={setValue}
-        placeholder="Search for a product, brand or retailer name.."
-        color="#1e478a"
+        placeholder="Search products, brands or sellers.."
         width="50%"
       />
       <HomeCategoriesBar
@@ -68,7 +62,7 @@ export default function HomeScreen() {
       {showResult && (
         <Button
           onClick={() => setShowResult(false)}
-          variant="secondary"
+          variant="light"
           className="mx-2"
         >
           Back
@@ -82,21 +76,20 @@ export default function HomeScreen() {
             <News />
           </Row>
         )}
-        <Row className="my-2">
+        <Row>
           <HomeSidebar
             categories={categories}
             categoryFilterHandler={categoryFilterHandler}
           />
           <Col>
             <Row>
-              {products &&
-                products.map((product) => {
-                  return (
-                    <Col sm={12} md={6} lg={4} xl={3} className="gx-3 gy-2">
-                      <ProductCard product={product} profiles={profiles} />
-                    </Col>
-                  );
-                })}
+              {products.map((product) => {
+                return (
+                  <Col sm={12} md={6} lg={4} xl={3} className="gx-3 gy-2">
+                    <ProductCard product={product} profiles={profiles} />
+                  </Col>
+                );
+              })}
             </Row>
           </Col>
         </Row>

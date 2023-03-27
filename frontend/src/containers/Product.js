@@ -92,7 +92,7 @@ function ProductScreen() {
   return (
     <Container>
       <Button onClick={() => navigate(-1)} className="btn btn-light my-3">
-        Go Back{" "}
+        Go Back
       </Button>
       {loading ? (
         <Loader />
@@ -160,7 +160,7 @@ function ProductScreen() {
                       <Col>Status:</Col>
                       <Col>
                         {stocks && stocks.length > 0
-                          ? "In Stock"
+                          ? <p style={{ color: "#1e478a", margin:'0', padding:'0' }}>In Stock</p>
                           : "Out of Stock"}
                       </Col>
                     </Row>
@@ -188,7 +188,7 @@ function ProductScreen() {
                   <ListGroup.Item>
                     <Button
                       onClick={addToCartHandler}
-                      className="btn-block"
+                      className="btn-block btn-primary"
                       disabled={stocks && stocks.length === 0}
                       type="button"
                     >
@@ -204,7 +204,7 @@ function ProductScreen() {
             <Col md={6}>
               <h4>Reviews</h4>
               {reviews && reviews.length === 0 && (
-                <Message variant="info">No Reviews</Message>
+                <Message variant="secondary">No Reviews</Message>
               )}
 
               <ListGroup variant="flush">
@@ -221,7 +221,7 @@ function ProductScreen() {
                   <h4>Write a review</h4>
                   {loadingProductReview && <Loader />}
                   {successProductReview && (
-                    <Message variant="success">Review Submitted</Message>
+                    <Message variant="primary">Review Submitted</Message>
                   )}
                   {errorProductReview && (
                     <Message variant="danger">{errorProductReview}</Message>
@@ -265,12 +265,12 @@ function ProductScreen() {
                         </Button>
                       </Form>
                     ) : (
-                      <Message variant="info">
+                      <Message variant="secondary">
                         Only users with a customer profile can write a review
                       </Message>
                     )
                   ) : (
-                    <Message variant="info">
+                    <Message variant="primary">
                       Please <Link to="/login">login</Link> to write a review
                     </Message>
                   )}

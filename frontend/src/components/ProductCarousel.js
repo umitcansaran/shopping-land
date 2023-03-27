@@ -6,15 +6,15 @@ function ProductCarousel({ latestProducts }) {
 
   return (
     <Col md={6}>
-            <Carousel pause='hover' style={{ backgroundColor:'#1e478a' }} className='text-center main-carousel'>
+            <Carousel pause='hover' style={{ backgroundColor:'#f7f7f7' }} className='text-center main-carousel'>
                     {latestProducts.map((product) => {
                         return (
                         <Carousel.Item key={product.id}>
                             <Link to={`/product/${product.id}`}>
-                                    <h4 style={{ color:'#e8e8e8', letterSpacing:'0.06rem'}} className='pt-1'>{product.brand}</h4>
-                                    <h5 style={{ color:'#e8e8e8', fontSize:'1rem' }}>{product.name}</h5>
+                                    <h4 style={{ color:'black', letterSpacing:'0.06rem'}} className='pt-1'>{product.brand}</h4>
+                                    <h5 style={{ color:'black', fontSize:'1rem' }}>{product.name}</h5>
                                 <Image className='main-carousel-img' src={product.image} alt={product.name} fluid /> 
-                                <h5 className='pt-2' style={{ color:'#e8e8e8'}}>CHF {Math.trunc(product.price)}</h5>
+                                <h5 className='pt-2' style={{ color:'black'}}>CHF {Math.trunc(product.price)}</h5>
                             </Link>
                         </Carousel.Item>
                         )

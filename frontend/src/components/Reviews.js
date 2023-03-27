@@ -14,7 +14,7 @@ function Reviews({ latestReviews }) {
               <Carousel.Item>
                 <div className="row text-center">
                   <Rating value={review.rating} color={"#f8e825"} />
-                  <Link to={`/product/${review.product.id}`}>
+                  <Link to={`/product/${review.product.id}`} style={{ color:'#32415c'}}>
                     <div className="d-flex justify-content-center">
                       <img
                         src={review.product.image}

@@ -29,7 +29,7 @@ const Header = () => {
     <header>
       <Navbar bg="light" expand="lg">
       <Container fluid className='mx-1'>
-      <Navbar.Brand as={Link} className='ms-5' to="/" style={{ fontFamily:'Alexandria', color:'#1e478a', border: 'solid 0.2rem #1e478a', padding:'0.2rem 0.7rem' }}><strong>shopping-land.ch</strong></Navbar.Brand>
+      <Navbar.Brand as={Link} className='ms-5' to="/" style={{ fontFamily:'Alexandria', color:'#495b7a', border: 'solid 0.2rem #1e478a', padding:'0.2rem 0.7rem' }}><strong>shopping-land.ch</strong></Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav"/>
         <Navbar.Collapse id="basic-navbar-nav" >
           <Nav className='me-auto' >

@@ -19,7 +19,7 @@ function MyStoresScreen() {
   const [value, setValue] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [deleteWindow, setDeleteWindow] = useState(false);
-  const [storeId, setStoreId] = useState(null);
+  const [deleteStore, setDeleteStore] = useState(null);
 
   const dispatch = useDispatch();
   const location = useLocation();
@@ -48,10 +48,10 @@ function MyStoresScreen() {
       setDeleteConfirm(null);
       setDeleteWindow(false);
       setTimeout(() => {
-        dispatch(deleteStore(storeId));
+        dispatch(deleteStore(deleteStore));
       }, 50);
     }
-  }, [dispatch, deleteConfirm, storeId]);
+  }, [dispatch, deleteConfirm, deleteStore]);
 
   useEffect(() => {
     dispatch({ type: STORE_DELETE_RESET });
@@ -87,9 +87,9 @@ function MyStoresScreen() {
     });
   };
 
-  const deleteStoreHandler = (id) => {
+  const deleteStoreHandler = (store) => {
     setDeleteWindow(true);
-    setStoreId(id);
+    setDeleteStore(store);
   };
 
   return (
@@ -153,7 +153,7 @@ function MyStoresScreen() {
                   <td style={{ width: "8rem", textAlign: "center" }}>
                     <Button
                       onClick={() => {
-                        deleteStoreHandler(store.id);
+                        deleteStoreHandler(store);
                       }}
                       className="btn-block btn-danger"
                     >
@@ -177,6 +177,7 @@ function MyStoresScreen() {
         <DeletePopup
           setDeleteWindow={setDeleteWindow}
           setDeleteConfirm={setDeleteConfirm}
+          item={{ type: 'store', details: deleteStore }}
         />
       )}
       {deleteStoreSuccess && (

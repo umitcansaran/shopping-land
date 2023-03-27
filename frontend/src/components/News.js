@@ -32,7 +32,7 @@ function News() {
                 return (
                     news &&
     <Carousel.Item onClick={() => window.location = news.link}>
-                <Link>
+                <Link style={{ color:'#32415c'}}>
         <div className="row text-center">
             <div className="d-flex justify-content-center p-3">
                 <img src={news.image}

@@ -8,14 +8,14 @@ function HomeSidebar({ categories, categoryFilterHandler }) {
         <Col lg={2} xl={2} className='m-4'>
         {categories.map((category) => {
             return <>
-                <h5 className='my-3' style={{ color:'#1e478a' }} key={category.id}>{category.name}</h5>
+                <h5 className='my-3' style={{ color:'#495b7a' }} key={category.id}>{category.name}</h5>
                 {category.subcategory.map((subcategory) => {
                     return <CFormCheck 
                     type="radio" 
                     name="flexRadioDefault" 
                     id="flexRadioDefault1" 
                     label={subcategory.name}
-                    style={{ backgroundColor:'#1e478a' }}
+                    style={{ backgroundColor:'#495b7a' }}
                     onChange={() => {categoryFilterHandler(subcategory.name)}}
                     className='my-2'
                     key={subcategory.id}

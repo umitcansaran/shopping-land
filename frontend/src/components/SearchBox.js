@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Row, Form } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { search } from "../store/actions/searchAction";
@@ -6,7 +6,6 @@ import { search } from "../store/actions/searchAction";
 export default function SearchBox({
   searchProps,
   placeholder,
-  color,
   value,
   setValue,
   width,
@@ -14,20 +13,19 @@ export default function SearchBox({
   const dispatch = useDispatch();
 
   const { ...rest } = searchProps;
+  rest["searchString"] = value;
 
-  const searchHandler = (e) => {
-    setValue(e.target.value);
-    rest["searchString"] = e.target.value;
-
-    if (value.length < 2) {
-      setTimeout(() => {
+  useEffect(() => {
+    if (value.length > 1) {
+      const timeout = setTimeout(() => {
         dispatch(search(rest));
       }, 1000);
+      return () => clearTimeout(timeout);
     }
-  };
+  }, [dispatch, value]);
 
   return (
-    <Row style={{ backgroundColor: color, height: "3rem" }}>
+    <Row style={{ backgroundColor: "#495b7a", height: "3rem" }}>
       <Form
         className="d-flex justify-content-center my-2"
         style={{ height: "2rem" }}
@@ -36,9 +34,9 @@ export default function SearchBox({
           type={searchProps.type}
           placeholder={placeholder}
           aria-label="Search"
-          style={{ width: width, borderRadius: "30px 30px 30px 30px" }}
+          style={{ width: width }}
           value={value}
-          onChange={(e) => searchHandler(e)}
+          onChange={(e) => setValue(e.target.value)}
         />
       </Form>
     </Row>

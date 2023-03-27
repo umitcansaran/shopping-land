@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Row,
-  Col,
-  ListGroup,
-  Form,
-  Image,
-  Container,
-} from "react-bootstrap";
+import { Row, Col, ListGroup, Form, Image, Container } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -59,19 +52,13 @@ export default function SellerScreen() {
     setRadioSearchValue("");
   };
 
-  const searchProps = {
-    type: "products_by_seller",
-    seller_id: profile.id
-  }
-
   return (
     <>
       <SearchBox
-        searchProps={searchProps}
+        searchProps={{ type: "products_by_seller", seller_id: profile.id }}
         value={value}
         setValue={setValue}
-        placeholder="Search for a product, brand or retailer name.."
-        color="#1e478a"
+        placeholder="Search for a product, brand.."
         width="50%"
       />
       <Container>

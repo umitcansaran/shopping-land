@@ -54,7 +54,7 @@ class Store(models.Model):
     category = models.ManyToManyField( to=ProductCategory, related_name='stores', blank=True)
 
     def __str__(self):
-        return f'{self.name} in {self.city}, {self.country}'
+        return f'{self.owner} - {self.city}'
 
 
 class Product(models.Model):

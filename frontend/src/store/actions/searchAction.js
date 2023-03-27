@@ -7,9 +7,6 @@ import {
   PRODUCT_SEARCH_REQUEST,
   PRODUCT_SEARCH_SUCCESS,
   PRODUCT_SEARCH_FAIL,
-  PROFILE_SEARCH_REQUEST,
-  PROFILE_SEARCH_SUCCESS,
-  PROFILE_SEARCH_FAIL,
   MY_PRODUCTS_SEARCH_REQUEST,
   MY_PRODUCTS_SEARCH_SUCCESS,
   MY_PRODUCTS_SEARCH_FAIL,
@@ -19,7 +16,20 @@ import {
   PRODUCTS_BY_USER_REQUEST,
   PRODUCTS_BY_USER_SUCCESS,
   PRODUCTS_BY_USER_FAIL,
+
 } from "../constants/searchConstants";
+
+import {
+  SELLER_PROFILES_REQUEST,
+  SELLER_PROFILES_SUCCESS,
+  SELLER_PROFILES_FAIL,
+} from "../constants/userConstants";
+
+import {
+  PRODUCT_LIST_REQUEST,
+  PRODUCT_LIST_SUCCESS,
+  PRODUCT_LIST_FAIL,
+} from "../constants/productConstants"
 
 export const search = (searchData) => async (dispatch, getState) => {
   if (searchData.type === "stores") {
@@ -100,7 +110,7 @@ export const search = (searchData) => async (dispatch, getState) => {
   if (searchData.type === "profiles") {
     try {
       dispatch({
-        type: PROFILE_SEARCH_REQUEST,
+        type: SELLER_PROFILES_REQUEST,
       });
 
       const { data } = await axios.get(
@@ -109,12 +119,12 @@ export const search = (searchData) => async (dispatch, getState) => {
       console.log(data);
 
       dispatch({
-        type: PROFILE_SEARCH_SUCCESS,
+        type: SELLER_PROFILES_SUCCESS,
         payload: data,
       });
     } catch (error) {
       dispatch({
-        type: PROFILE_SEARCH_FAIL,
+        type: SELLER_PROFILES_FAIL,
         payload:
           error.response && error.response.data.detail
             ? error.response.data.detail
@@ -126,20 +136,21 @@ export const search = (searchData) => async (dispatch, getState) => {
   if (searchData.type === "all") {
     try {
       dispatch({
-        type: PRODUCT_SEARCH_REQUEST,
+        type: PRODUCT_LIST_REQUEST,
       });
 
       const { data } = await axios.get(
         `${baseUrl}/api/search/?type=${searchData.type}&search_string=${searchData.searchString}`
       );
+      console.log('RED 3', data)
 
       dispatch({
-        type: PRODUCT_SEARCH_SUCCESS,
+        type: PRODUCT_LIST_SUCCESS,
         payload: data,
       });
     } catch (error) {
       dispatch({
-        type: PRODUCT_SEARCH_FAIL,
+        type: PRODUCT_LIST_FAIL,
         payload:
           error.response && error.response.data.detail
             ? error.response.data.detail
@@ -212,7 +223,6 @@ export const search = (searchData) => async (dispatch, getState) => {
   }
 
   if (searchData.type === "products_by_seller") {
-    console.log(searchData);
     try {
       dispatch({
         type: PRODUCTS_BY_USER_REQUEST,
