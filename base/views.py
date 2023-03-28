@@ -18,7 +18,7 @@ from datetime import datetime
 
 User = get_user_model()
 
-from .serializers import StoreSerializer, UserSerializer, RegistrationSerializer, StockSerializer ,ProductSerializer, ProductSubcategorySerializer, ProductCategorySerializer, ProfileSerializer, ReviewSerializer, SearchStockSerializer, OrderSerializer
+from .serializers import StoreSerializer, MyStoreSerializer, UserSerializer, RegistrationSerializer, StockSerializer ,ProductSerializer, ProductSubcategorySerializer, ProductCategorySerializer, ProfileSerializer, ReviewSerializer, SearchStockSerializer, OrderSerializer
 
 # Create your views here.
 
@@ -73,7 +73,7 @@ class ListProductStocks(ListAPIView):
     serializer_class = StockSerializer
 
     def get_queryset(self):
-        queryset = Stock.objects.all()
+        queryset = Stock.objects.all().order_by('store')
         product_id = self.kwargs.get('product_id')
         queryset = queryset.filter(product=product_id)
         return queryset
@@ -270,7 +270,7 @@ class MyStoresViewSet(ModelViewSet):
     A simple ViewSet for listing my stores.
     """
 
-    serializer_class = StoreSerializer
+    serializer_class = MyStoreSerializer
 
     def get_queryset(self):
         user = self.request.user.id
@@ -290,6 +290,19 @@ class ListStoresByUser(ListAPIView):
         user = self.kwargs.get('user_id')
         queryset = queryset.filter(owner=user)
         return queryset
+    
+class ListProfileByUser(ListAPIView):
+    """
+    List the profile of a user (int: user_id)
+    """
+    serializer_class = ProfileSerializer
+
+    def get_queryset(self):
+        queryset = Profile.objects.all()
+        user = self.kwargs.get('user_id')
+        queryset = queryset.filter(user=user)
+        return queryset
+    
     
 class ListProductssByUser(ListAPIView):
     """
@@ -316,7 +329,7 @@ class MyProductsViewSet(ModelViewSet):
         products = Product.objects.all()
         queryset = products.filter(seller_id=user)
         return queryset
-
+    
 
 class StockViewSet(ModelViewSet):
     """

@@ -23,6 +23,7 @@ urlpatterns = [
     path('profile/new/', views.ProfileViewSet.as_view({'post': 'create'})),
     path('profile/<int:pk>/', views.ProfileViewSet.as_view({'get': 'retrieve', 'patch': 'partial_update'})),
     path('profiles/sellers/', views.ListSellerProfiles.as_view()),
+    path('profile/user/<int:user_id>/', views.ListProfileByUser.as_view()),
 
     # STORE
     path('stores/', views.StoreViewSet.as_view({'get': 'list'})),
@@ -35,9 +36,11 @@ urlpatterns = [
     path('products/', views.ProductViewSet.as_view({'get': 'list'})),
     path('product/new/', views.ProductViewSet.as_view({'post': 'create'})),
     path('product/<str:pk>/', views.ProductViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})),
+    path('product/stocks/<int:product_id>/', views.ListProductStocks.as_view()),
     path('myproducts/', views.MyProductsViewSet.as_view({'get': 'list'})),
     path('latest-products/', views.LatestProducts.as_view(), name='latest-products'),
     path('products/user/<int:user_id>/', views.ListProductssByUser.as_view()),
+
 
     # REVIEW
     path('product/<str:pk>/reviews/', views.createProductReview, name="create-review"),
@@ -50,7 +53,6 @@ urlpatterns = [
     path('stock/new/', views.StockViewSet.as_view({'post': 'create'})),
     path('stock/<str:pk>/', views.updateStock, name="stock-update"),
     path('stocks/<str:pk>/', views.StockViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})),
-    path('product/stocks/<int:product_id>/', views.ListProductStocks.as_view()),
     path('store/stocks/<int:store_id>/', views.ListStoreStocks.as_view()),
 
     # CATEGORIES

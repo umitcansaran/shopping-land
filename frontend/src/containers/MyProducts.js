@@ -18,9 +18,11 @@ import { useLocation } from "react-router-dom";
 import Notification from "../components/Notification";
 import DeletePopup from "../components/DeletePopup";
 import { PRODUCT_DELETE_RESET } from "../store/constants/productConstants";
+import MyProductStocks from "../components/MyProductStocks"
 
 function MyProductsScreen() {
   const [value, setValue] = useState("");
+  const [stock, setStock] = useState({});
   const [stockInput, setStockInput] = useState({});
   const [button, setButton] = useState({});
   const [deleteConfirm, setDeleteConfirm] = useState(null);
@@ -40,14 +42,13 @@ function MyProductsScreen() {
     (state) => state.productDelete
   );
 
-
-
   useEffect(() => {
     if (createProductSuccess) {
       setTimeout(() => {
         window.history.replaceState({}, document.title);
       }, 500);
     }
+
 
     dispatch(listMyProducts());
     dispatch(listMyStores());
@@ -93,14 +94,16 @@ function MyProductsScreen() {
     });
   };
 
-  const stockInputHandler = (e, index, storeIndex) => {
+  const stockInputHandler = (index) => {
+
     Object.keys(stockInput).forEach((key) => {
       stockInput[key] = false;
     });
     setStockInput({
       ...stockInput,
-      [storeIndex]: true,
+      [index]: true,
     });
+    
   };
 
   const deleteProductHandler = (product) => {
@@ -108,26 +111,29 @@ function MyProductsScreen() {
     setProductToDelete(product);
   };
 
-  const deleteStockHandler = (checkProductStock) => {
+  const deleteStockHandler = (stock) => {
     if (window.confirm("Are you sure")) {
-      dispatch(updateStock({ number: 0 }, checkProductStock.id));
+      dispatch(updateStock({ number: 0 }, stock.id));
     }
   };
 
-  const saveHandler = async (checkProductStock, index, store, product) => {
-    if (stockInput[index] === true) {
-      stockInput[index] = 0;
-    }
+  const saveHandler = async (index, stock, product, stockNumber) => {
+
     let stockNum = { number: stockInput[index] };
 
-    if (checkProductStock) {
-      dispatch(updateStock(stockNum, checkProductStock.id));
+    if (stockInput[index] === true) {
+      stockNum = { number: stockNumber }
+    }
+
+    if (stock) {
+      dispatch(updateStock(stock.id, stockNum));
       setStockInput({});
     } else {
-      dispatch(createStock(stockNum.number, store.id, product.id));
+      dispatch(createStock(stockNum.number, stock.id, product.id));
       setStockInput({});
     }
   };
+
 
   const searchProps = {
     type: "my_products",
@@ -207,115 +213,7 @@ function MyProductsScreen() {
                 </td>
               </tr>
               {button[index] && (
-                <tr>
-                  <td colSpan="7">
-                    {myStores.map((store, storeIndex) => {
-                      const checkProductStock = store.stocks.find((stock) => {
-                        return product.id === stock.product;
-                      });
-                      return (
-                        <>
-                          <Row className="d-flex justify-content-center">
-                            <Col
-                              md={8}
-                              className="d-flex justify-content-end align-items-center"
-                            >
-                              <ListGroup key={index} as="ol">
-                                <ListGroup.Item
-                                  as="li"
-                                  className="d-flex justify-content-between align-items-center"
-                                  style={{ width: "30rem" }}
-                                >
-                                  <div className="fw-bold">{store.name}</div>
-                                  {stockInput[storeIndex] ? (
-                                    <Form>
-                                      <Form.Group
-                                        className=""
-                                        controlId="formBasicEmail"
-                                      >
-                                        <Form.Control
-                                          style={{
-                                            width: "3rem",
-                                            height: "1.3rem",
-                                          }}
-                                          type=""
-                                          value={stockInput.storeIndex}
-                                          placeholder={
-                                            checkProductStock
-                                              ? checkProductStock.number
-                                              : 0
-                                          }
-                                          onChange={(e) => {
-                                            setStockInput({
-                                              ...stockInput,
-                                              [storeIndex]: e.target.value,
-                                            });
-                                          }}
-                                        />
-                                      </Form.Group>
-                                    </Form>
-                                  ) : !checkProductStock ||
-                                    checkProductStock.number === 0 ? (
-                                    <Badge bg="danger" pill>
-                                      0
-                                    </Badge>
-                                  ) : (
-                                    <Badge bg="primary" pill>
-                                      {checkProductStock.number}
-                                    </Badge>
-                                  )}
-                                </ListGroup.Item>
-                              </ListGroup>
-                            </Col>
-                            <Col md={4} className="d-flex">
-                              {!stockInput[storeIndex] ? (
-                                <Button
-                                  onClick={(e) => {
-                                    stockInputHandler(e, index, storeIndex);
-                                  }}
-                                  variant="primary"
-                                  className="btn-sm my-2"
-                                >
-                                  <i className="fas fa-edit"> edit</i>
-                                </Button>
-                              ) : (
-                                <Button
-                                  onClick={() =>
-                                    saveHandler(
-                                      checkProductStock,
-                                      storeIndex,
-                                      store,
-                                      product
-                                    )
-                                  }
-                                  variant="primary"
-                                  className="btn-sm my-2"
-                                  type="submit"
-                                >
-                                  <i className="fa-regular fa-paper-plane-top">
-                                    validate
-                                  </i>
-                                </Button>
-                              )}
-                              <Button
-                                onClick={() =>
-                                  deleteStockHandler(checkProductStock)
-                                }
-                                variant="danger"
-                                className="btn-sm my-2 m-2"
-                                type="submit"
-                              >
-                                <i className="fa-regular fa-paper-plane-top">
-                                  delete
-                                </i>
-                              </Button>
-                            </Col>
-                          </Row>
-                        </>
-                      );
-                    })}
-                  </td>
-                </tr>
+                < MyProductStocks product={product} myStores={myStores} stockInput={stockInput} setStockInput={setStockInput} stock={stock} stockInputHandler={stockInputHandler} saveHandler={saveHandler} deleteStockHandler={deleteStockHandler} />
               )}
             </>
           ))}

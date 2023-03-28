@@ -44,6 +44,10 @@ import {
     USER_LIST_FAIL,
     USER_LIST_RESET,
 
+    PROFILE_BY_USER_REQUEST,
+    PROFILE_BY_USER_SUCCESS,
+    PROFILE_BY_USER_FAIL,
+
 } from '../constants/userConstants'
 
 import { ORDER_LIST_MY_RESET, ORDER_DETAILS_RESET } from '../constants/orderConstants'
@@ -368,6 +372,27 @@ export const getProfileDetails = (id) => async (dispatch, getState) => {
     } catch (error) {
         dispatch({
             type: PROFILE_DETAILS_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const listProfileByUser = (id) => async (dispatch) => {
+    try {
+        dispatch({ type: PROFILE_BY_USER_REQUEST })
+
+        const { data } = await axios.get(`${baseUrl}/api/profile/user/${id}`)
+
+        dispatch({
+            type: PROFILE_BY_USER_SUCCESS,
+            payload: data
+        })
+
+    } catch (error) {
+        dispatch({
+            type: PROFILE_BY_USER_FAIL,
             payload: error.response && error.response.data.detail
                 ? error.response.data.detail
                 : error.message,

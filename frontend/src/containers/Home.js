@@ -21,7 +21,7 @@ import Loader from "../components/Loader";
 import { PRODUCT_LIST_RESET } from "../store/constants/productConstants";
 
 export default function HomeScreen() {
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState('');
   const [showResult, setShowResult] = useState(false);
 
   const dispatch = useDispatch();
@@ -37,7 +37,6 @@ export default function HomeScreen() {
   useEffect(() => {
     dispatch(listProductCategories());
     dispatch(listLatestProducts());
-    dispatch(listStores());
     dispatch(listProducts());
     dispatch(listProfiles());
     dispatch(listLatestReviews());

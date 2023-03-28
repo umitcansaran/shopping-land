@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Map, { Marker, Popup } from "react-map-gl";
+import Map from "react-map-gl";
 import { Col, Form, Row } from "react-bootstrap";
 import "./map.css";
 import { search } from "../store/actions/searchAction";
@@ -8,19 +8,20 @@ import { listStores } from "../store/actions/storeActions";
 import { listProductCategories } from "../store/actions/categoriesActions";
 import { listProfiles } from "../store/actions/userActions";
 import SearchBox from "../components/SearchBox";
+import MapMarker from "../components/MapMarker";
 
-function StoreMap() {
-  const [value, setValue] = useState("");
-
+function StoresMap() {
+  
   const [viewState, setViewState] = useState({
     latitude: 46.738436,
     longitude: 8.082641,
     zoom: 7.3,
   });
-
+  const [value, setValue] = useState("");
+  const [selectedStore, setSelectedStore] = useState(null);
+  
   const dispatch = useDispatch();
 
-  const [selectedStore, setSelectedStore] = useState(null);
   const { stores } = useSelector((state) => state.storeList);
   const { profiles } = useSelector((state) => state.profileList);
 
@@ -32,9 +33,9 @@ function StoreMap() {
     dispatch(listProductCategories());
   }, [dispatch]);
 
-  const storeOwner =
-    selectedStore &&
-    profiles.find((profile) => profile.name === selectedStore.owner_name);
+  // const storeOwner =
+  //   selectedStore &&
+  //   profiles.find((profile) => profile.name === selectedStore.owner_name);
 
   const filterOptionHandler = (event) => {
     dispatch(search({ type: "stores", searchString: event.target.value }));
@@ -44,14 +45,14 @@ function StoreMap() {
     <>
       <Row style={{ backgroundColor: "#1e478a", height: "3rem" }}>
         <Col>
-          <SearchBox
+          {/* <SearchBox
             value={value}
             setValue={setValue}
             type="map"
             placeholder="Search for a retailer name.."
             color="#1e478a"
             width="60%"
-          />
+          /> */}
         </Col>
         <Col className="align-self-center">
           <Form.Select
@@ -70,7 +71,7 @@ function StoreMap() {
       <p className="text-center">
         Zoom in and click on the icon for more information..
       </p>
-      <Row>
+      {/* <Row>
         <Map
           {...viewState}
           mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
@@ -78,70 +79,15 @@ function StoreMap() {
           style={{ height: "80vh" }}
           onMove={(evt) => setViewState(evt.viewState)}
         >
-          {stores.map((store, index) => {
-            const storeOwnerProfile =
-              profiles &&
-              profiles.find((profile) => profile.name === store.owner_name);
-
+          {stores && stores.map((store, index) => {
             return (
-              <Marker
-                key={index}
-                latitude={store.latitude}
-                longitude={store.longitude}
-              >
-                <button
-                  className="marker-btn"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setSelectedStore(store);
-                  }}
-                >
-                  <img
-                    src={storeOwnerProfile && storeOwnerProfile.image}
-                    alt="Store Icon"
-                    style={{ width: "auto", height: "13px" }}
-                  />
-                </button>
-              </Marker>
+              < MapMarker store={store} selectedStore={selectedStore} setSelectedStore={setSelectedStore} index={index} />
             );
           })}
-
-          {selectedStore ? (
-            <Popup
-              latitude={selectedStore.latitude}
-              longitude={selectedStore.longitude}
-              closeOnClick={false}
-              onClose={() => {
-                setSelectedStore(null);
-              }}
-            >
-              <img
-                src={selectedStore.image}
-                alt="Store Icon"
-                style={{ width: "13.3rem" }}
-              />
-              <strong>
-                <h5 className="text-center">{selectedStore.name}</h5>
-              </strong>
-              <p style={{ fontSize: "0.75rem" }}>
-                <strong>Address: </strong>
-                {selectedStore.address}
-              </p>
-              <strong>
-                <p>
-                  Go to{" "}
-                  <a href={`#/retailers/${storeOwner.id}`}>
-                    {selectedStore.owner_name}
-                  </a>
-                  's page
-                </p>
-              </strong>
-            </Popup>
-          ) : null}
         </Map>
-      </Row>
+      </Row> */}
     </>
   );
 }
 
-export default StoreMap;
+export default StoresMap;

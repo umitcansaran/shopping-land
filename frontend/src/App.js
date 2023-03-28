@@ -8,7 +8,7 @@ import RegisterScreen from "./containers/Register";
 import LoginScreen from "./containers/Login";
 import AddProductScreen from "./containers/AddProduct";
 import AddStoreScreen from "./containers/AddStore";
-import MapScreen from "./containers/Map";
+import StoresMapScreen from "./containers/StoresMap";
 import MyStoresScreen from "./containers/MyStores";
 import MyProductsScreen from "./containers/MyProducts.js";
 import ProductScreen from "./containers/Product";
@@ -42,7 +42,7 @@ function App() {
           <Route path="/product/:id" element={<ProductScreen />} />
           <Route path="/mystores" element={<MyStoresScreen />} />
           <Route path="/myproducts" element={<MyProductsScreen />} />
-          <Route path="/map" element={<MapScreen />} />
+          <Route path="/map" element={<StoresMapScreen />} />
           <Route
             path="/myproducts/add-product"
             element={<AddProductScreen />}

@@ -33,7 +33,7 @@ export const listStocks = () => async (dispatch) => {
   }
 };
 
-export const updateStock = (number, id) => async (dispatch) => {
+export const updateStock = (id, number) => async (dispatch) => {
   try {
     dispatch({
       type: STOCK_UPDATE_REQUEST,

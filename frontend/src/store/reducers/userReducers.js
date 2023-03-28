@@ -42,6 +42,9 @@ import {
   SELLER_PROFILES_REQUEST,
   SELLER_PROFILES_SUCCESS,
   SELLER_PROFILES_FAIL,
+  PROFILE_BY_USER_REQUEST,
+  PROFILE_BY_USER_SUCCESS,
+  PROFILE_BY_USER_FAIL
 } from "../constants/userConstants";
 
 export const userLoginReducer = (state = {}, action) => {
@@ -249,3 +252,19 @@ export const userUpdateReducer = (state = { user: {} }, action) => {
       return state;
   }
 };
+
+export const profileByUserReducer = (state = { profile: {} }, action) => {
+  switch (action.type) {
+      case PROFILE_BY_USER_REQUEST:
+          return { loading: true }
+
+      case PROFILE_BY_USER_SUCCESS:
+          return { loading: false, profile: action.payload }
+
+      case PROFILE_BY_USER_FAIL:
+          return { loading: false, error: action.payload }
+
+      default:
+          return state
+  }
+}

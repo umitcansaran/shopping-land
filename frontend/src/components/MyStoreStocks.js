@@ -12,7 +12,6 @@ function MyStoreStocks({ store }) {
   const dispatch = useDispatch();
 
   const { stocks, loading } = useSelector((state) => state.storeStocks);
-  console.log("STOCKS", stocks);
 
   useEffect(() => {
     if (value === "") {

@@ -62,23 +62,64 @@ class ProfileSerializer(ModelSerializer):
 
 
 class StoreSerializer(ModelSerializer):
+    # owner_profile = serializers.SerializerMethodField(read_only=True)
     category = serializers.SlugRelatedField(
         queryset=ProductCategory.objects.all(),
         many=True,
         slug_field='name'
     )
     stocks = StockSerializer(many=True, read_only = True)
-
-    owner_name = serializers.ReadOnlyField(
-        source='owner.username'
-    )
+    # owner_name = serializers.ReadOnlyField(
+    #     source='owner.username'
+    # )
 
     class Meta:
         model = Store
         fields = '__all__'
 
+    # def get_owner_profile(self, obj):
+    #     profile = obj.owner.profile
+    #     serializer = ProfileSerializer(profile, many=True)
+
+    #     return serializer.data
+
+class MyStoreSerializer(ModelSerializer):
+    # owner_profile = serializers.SerializerMethodField(read_only=True)
+    category = serializers.SlugRelatedField(
+        queryset=ProductCategory.objects.all(),
+        many=True,
+        slug_field='name'
+    )
+    stocks = StockSerializer(many=True, read_only = True)
+    # owner_name = serializers.ReadOnlyField(
+    #     source='owner.username'
+    # )
+
+    class Meta:
+        model = Store
+        fields = '__all__'
+
+    # def get_owner_profile(self, obj):
+    #     profile = obj.owner.profile
+    #     serializer = ProfileSerializer(profile, many=True)
+
+    #     return serializer.data
+
 
 class ProductSerializer(ModelSerializer):
+    seller_details = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Product
+        fields = '__all__' 
+
+    def get_seller_details(self, obj):
+        return {
+            'id': obj.seller.id,
+            'name': obj.seller.username
+            }
+    
+class MyProductSerializer(ModelSerializer):
     seller_details = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
