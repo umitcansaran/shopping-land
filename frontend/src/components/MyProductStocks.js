@@ -87,7 +87,7 @@ function MyProductStocks({
                       </Button>
                     ) : (
                       <Button
-                        onClick={() => saveHandler(index, productStock, product, stockNumber)}
+                        onClick={() => saveHandler(index, productStock, product, store, stockNumber)}
                         variant="primary"
                         className="btn-sm my-2"
                         type="submit"

@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Table,
-  Button,
-  Badge,
-  Row,
-  Col,
-  ListGroup,
-  Form,
+  Button
 } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { listMyProducts, deleteProduct } from "../store/actions/productActions";
@@ -48,8 +43,6 @@ function MyProductsScreen() {
         window.history.replaceState({}, document.title);
       }, 500);
     }
-
-
     dispatch(listMyProducts());
     dispatch(listMyStores());
   }, [
@@ -113,11 +106,11 @@ function MyProductsScreen() {
 
   const deleteStockHandler = (stock) => {
     if (window.confirm("Are you sure")) {
-      dispatch(updateStock({ number: 0 }, stock.id));
+      dispatch(updateStock( stock.id, { number: 0 } ));
     }
   };
 
-  const saveHandler = async (index, stock, product, stockNumber) => {
+  const saveHandler = async (index, stock, product, store, stockNumber) => {
 
     let stockNum = { number: stockInput[index] };
 
@@ -129,21 +122,16 @@ function MyProductsScreen() {
       dispatch(updateStock(stock.id, stockNum));
       setStockInput({});
     } else {
-      dispatch(createStock(stockNum.number, stock.id, product.id));
+      dispatch(createStock(stockNum.number, store.id, product.id));
       setStockInput({});
     }
-  };
-
-
-  const searchProps = {
-    type: "my_products",
   };
 
   return (
     <>
       <AddProductButton />
       <SearchBox
-        searchProps={searchProps}
+        searchProps={{ type: "my_products" }}
         value={value}
         setValue={setValue}
         placeholder="Search for an id, name or brand.. "

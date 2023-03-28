@@ -7,7 +7,6 @@ import {
   listLatestReviews,
   listProducts,
 } from "../store/actions/productActions";
-import { listStores } from "../store/actions/storeActions";
 import Reviews from "../components/Reviews";
 import News from "../components/News";
 import SearchBox from "../components/SearchBox";
@@ -17,8 +16,8 @@ import HomeSidebar from "../components/HomeSidebar";
 import HomeCategoriesBar from "../components/HomeCategoriesBar";
 import { listProfiles } from "../store/actions/userActions";
 import { search } from "../store/actions/searchAction";
-import Loader from "../components/Loader";
 import { PRODUCT_LIST_RESET } from "../store/constants/productConstants";
+import Loader from "../components/Loader";
 
 export default function HomeScreen() {
   const [value, setValue] = useState('');
@@ -52,6 +51,7 @@ export default function HomeScreen() {
     <>
       <SearchBox
         searchProps={{ type: "all" }}
+        actionType='PRODUCT_LIST_RESET'
         value={value}
         setValue={setValue}
         placeholder="Search products, brands or sellers.."
@@ -85,13 +85,18 @@ export default function HomeScreen() {
           />
           <Col>
             <Row>
-              {products.map((product) => {
-                return (
-                  <Col sm={12} md={6} lg={4} xl={3} className="gx-3 gy-2">
-                    <ProductCard product={product} profiles={profiles} />
-                  </Col>
-                );
-              })}
+              { (loading && value.length > 1) ? ( 
+                < Loader/> 
+              ) : (
+                products.map((product) => {
+                  return (
+                    <Col sm={12} md={6} lg={4} xl={3} className="gx-3 gy-2">
+                      <ProductCard product={product} profiles={profiles} />
+                    </Col>
+                  );
+                })
+
+              )}
             </Row>
           </Col>
         </Row>
