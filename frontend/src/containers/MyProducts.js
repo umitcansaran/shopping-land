@@ -30,7 +30,7 @@ function MyProductsScreen() {
   const { createProductSuccess } = location.state ? location.state : false;
 
   const { myProducts } = useSelector((state) => state.productMyList);
-  const { myStores } = useSelector((state) => state.storeMyList);
+  const { myStores, loading } = useSelector((state) => state.storeMyList);
   const { stock: newStock } = useSelector((state) => state.createStock);
   const { stock: updatedStock } = useSelector((state) => state.stockUpdate);
   const { success: deleteProductSuccess } = useSelector(
@@ -140,9 +140,7 @@ function MyProductsScreen() {
       <Table
         hover
         responsive
-        className="table-sm"
-        style={{ width: "90%", margin: "auto" }}
-      >
+        className="table-sm myproductstocks">
         <thead style={{ backgroundColor: "#f2f5fa" }}>
           <tr style={{ textAlign: "center" }}>
             <th>ID</th>
@@ -172,9 +170,9 @@ function MyProductsScreen() {
                         closeStockHandler(index);
                       }}
                       stye={{ color: "#f2f5fa" }}
-                      className="btn-block blue-button"
+                      className="btn-block blue-button mystores-blue-button"
                     >
-                      Close
+                      <i class="fa-solid fa-angle-up"></i>
                     </Button>
                   ) : (
                     <Button
@@ -182,9 +180,13 @@ function MyProductsScreen() {
                         viewStockHandler(index);
                       }}
                       stye={{ color: "#f2f5fa" }}
-                      className="btn-block blue-button"
+                      className="btn-block blue-button mystores-blue-button"
                     >
-                      View Stock
+                      { window.innerWidth < 600 ? (
+                        <i class="fa-solid fa-angle-down"></i>
+                      ) : (                      
+                      'View Stock'
+                      )}
                     </Button>
                   )}
                 </td>
@@ -194,14 +196,18 @@ function MyProductsScreen() {
                       deleteProductHandler(product);
                     }}
                     stye={{ color: "#f2f5fa" }}
-                    className="btn-block btn-danger"
+                    className="btn-block btn-danger mystores-blue-button"
                   >
-                    Delete
-                  </Button>
+                     { window.innerWidth < 600 ? (
+                        <i class="fa-solid fa-trash-can"></i>
+                      ) : (                      
+                      'Delete'
+                      )}
+                      </Button>
                 </td>
               </tr>
               {button[index] && (
-                < MyProductStocks product={product} myStores={myStores} stockInput={stockInput} setStockInput={setStockInput} stock={stock} stockInputHandler={stockInputHandler} saveHandler={saveHandler} deleteStockHandler={deleteStockHandler} />
+                  < MyProductStocks product={product} myStores={myStores} stockInput={stockInput} setStockInput={setStockInput} stock={stock} stockInputHandler={stockInputHandler} saveHandler={saveHandler} deleteStockHandler={deleteStockHandler} loading={loading} />
               )}
             </>
           ))}

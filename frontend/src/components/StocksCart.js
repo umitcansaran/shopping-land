@@ -41,7 +41,7 @@ export default function StocksCart({ stocks, selectedStore, setSelectedStore, qu
                       <Col>
                         Stock{" "}
                         <Badge
-                          bg="secondary"
+                          bg="success"
                           className="d-flex justify-content-start"
                         >
                           {stock.number}

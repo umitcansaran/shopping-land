@@ -200,7 +200,7 @@ class Search(ListAPIView):
             if search_type == 'map':
                 queryset = Store.objects.all()
                 if search_string is not None:
-                    queryset = queryset.filter(name__icontains=search_string)
+                    queryset = queryset.filter(owner__username__icontains=search_string)
                 return queryset
             if search_type == 'products':
                 queryset = Product.objects.all()

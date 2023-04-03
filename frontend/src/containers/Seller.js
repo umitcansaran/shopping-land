@@ -42,7 +42,7 @@ export default function SellerScreen() {
       search({
         type: "product_in_store",
         store: storeName,
-        searchString: e.target.value,
+        searchString: e.target.value
       })
     );
   };
@@ -133,7 +133,7 @@ export default function SellerScreen() {
             {products &&
               products.map((product, index) => {
                 return (
-                  <Col sm={12} md={6} lg={4} xl={3} className="gx-3 gy-2">
+                  <Col sm={12} md={6} lg={4} xl={3} className="gx-1 gy-1 product-card">
                     <ProductCard product={product} key={index} />
                   </Col>
                 );

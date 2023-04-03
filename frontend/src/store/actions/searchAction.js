@@ -30,6 +30,7 @@ import {
   PRODUCT_LIST_SUCCESS,
   PRODUCT_LIST_FAIL,
 } from "../constants/productConstants"
+import { STORE_LIST_FAIL, STORE_LIST_REQUEST, STORE_LIST_SUCCESS } from "../constants/storeConstants";
 
 export const search = (searchData) => async (dispatch, getState) => {
   if (searchData.type === "stores") {
@@ -58,22 +59,24 @@ export const search = (searchData) => async (dispatch, getState) => {
   }
 
   if (searchData.type === "map") {
+    console.log(searchData)
     try {
       dispatch({
-        type: STORE_SEARCH_REQUEST,
+        type: STORE_LIST_REQUEST,
       });
 
       const { data } = await axios.get(
         `${baseUrl}/api/search/?type=${searchData.type}&search_string=${searchData.searchString}`
       );
+      console.log(data)
 
       dispatch({
-        type: STORE_SEARCH_SUCCESS,
+        type: STORE_LIST_SUCCESS,
         payload: data,
       });
     } catch (error) {
       dispatch({
-        type: STORE_SEARCH_FAIL,
+        type: STORE_LIST_FAIL,
         payload:
           error.response && error.response.data.detail
             ? error.response.data.detail
@@ -158,6 +161,30 @@ export const search = (searchData) => async (dispatch, getState) => {
       });
     }
   }
+
+  if(searchData.type === 'product_in_store') {
+    try {
+        dispatch({
+            type: PRODUCTS_BY_USER_REQUEST
+        })
+
+        const { data } = await axios.get(`${ baseUrl }/api/search/?type=${searchData.type}&store_name=${searchData.store}&search_string=${searchData.searchString}`)
+        const result = data.filter(data => data.number > 0).map(result => result.product)
+       
+        dispatch({
+            type: PRODUCTS_BY_USER_SUCCESS,
+            payload: result
+        })
+
+    } catch (error) {
+        dispatch({
+            type: PRODUCTS_BY_USER_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
 
   if (searchData.type === "my_products") {
     try {

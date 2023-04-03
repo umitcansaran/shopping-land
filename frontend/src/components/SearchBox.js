@@ -18,7 +18,9 @@ export default function SearchBox({
 
   useEffect(() => {
     if (value.length > 1) {
-      dispatch({ type: actionType });
+      if (actionType) {
+        dispatch({ type: actionType });
+      }
       const timeout = setTimeout(() => {
         dispatch(search(rest));
       }, 1000);

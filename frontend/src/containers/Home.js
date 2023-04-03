@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Button, Col } from "react-bootstrap";
+import { Row, Button, Col, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { listProductCategories } from "../store/actions/categoriesActions";
 import {
@@ -20,7 +20,7 @@ import { PRODUCT_LIST_RESET } from "../store/constants/productConstants";
 import Loader from "../components/Loader";
 
 export default function HomeScreen() {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState("");
   const [showResult, setShowResult] = useState(false);
 
   const dispatch = useDispatch();
@@ -48,10 +48,10 @@ export default function HomeScreen() {
   };
 
   return (
-    <>
+    <Container fluid>
       <SearchBox
-        searchProps={{ type: "all" }}
-        actionType='PRODUCT_LIST_RESET'
+        searchProps={{ type: "all", searchString: value}}
+        actionType="PRODUCT_LIST_RESET"
         value={value}
         setValue={setValue}
         placeholder="Search products, brands or sellers.."
@@ -63,7 +63,7 @@ export default function HomeScreen() {
       />
       {(showResult || value.length > 1) && (
         <Button
-          onClick={() => setShowResult(false) + setValue('')}
+          onClick={() => setShowResult(false) + setValue("")}
           variant="light"
           className="mx-2"
         >
@@ -72,35 +72,36 @@ export default function HomeScreen() {
       )}
       <Row>
         {!showResult && value.length < 2 && (
-          <Row>
+          <Row >
             <Reviews loading={reviewLoading} latestReviews={latestReviews} />
             <ProductCarousel latestProducts={latestProducts} />
             <News />
           </Row>
         )}
-        <Row>
-          <HomeSidebar
-            categories={categories}
-            categoryFilterHandler={categoryFilterHandler}
-          />
-          <Col>
-            <Row>
-              { (loading && value.length > 1) ? ( 
-                < Loader/> 
+        <Row style={{ margin:'0'}}>
+          <Col lg={2} xl={2} >
+            <HomeSidebar
+              categories={categories}
+              categoryFilterHandler={categoryFilterHandler}
+            />
+          </Col>
+          <Col >
+            <Row >
+              {loading && value.length > 1 ? (
+                <Loader />
               ) : (
-                products.map((product) => {
+                products.map((product, index) => {
                   return (
-                    <Col sm={12} md={6} lg={4} xl={3} className="gx-3 gy-2">
-                      <ProductCard product={product} profiles={profiles} />
+                    <Col sm={6} md={6} lg={4} xl={3} className="gx-1 gy-1 product-card" >
+                      <ProductCard product={product} profiles={profiles} key={index} />
                     </Col>
                   );
                 })
-
               )}
             </Row>
           </Col>
         </Row>
       </Row>
-    </>
+      </Container>
   );
 }

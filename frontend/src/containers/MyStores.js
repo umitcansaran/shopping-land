@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Table } from "react-bootstrap";
+import { Button, Container, Row, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { listMyStores, deleteStore } from "../store/actions/storeActions";
 import AddStoreButton from "../components/AddStoreButton";
@@ -19,7 +19,7 @@ function MyStoresScreen() {
   const [value, setValue] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [deleteWindow, setDeleteWindow] = useState(false);
-  const [deleteStore, setDeleteStore] = useState(null);
+  const [storeToDelete, setStoreToDelete] = useState(null);
 
   const dispatch = useDispatch();
   const location = useLocation();
@@ -48,10 +48,10 @@ function MyStoresScreen() {
       setDeleteConfirm(null);
       setDeleteWindow(false);
       setTimeout(() => {
-        dispatch(deleteStore(deleteStore));
+        dispatch(deleteStore(storeToDelete.id));
       }, 50);
     }
-  }, [dispatch, deleteConfirm, deleteStore]);
+  }, [dispatch, deleteConfirm, storeToDelete]);
 
   useEffect(() => {
     dispatch({ type: STORE_DELETE_RESET });
@@ -89,11 +89,11 @@ function MyStoresScreen() {
 
   const deleteStoreHandler = (store) => {
     setDeleteWindow(true);
-    setDeleteStore(store);
+    setStoreToDelete(store);
   };
 
   return (
-    <>
+    <Container fluid >  
       <AddStoreButton />
       {myStoresLoading ? (
         <Loader />
@@ -104,9 +104,8 @@ function MyStoresScreen() {
           striped
           hover
           responsive
-          className="table-sm my-3"
-          style={{ width: "90%", margin: "auto" }}
-        >
+          className="table-sm my-3 mystores-container"
+          style={{ width: "90%", margin: "auto" }}>
           <thead style={{ backgroundColor: "#f2f5fa" }}>
             <tr style={{ textAlign: "center" }}>
               <th>ID</th>
@@ -177,7 +176,7 @@ function MyStoresScreen() {
         <DeletePopup
           setDeleteWindow={setDeleteWindow}
           setDeleteConfirm={setDeleteConfirm}
-          item={{ type: 'store', details: deleteStore }}
+          item={{ type: 'store', details: storeToDelete }}
         />
       )}
       {deleteStoreSuccess && (
@@ -186,7 +185,7 @@ function MyStoresScreen() {
       {createStoreSuccess && (
         <Notification status="success" message="Store Created Successfully!" />
       )}
-    </>
+    </Container>
   );
 }
 
