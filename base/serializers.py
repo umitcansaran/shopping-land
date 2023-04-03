@@ -62,7 +62,7 @@ class ProfileSerializer(ModelSerializer):
 
 
 class StoreSerializer(ModelSerializer):
-    owner_profile = serializers.SerializerMethodField(read_only=True)
+    # owner_profile = serializers.SerializerMethodField(read_only=True)
     category = serializers.SlugRelatedField(
         queryset=ProductCategory.objects.all(),
         many=True,
@@ -77,11 +77,11 @@ class StoreSerializer(ModelSerializer):
         model = Store
         fields = '__all__'
 
-    def get_owner_profile(self, obj):
-        profile = obj.owner.profile
-        serializer = ProfileSerializer(profile, many=True)
+    # def get_owner_profile(self, obj):
+    #     profile = obj.owner.profile
+    #     serializer = ProfileSerializer(profile, many=True)
 
-        return serializer.data
+    #     return serializer.data
 
 class MyStoreSerializer(ModelSerializer):
     # owner_profile = serializers.SerializerMethodField(read_only=True)

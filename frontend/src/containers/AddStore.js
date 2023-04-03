@@ -215,16 +215,3 @@ export default function AddStoreScreen() {
     </>
   );
 }
-
-const SuggestionWrapper = styled.div`
-  background: white;
-  position: absolute;
-  width: 400px;
-  padding: 10px 20px;
-  border-radius: 0px 0px 10px 10px;
-`;
-
-const Suggestion = styled.p`
-  cursor: pointer;
-  max-width: 400px;
-`;

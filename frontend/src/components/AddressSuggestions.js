@@ -20,8 +20,8 @@ const AddressSuggestions = (initialValue) => {
   };
 
   return {
-    value,
     onChange: handleChange,
+    value,
     setValue,
     suggestions,
     setSuggestions,
