@@ -79,7 +79,7 @@ export default function HomeScreen() {
         </Button>
       )}
       <Row>
-        {!showResult && value.length < 2 && isMobile && latestReviews && (
+        {!showResult && value.length < 2 && isMobile && latestReviews && latestProducts && (
           <Row>
             <Reviews loading={reviewLoading} latestReviews={latestReviews} />
             <ProductCarousel latestProducts={latestProducts} />
