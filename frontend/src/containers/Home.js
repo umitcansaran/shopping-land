@@ -14,35 +14,43 @@ import ProductCard from "../components/ProductCard";
 import ProductCarousel from "../components/ProductCarousel";
 import HomeSidebar from "../components/HomeSidebar";
 import HomeCategoriesBar from "../components/HomeCategoriesBar";
-import { listProfiles } from "../store/actions/userActions";
 import { search } from "../store/actions/searchAction";
 import { PRODUCT_LIST_RESET } from "../store/constants/productConstants";
 import Loader from "../components/Loader";
-import useSWR from 'swr'
-import axios from 'axios'
+import useSWR from "swr";
+import axios from "axios";
 
 export default function HomeScreen() {
-
   const [value, setValue] = useState("");
   const [showResult, setShowResult] = useState(false);
   const [redirect, setRedirect] = useState(false);
 
   const dispatch = useDispatch();
 
-  const { products: productList, loading, success } = useSelector(
-    (state) => state.productList
+  const {
+    products: productList,
+    loading,
+    success,
+  } = useSelector((state) => state.productList);
+
+  const fetcher = (url) => axios.get(url).then((res) => res.data);
+
+  const {
+    data: productsData,
+    error,
+    isLoading,
+  } = useSWR("/api/products/", fetcher);
+  const { data: latestReviews, isLoading: reviewLoading } = useSWR(
+    "/api/latest-reviews/",
+    fetcher
   );
+  const { data: latestProducts } = useSWR("/api/latest-products/", fetcher);
+  const { data: categories } = useSWR("/api/product-categories/", fetcher);
 
-  const fetcher = url => axios.get(url).then(res => res.data)
-
-  const { data: productsData, error, isLoading } = useSWR('/api/products/', fetcher)
-  const { data: latestReviews, isLoading: reviewLoading } = useSWR('/api/latest-reviews/', fetcher)
-  const { data: latestProducts } = useSWR('/api/latest-products/', fetcher)
-  const { data: profiles } = useSWR('/api/profiles/', fetcher)
-  const { data: categories } = useSWR('/api/product-categories/', fetcher)
-
-  let products
-  ((value.length <= 1) && (!showResult)) ? (products = productsData) : (products = productList)
+  let products;
+  value.length <= 1 && !showResult
+    ? (products = productsData)
+    : (products = productList);
 
   const categoryFilterHandler = (keyword) => {
     dispatch({ type: PRODUCT_LIST_RESET });
@@ -61,7 +69,7 @@ export default function HomeScreen() {
         setValue={setValue}
         placeholder="Search products, brands or sellers.."
       />
-      { categories && (
+      {categories && (
         <HomeCategoriesBar
           categories={categories}
           categoryFilterHandler={categoryFilterHandler}
@@ -79,13 +87,22 @@ export default function HomeScreen() {
         </Button>
       )}
       <Row>
-        {!showResult && value.length < 2 && isMobile && latestReviews && latestProducts && (
-          <Row>
-            <Reviews loading={reviewLoading} latestReviews={latestReviews} />
-            <ProductCarousel latestProducts={latestProducts} />
-            <News />
-          </Row>
-        )}
+        <Row>
+          {!showResult &&
+            value.length < 2 &&
+            isMobile &&
+            latestReviews &&
+            latestProducts && (
+              <>
+                <Reviews
+                  loading={reviewLoading}
+                  latestReviews={latestReviews}
+                />
+                <ProductCarousel latestProducts={latestProducts} />
+                <News />
+              </>
+            )}
+        </Row>
         <Row style={{ margin: "0" }}>
           {isMobile && categories && (
             <Col lg={2} xl={2}>
@@ -109,7 +126,6 @@ export default function HomeScreen() {
                     >
                       <ProductCard
                         product={product}
-                        profiles={profiles}
                         key={index}
                       />
                     </Col>

@@ -7,18 +7,29 @@ import { listProfiles, listSellerProfiles } from "../store/actions/userActions";
 import { Link } from "react-router-dom";
 import Loader from "../components/Loader";
 
+import useSWR from "swr";
+import axios from "axios";
+
 export default function SellersScreen() {
   const [showResult, setShowResult] = useState(false);
   const [resetFilter, setResetFilter] = useState(true)
 
   const dispatch = useDispatch();
 
-  const { categories } = useSelector((state) => state.productCategories);
-  const { profiles, loading } = useSelector((state) => state.sellerProfiles);
+  // const { categories } = useSelector((state) => state.productCategories);
+  const { profiles: profilesList } = useSelector((state) => state.sellerProfiles);
+
+  const fetcher = (url) => axios.get(url).then((res) => res.data);
+
+  const { data: profilesData, isLoading: loading } = useSWR("/api/profiles/sellers/", fetcher);
+  const { data: categories } = useSWR("/api/product-categories/", fetcher);
+
+  let profiles;
+  (!showResult) ? (profiles = profilesData) : (profiles = profilesList);
 
   useEffect(() => {
     dispatch(listProductCategories());
-    dispatch(listSellerProfiles());
+    // dispatch(listSellerProfiles());
   }, [dispatch, resetFilter]);
 
   const filterOptionHandler = (event) => {
@@ -41,7 +52,7 @@ export default function SellersScreen() {
           aria-label="Default select example"
         >
           <option>Filter by Category</option>
-          {categories.map((category, index) => {
+          {categories && categories.map((category, index) => {
             return <option key={index}>{category.name}</option>;
           })}
         </Form.Select>
