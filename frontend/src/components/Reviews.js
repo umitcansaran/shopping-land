@@ -3,7 +3,7 @@ import { Carousel, Col } from "react-bootstrap";
 import Rating from "../components/Rating";
 import { Link } from "react-router-dom";
 
-function Reviews({ latestReviews }) {
+function Reviews({ latestReviews = [] }) {
   return (
     <Col md={3} className="pt-3">
       <h5 className="text-center">Latest Reviews</h5>

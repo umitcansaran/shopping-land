@@ -42,6 +42,7 @@ import {
   SELLER_PROFILES_REQUEST,
   SELLER_PROFILES_SUCCESS,
   SELLER_PROFILES_FAIL,
+  SELLER_PROFILES_RESET,
   PROFILE_BY_USER_REQUEST,
   PROFILE_BY_USER_SUCCESS,
   PROFILE_BY_USER_FAIL
@@ -193,6 +194,9 @@ export const sellerProfilesReducer = (state = { profiles: [] }, action) => {
   
       case SELLER_PROFILES_FAIL:
         return { loading: false, error: action.payload };
+
+      case SELLER_PROFILES_RESET:
+        return { profile: {} };
   
       default:
         return state;

@@ -3,43 +3,42 @@ import { Button, Row, Col, Image, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { search } from "../store/actions/searchAction";
 import { listProductCategories } from "../store/actions/categoriesActions";
-import { listProfiles, listSellerProfiles } from "../store/actions/userActions";
+import { listProfiles } from "../store/actions/userActions";
 import { Link } from "react-router-dom";
 import Loader from "../components/Loader";
-
 import useSWR from "swr";
 import axios from "axios";
+import { SELLER_PROFILES_RESET } from "../store/constants/userConstants";
 
 export default function SellersScreen() {
-  const [showResult, setShowResult] = useState(false);
+  const [searchResult, setSearchResult] = useState(false);
   const [resetFilter, setResetFilter] = useState(true)
 
   const dispatch = useDispatch();
 
-  // const { categories } = useSelector((state) => state.productCategories);
-  const { profiles: profilesList } = useSelector((state) => state.sellerProfiles);
+  const { profiles: filteredProfiles } = useSelector((state) => state.sellerProfiles);
 
   const fetcher = (url) => axios.get(url).then((res) => res.data);
 
-  const { data: profilesData, isLoading: loading } = useSWR("/api/profiles/sellers/", fetcher);
+  const { data: allProfiles, isLoading: loading } = useSWR("/api/profiles/sellers/", fetcher);
   const { data: categories } = useSWR("/api/product-categories/", fetcher);
 
   let profiles;
-  (!showResult) ? (profiles = profilesData) : (profiles = profilesList);
+  (!searchResult) ? (profiles = allProfiles) : (profiles = filteredProfiles);
 
   useEffect(() => {
     dispatch(listProductCategories());
-    // dispatch(listSellerProfiles());
   }, [dispatch, resetFilter]);
 
   const filterOptionHandler = (event) => {
+    dispatch({ type: SELLER_PROFILES_RESET });
     dispatch(search({ type: "profiles", searchString: event.target.value }));
-    setShowResult(true);
+    setSearchResult(true);
   };
 
   const filterResetHandler = () => {
     dispatch(listProfiles());
-    setShowResult(false);
+    setSearchResult(false);
     setResetFilter(!resetFilter)
   };
 
@@ -62,7 +61,7 @@ export default function SellersScreen() {
         <Loader />
       ) : (
         <>
-          {showResult && (
+          {searchResult && (
             <Button
               variant="secondary"
               onClick={() => filterResetHandler()}

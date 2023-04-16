@@ -2,7 +2,7 @@ import { CFormCheck } from "@coreui/react";
 import React from "react";
 import { Col } from "react-bootstrap";
 
-function HomeSidebar({ categories, categoryFilterHandler }) {
+function HomeSidebar({ categories = [], categoryFilterHandler }) {
   return (
     <>
       {categories.map((category) => {

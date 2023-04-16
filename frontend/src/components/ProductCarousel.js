@@ -2,7 +2,7 @@ import React from 'react'
 import { Carousel, Col, Image } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
-function ProductCarousel({ latestProducts }) {
+function ProductCarousel({ latestProducts = [] }) {
 
   return (
     <Col md={6}>

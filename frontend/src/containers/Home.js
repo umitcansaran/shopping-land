@@ -22,7 +22,7 @@ import axios from "axios";
 
 export default function HomeScreen() {
   const [value, setValue] = useState("");
-  const [showResult, setShowResult] = useState(false);
+  const [searchResult, setSearchResult] = useState(false);
   const [redirect, setRedirect] = useState(false);
 
   const dispatch = useDispatch();
@@ -35,30 +35,32 @@ export default function HomeScreen() {
 
   const fetcher = (url) => axios.get(url).then((res) => res.data);
 
-  const {
-    data: productsData,
-    error,
-    isLoading,
-  } = useSWR("/api/products/", fetcher);
-  const { data: latestReviews, isLoading: reviewLoading } = useSWR(
+  const { data: productsData, isLoading: loadingProducts } = useSWR(
+    "/api/products/",
+    fetcher
+  );
+  const { data: latestReviews, isLoading: loadingReviews } = useSWR(
     "/api/latest-reviews/",
     fetcher
   );
-  const { data: latestProducts } = useSWR("/api/latest-products/", fetcher);
+  const { data: latestProducts, isLoading: loadingLatestProducts } = useSWR(
+    "/api/latest-products/",
+    fetcher
+  );
   const { data: categories } = useSWR("/api/product-categories/", fetcher);
 
   let products;
-  value.length <= 1 && !showResult
+  value.length <= 1 && !searchResult
     ? (products = productsData)
     : (products = productList);
 
   const categoryFilterHandler = (keyword) => {
     dispatch({ type: PRODUCT_LIST_RESET });
-    setShowResult(true);
+    setSearchResult(true);
     dispatch(search({ type: "products", searchString: keyword }));
   };
 
-  const isMobile = window.innerWidth > 600;
+  const isMobile = window.innerWidth < 600;
 
   return (
     <Container fluid>
@@ -69,16 +71,14 @@ export default function HomeScreen() {
         setValue={setValue}
         placeholder="Search products, brands or sellers.."
       />
-      {categories && (
-        <HomeCategoriesBar
-          categories={categories}
-          categoryFilterHandler={categoryFilterHandler}
-        />
-      )}
-      {(showResult || value.length > 1) && (
+      <HomeCategoriesBar
+        categories={categories}
+        categoryFilterHandler={categoryFilterHandler}
+      />
+      {(searchResult || value.length > 1) && (
         <Button
           onClick={() =>
-            setShowResult(false) + setValue("") + setRedirect(!redirect)
+            setSearchResult(false) + setValue("") + setRedirect(!redirect)
           }
           variant="light"
           className="mx-2"
@@ -88,23 +88,16 @@ export default function HomeScreen() {
       )}
       <Row>
         <Row>
-          {!showResult &&
-            value.length < 2 &&
-            isMobile &&
-            latestReviews &&
-            latestProducts && (
-              <>
-                <Reviews
-                  loading={reviewLoading}
-                  latestReviews={latestReviews}
-                />
-                <ProductCarousel latestProducts={latestProducts} />
-                <News />
-              </>
-            )}
+          {!searchResult && value.length < 2 && !isMobile && (
+            <>
+              <Reviews latestReviews={latestReviews} />
+              <ProductCarousel latestProducts={latestProducts} />
+              <News />
+            </>
+          )}
         </Row>
         <Row style={{ margin: "0" }}>
-          {isMobile && categories && (
+          {!isMobile && (
             <Col lg={2} xl={2}>
               <HomeSidebar
                 categories={categories}
@@ -117,17 +110,8 @@ export default function HomeScreen() {
               {products &&
                 products.map((product, index) => {
                   return (
-                    <Col
-                      sm={6}
-                      md={6}
-                      lg={4}
-                      xl={3}
-                      className="gx-1 gy-1 product-card"
-                    >
-                      <ProductCard
-                        product={product}
-                        key={index}
-                      />
+                    <Col xs={6} md={6} lg={4} xl={3} className="gx-1 gy-1">
+                      <ProductCard product={product} key={index} />
                     </Col>
                   );
                 })}

@@ -41,10 +41,10 @@ function ProductScreen() {
   const navigate = useNavigate();
   const params = useParams();
 
-  const { product, error, loading } = useSelector(
+  const { product, error, loading: loadingProduct } = useSelector(
     (state) => state.productDetails
   );
-  const { stocks } = useSelector(
+  const { stocks, loading: loadingStocks } = useSelector(
     (state) => state.productStocks
   );
   const { reviews } = useSelector((state) => state.productReviews);
@@ -55,6 +55,8 @@ function ProductScreen() {
     error: errorProductReview,
     success: successProductReview,
   } = useSelector((state) => state.productReviewCreate);
+
+  console.log(stocks)
 
   useEffect(() => {
     if (successProductReview) {
@@ -92,7 +94,7 @@ function ProductScreen() {
       <Button onClick={() => navigate(-1)} className="btn btn-light my-3">
         Go Back
       </Button>
-      {loading ? (
+      {loadingProduct || loadingStocks ? (
         <Loader />
       ) : error ? (
         <Message variant="danger">{error}</Message>

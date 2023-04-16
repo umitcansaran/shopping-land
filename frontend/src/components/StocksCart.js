@@ -11,7 +11,7 @@ export default function StocksCart({ stocks, selectedStore, setSelectedStore, qu
         {stocks.map((stock, index) => {
           return (
             <>
-              <Row className="my-2">
+              <Row className="my-2" key={index}>
                 <Col md={9}>
                   <Button
                     variant="light"

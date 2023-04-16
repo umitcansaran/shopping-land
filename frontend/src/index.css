@@ -132,9 +132,6 @@ h2 {
 }
 
 @media (max-width: 600px) {
-  .product-card {
-    width: 50%;
-  }
   .card-img-container {
     height: auto;
     width: 100%;
