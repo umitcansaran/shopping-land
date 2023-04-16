@@ -41,7 +41,6 @@ urlpatterns = [
     path('latest-products/', views.LatestProducts.as_view(), name='latest-products'),
     path('products/user/<int:user_id>/', views.ListProductssByUser.as_view()),
 
-
     # REVIEW
     path('product/<str:pk>/reviews/', views.createProductReview, name="create-review"),
     path('reviews/', views.Reviews.as_view(), name='reviews'),

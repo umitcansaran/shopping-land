@@ -22,50 +22,27 @@ import useSWR from 'swr'
 import axios from 'axios'
 
 export default function HomeScreen() {
+
   const [value, setValue] = useState("");
   const [showResult, setShowResult] = useState(false);
   const [redirect, setRedirect] = useState(false);
 
   const dispatch = useDispatch();
 
-  const { categories } = useSelector((state) => state.productCategories);
   const { products: productList, loading, success } = useSelector(
     (state) => state.productList
   );
-  const { profiles } = useSelector((state) => state.profileList);
-  const { latestReviews, loading: reviewLoading } = useSelector(
-    (state) => state.latestReviewsList
-  );
-  const { latestProducts } = useSelector((state) => state.latestProductsList);
 
   const fetcher = url => axios.get(url).then(res => res.data)
-  const { data, error, isLoading } = useSWR('/api/products/', fetcher)
+
+  const { data: productsData, error, isLoading } = useSWR('/api/products/', fetcher)
+  const { data: latestReviews, isLoading: reviewLoading } = useSWR('/api/latest-reviews/', fetcher)
+  const { data: latestProducts } = useSWR('/api/latest-products/', fetcher)
+  const { data: profiles } = useSWR('/api/profiles/', fetcher)
+  const { data: categories } = useSWR('/api/product-categories/', fetcher)
 
   let products
-  if (value.length <= 1) {
-    products = data
-  } else {
-    products = productList
-  }
-
-  useEffect(() => {
-    dispatch(listProductCategories());
-    dispatch(listLatestProducts());
-    dispatch(listProfiles());
-    dispatch(listLatestReviews());
-  }, [dispatch, redirect]);
-
-  // useEffect(() => {
-  //   if (value.length === 0) {
-  //     dispatch(listProducts());
-  //   } else if (value.length > 1) {
-  //     dispatch({ type: PRODUCT_LIST_RESET });
-  //     const timeout = setTimeout(() => {
-  //       dispatch(search({type:'all', searchString: value}))
-  //     }, 500);
-  //     return () => clearTimeout(timeout);
-  //   }
-  // },[dispatch, value])
+  ((value.length <= 1) && (!showResult)) ? (products = productsData) : (products = productList)
 
   const categoryFilterHandler = (keyword) => {
     dispatch({ type: PRODUCT_LIST_RESET });
@@ -84,10 +61,12 @@ export default function HomeScreen() {
         setValue={setValue}
         placeholder="Search products, brands or sellers.."
       />
-      <HomeCategoriesBar
-        categories={categories}
-        categoryFilterHandler={categoryFilterHandler}
-      />
+      { categories && (
+        <HomeCategoriesBar
+          categories={categories}
+          categoryFilterHandler={categoryFilterHandler}
+        />
+      )}
       {(showResult || value.length > 1) && (
         <Button
           onClick={() =>
@@ -100,7 +79,7 @@ export default function HomeScreen() {
         </Button>
       )}
       <Row>
-        {!showResult && value.length < 2 && isMobile && (
+        {!showResult && value.length < 2 && isMobile && latestReviews && (
           <Row>
             <Reviews loading={reviewLoading} latestReviews={latestReviews} />
             <ProductCarousel latestProducts={latestProducts} />
@@ -108,7 +87,7 @@ export default function HomeScreen() {
           </Row>
         )}
         <Row style={{ margin: "0" }}>
-          {isMobile && (
+          {isMobile && categories && (
             <Col lg={2} xl={2}>
               <HomeSidebar
                 categories={categories}
