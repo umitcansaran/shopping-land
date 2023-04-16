@@ -9,7 +9,7 @@ import FormContainer from "../components/FormContainer";
 import { login } from "../store/actions/userActions";
 
 function LoginScreen() {
-  const [username, setUsername] = useState("Digitec");
+  const [username, setUsername] = useState("Nike");
   const [password, setPassword] = useState("django123");
 
   const dispatch = useDispatch();

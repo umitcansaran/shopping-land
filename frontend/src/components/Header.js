@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Navbar, Nav, Badge, Container, NavDropdown, Row } from 'react-bootstrap'
+import { Navbar, Nav, Badge, Container, NavDropdown, Row, Col, Image } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import { myDetails, logout } from '../store/actions/userActions'
 
@@ -25,15 +25,17 @@ const Header = () => {
     navigate('/')
   }
 
+  const isMobile = window.innerWidth < 600 
+
   return (
       <Navbar bg="light" expand="lg">
       <Container fluid className='mx-1'>
-      <Navbar.Brand as={Link} className='ms-5' to="/" style={{ fontFamily:'Alexandria', color:'#495b7a', border: 'solid 0.2rem #1e478a', padding:'0.2rem 0.7rem' }}><strong>shopping-land.ch</strong></Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+      <Navbar.Brand as={Link}  to="/" style={{ fontFamily:'Alexandria', color:'#495b7a', border: 'solid 0.2rem #1e478a', padding:'0.2rem 0.7rem' }}><strong>shopping-land.ch</strong></Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" style={{ width:'2rem', backgroundImage: "url('https://upload.wikimedia.org/wikipedia/commons/b/b2/Hamburger_icon.svg')" }}/>
         <Navbar.Collapse id="basic-navbar-nav" >
           <Nav className='me-auto' >
-            <Nav.Link as={Link} className='ms-5' to="/sellers" style={{ color:'rgb(70, 69, 69)'}}><i className="fa-solid fa-store" style={{ color:'#1e478a' }}></i> Sellers List</Nav.Link>
-            <Nav.Link as={Link} className='ms-5' to="/map" style={{ color:'rgb(70, 69, 69)' }}><i className="fa-solid fa-location-dot" style={{ color:'#1e478a' }}></i> Find a Store</Nav.Link>
+            <Nav.Link as={Link} className={ isMobile ? 'mt-2' : 'ms-5' } to="/sellers" style={{ color:'rgb(70, 69, 69)'}}><i className="fa-solid fa-store" style={{ color:'#1e478a' }}></i> Sellers List</Nav.Link>
+            <Nav.Link as={Link} className={ isMobile ? '' : 'ms-5' } to="/map" style={{ color:'rgb(70, 69, 69)' }}><i className="fa-solid fa-location-dot" style={{ color:'#1e478a' }}></i> Find a Store</Nav.Link>
             </Nav>
             <Nav>
               { user && user.profile[0].status === 'CUSTOMER' && (
@@ -54,10 +56,7 @@ const Header = () => {
                 )}
               { user ? user.profile[0].status === 'STORE_OWNER' && (
                 <>
-                <Row className='align-items-center'>
-                <img src={user && user.profile[0].image} alt='retailer-profile' style={{ width:'3.3rem', height:'auto' }}/>
-                </Row>
-                  <NavDropdown title={user.username} id='adminmenu'>
+                  <NavDropdown title={<Image src={user && user.profile[0].image} alt='retailer-profile' style={{ height:'1.6rem' }}/>} id='adminmenu'>
                     <LinkContainer to='/profile'>
                       <NavDropdown.Item>Profile</NavDropdown.Item>
                     </LinkContainer>
@@ -71,10 +70,10 @@ const Header = () => {
                       Logout
                     </NavDropdown.Item>
                   </NavDropdown>
-                  </>
-                ) : (<Nav.Link as={Link} className='ms-5' to="/login"><i class="fa-solid fa-user" style={{ color:'#1e478a' }}></i> Sign In</Nav.Link>)
+                </>
+                ) : (<Nav.Link as={Link} className={ isMobile ? '' : 'ms-5' } to="/login"><i class="fa-solid fa-user" style={{ color:'#1e478a' }}></i> Sign In</Nav.Link>)
             }
-            <Nav.Link as={Link} className='ms-5' to="/cart" style={{ color:'rgb(70, 69, 69)'}}><i className="fa-solid fa-cart-shopping" style={{ color:'#1e478a' }}></i> Cart { cartItemsQuantities > 0 && (<Badge bg="primary" pill style={{ borderRadius:'0' }}>{cartItemsQuantities}</Badge>)}</Nav.Link>
+            <Nav.Link as={Link} className={ isMobile ? '' : 'ms-5' } to="/cart" style={{ color:'rgb(70, 69, 69)'}}><i className="fa-solid fa-cart-shopping" style={{ color:'#1e478a' }}></i> Cart { cartItemsQuantities > 0 && (<Badge bg="primary" pill style={{ borderRadius:'0' }}>{cartItemsQuantities}</Badge>)}</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

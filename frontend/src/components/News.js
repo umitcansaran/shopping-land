@@ -18,11 +18,6 @@ function News() {
         comment: 'Samsung Galaxy Z Flip4 and Galaxy Z Fold4: The Most Versatile Devices, Changing the Way We Interact With Smartphones.',
         link: 'https://news.samsung.com/medialibrary/global/photo/52909?album=103'
     }]
-
-    useEffect(() => {
-        dispatch(listProducts())
-        dispatch(listReviews())
-    }, [dispatch])
     
   return (
     <Col md={3} className='pt-3'>

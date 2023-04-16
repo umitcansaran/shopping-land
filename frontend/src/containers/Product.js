@@ -70,8 +70,6 @@ function ProductScreen() {
     dispatch(myDetails());
   }, [dispatch, params, successProductReview]);
 
-  console.log("stocks", stocks);
-
   const storeInfo = (e, store, stock) => {
     setQuantity(Number(e.target.value));
     setStoreName(store);

@@ -14,6 +14,7 @@ import { PROFILE_DETAILS_RESET } from "../store/constants/userConstants";
 import { CFormCheck } from "@coreui/react";
 import ProductCard from "../components/ProductCard";
 import SearchBox from "../components/SearchBox";
+import { PRODUCT_LIST_RESET } from "../store/constants/productConstants";
 
 export default function SellerScreen() {
   const [value, setValue] = useState("");
@@ -29,11 +30,10 @@ export default function SellerScreen() {
 
   useEffect(() => {
     dispatch({ type: PROFILE_DETAILS_RESET });
+    // dispatch({ type: PRODUCT_LIST_RESET });
     dispatch(getProfileDetails(params.id));
     dispatch(listStoresByUser(params.id));
     dispatch(listProductsByUser(params.id));
-    dispatch(listLatestProducts());
-    dispatch(listReviews());
   }, [dispatch, params.id]);
 
   const radioSearchHandler = (e) => {
@@ -52,15 +52,43 @@ export default function SellerScreen() {
     setRadioSearchValue("");
   };
 
+  const searchHandler = (e) => {
+    setValue(e.target.value);
+    dispatch(
+      search({
+        type: "products_by_seller",
+        seller_id: profile.id,
+        searchString: e.target.value,
+      })
+    );
+  };
+
   return (
     <>
-      <SearchBox
-        searchProps={{ type: "products_by_seller", seller_id: profile.id }}
+      {/* <SearchBox
+        searchProps={{ type: "products_by_seller", seller_id: profile.id, searchString: value }}
         value={value}
         setValue={setValue}
         placeholder="Search for a product, brand.."
         width="50%"
-      />
+      /> */}
+          <Row style={{ backgroundColor: "#495b7a", height: "3rem", justifyContent:'center' }}>
+      <Col sm={12} lg={5}>
+      <Form
+        className="d-flex justify-content-center my-2"
+        style={{ height: "2rem" }}
+      >
+        <Form.Control
+          // type={searchProps.type}
+          placeholder="Search for a product, brand.."
+          aria-label="Search"
+          // style={{ width: width }}
+          value={value}
+          onChange={(e) => searchHandler(e)}
+          />
+      </Form>
+      </Col>
+    </Row>
       <Container>
         <Row
           className="mt-3 justify-content-center pb-2"
@@ -129,7 +157,10 @@ export default function SellerScreen() {
             })}
         </Col>
         <Col>
-          <Row>
+          <Row style={{ textAlign:'center'}}> 
+            { products && products.length === 0 && (
+              <h2>Currently no products in stocks!</h2>
+            )}
             {products &&
               products.map((product, index) => {
                 return (

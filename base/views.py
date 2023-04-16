@@ -216,7 +216,7 @@ class Search(ListAPIView):
                     queryset = queryset.filter(category__name__icontains=search_string)
                 return queryset
             if search_type == 'all':
-                queryset = Product.objects.all()
+                queryset = Product.objects.all().order_by('name')
                 queryset = queryset.filter(Q(
                     Q(brand__icontains=search_string) |
                     Q(name__icontains=search_string) |

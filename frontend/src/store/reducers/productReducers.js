@@ -220,7 +220,7 @@ export const productDeleteReducer = (state = {}, action) => {
       return { loading: false, error: action.payload };
 
     case PRODUCT_DELETE_RESET:
-      return {}
+      return {};
 
     default:
       return state;

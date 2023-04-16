@@ -113,8 +113,6 @@ h2 {
   overflow: visible;
 }
 
-
-
 /* .map-store-image {
   width: auto;
   height: 12rem;
@@ -128,7 +126,12 @@ h2 {
   object-fit: cover;
 }
 
-@media (max-width: 768px) {
+.sellers-page-filter {
+  width: 40%;
+  margin: auto;
+}
+
+@media (max-width: 600px) {
   .product-card {
     width: 50%;
   }
@@ -144,6 +147,10 @@ h2 {
   }
   .mystores-blue-button {
     width: auto;
+  }
+
+  .sellers-page-filter {
+    width: 80%;
   }
 }
 

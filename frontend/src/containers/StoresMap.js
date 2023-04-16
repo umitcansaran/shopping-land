@@ -27,11 +27,9 @@ function StoresMap() {
   const { categories } = useSelector((state) => state.productCategories);
 
   useEffect(() => {
-    if (value === "") {
-    }
-    dispatch(listProfiles());
-    dispatch(listStores());
-    dispatch(listProductCategories());
+      dispatch(listProfiles());
+      dispatch(listStores());
+      dispatch(listProductCategories());
   }, [dispatch]);
 
   const filterOptionHandler = (event) => {
@@ -41,7 +39,7 @@ function StoresMap() {
   return (
     <>
       <Row style={{ backgroundColor: "#495b7a", height: "3rem" }}>
-        <Col>
+        <Col sm={12} lg={6}>
           <SearchBox
             searchProps={{ type: "map" }}
             value={value}
@@ -49,10 +47,9 @@ function StoresMap() {
             type="map"
             placeholder="Search for a seller name.."
             color="#1e478a"
-            width="60%"
           />
         </Col>
-        <Col className="align-self-center">
+        <Col sm={12} lg={6} className="align-self-center">
           <Form.Select
             className="d-flex justify-content-center"
             onChange={filterOptionHandler}
@@ -77,7 +74,6 @@ function StoresMap() {
           ) : (
             stores.map((store, index) => {
               const profile = profiles.find(profile => profile.name === store.owner_name)
-              console.log(profile)
               return (
                 <Marker
                   key={index}

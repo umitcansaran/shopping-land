@@ -9,7 +9,7 @@ import Loader from "../components/Loader";
 
 export default function SellersScreen() {
   const [showResult, setShowResult] = useState(false);
-  const [refresh, setRefresh] = useState(true)
+  const [resetFilter, setResetFilter] = useState(true)
 
   const dispatch = useDispatch();
 
@@ -19,7 +19,7 @@ export default function SellersScreen() {
   useEffect(() => {
     dispatch(listProductCategories());
     dispatch(listSellerProfiles());
-  }, [dispatch, refresh]);
+  }, [dispatch, resetFilter]);
 
   const filterOptionHandler = (event) => {
     dispatch(search({ type: "profiles", searchString: event.target.value }));
@@ -29,17 +29,16 @@ export default function SellersScreen() {
   const filterResetHandler = () => {
     dispatch(listProfiles());
     setShowResult(false);
-    setRefresh(!refresh)
+    setResetFilter(!resetFilter)
   };
 
   return (
     <>
       <Row style={{ backgroundColor: "#495b7a", height: "3rem" }}>
         <Form.Select
-          className="d-flex justify-content-center my-1"
+          className="d-flex justify-content-center my-1 sellers-page-filter"
           onChange={filterOptionHandler}
           aria-label="Default select example"
-          style={{ width: "40%", margin: "auto" }}
         >
           <option>Filter by Category</option>
           {categories.map((category, index) => {
@@ -66,7 +65,7 @@ export default function SellersScreen() {
               profiles.map((profile, index) => {
                 return (
                   <>
-                    <Col md={2}>
+                    <Col xs={6} md={2}>
                       <Link to={`/seller/${profile.id}`}>
                         <Image
                           className="p-2"

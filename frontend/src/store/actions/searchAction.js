@@ -16,7 +16,6 @@ import {
   PRODUCTS_BY_USER_REQUEST,
   PRODUCTS_BY_USER_SUCCESS,
   PRODUCTS_BY_USER_FAIL,
-
 } from "../constants/searchConstants";
 
 import {
@@ -29,8 +28,12 @@ import {
   PRODUCT_LIST_REQUEST,
   PRODUCT_LIST_SUCCESS,
   PRODUCT_LIST_FAIL,
-} from "../constants/productConstants"
-import { STORE_LIST_FAIL, STORE_LIST_REQUEST, STORE_LIST_SUCCESS } from "../constants/storeConstants";
+} from "../constants/productConstants";
+import {
+  STORE_LIST_FAIL,
+  STORE_LIST_REQUEST,
+  STORE_LIST_SUCCESS,
+} from "../constants/storeConstants";
 
 export const search = (searchData) => async (dispatch, getState) => {
   if (searchData.type === "stores") {
@@ -59,7 +62,7 @@ export const search = (searchData) => async (dispatch, getState) => {
   }
 
   if (searchData.type === "map") {
-    console.log(searchData)
+    console.log(searchData);
     try {
       dispatch({
         type: STORE_LIST_REQUEST,
@@ -68,7 +71,6 @@ export const search = (searchData) => async (dispatch, getState) => {
       const { data } = await axios.get(
         `${baseUrl}/api/search/?type=${searchData.type}&search_string=${searchData.searchString}`
       );
-      console.log(data)
 
       dispatch({
         type: STORE_LIST_SUCCESS,
@@ -119,7 +121,6 @@ export const search = (searchData) => async (dispatch, getState) => {
       const { data } = await axios.get(
         `${baseUrl}/api/search/?type=${searchData.type}&search_string=${searchData.searchString}`
       );
-      console.log(data);
 
       dispatch({
         type: SELLER_PROFILES_SUCCESS,
@@ -145,7 +146,6 @@ export const search = (searchData) => async (dispatch, getState) => {
       const { data } = await axios.get(
         `${baseUrl}/api/search/?type=${searchData.type}&search_string=${searchData.searchString}`
       );
-      console.log('RED 3', data)
 
       dispatch({
         type: PRODUCT_LIST_SUCCESS,
@@ -162,29 +162,33 @@ export const search = (searchData) => async (dispatch, getState) => {
     }
   }
 
-  if(searchData.type === 'product_in_store') {
+  if (searchData.type === "product_in_store") {
     try {
-        dispatch({
-            type: PRODUCTS_BY_USER_REQUEST
-        })
+      dispatch({
+        type: PRODUCTS_BY_USER_REQUEST,
+      });
 
-        const { data } = await axios.get(`${ baseUrl }/api/search/?type=${searchData.type}&store_name=${searchData.store}&search_string=${searchData.searchString}`)
-        const result = data.filter(data => data.number > 0).map(result => result.product)
-       
-        dispatch({
-            type: PRODUCTS_BY_USER_SUCCESS,
-            payload: result
-        })
+      const { data } = await axios.get(
+        `${baseUrl}/api/search/?type=${searchData.type}&store_name=${searchData.store}&search_string=${searchData.searchString}`
+      );
+      const result = data
+        .filter((data) => data.number > 0)
+        .map((result) => result.product);
 
+      dispatch({
+        type: PRODUCTS_BY_USER_SUCCESS,
+        payload: result,
+      });
     } catch (error) {
-        dispatch({
-            type: PRODUCTS_BY_USER_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
+      dispatch({
+        type: PRODUCTS_BY_USER_FAIL,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
+      });
     }
-}
+  }
 
   if (searchData.type === "my_products") {
     try {
@@ -232,7 +236,7 @@ export const search = (searchData) => async (dispatch, getState) => {
       const { data } = await axios.get(
         `${baseUrl}/api/search/?type=${searchData.type}&store_name=${searchData.store}&search_string=${searchData.searchString}`
       );
-      // const result = data.filter((data) => data.number > 0)
+      console.log(data)
 
       dispatch({
         type: STORE_STOCKS_SEARCH_SUCCESS,
@@ -258,7 +262,6 @@ export const search = (searchData) => async (dispatch, getState) => {
       const { data } = await axios.get(
         `${baseUrl}/api/search/?type=${searchData.type}&seller_id=${searchData.seller_id}&search_string=${searchData.searchString}`
       );
-      // const result = data.filter((data) => data.number > 0)
 
       dispatch({
         type: PRODUCTS_BY_USER_SUCCESS,
