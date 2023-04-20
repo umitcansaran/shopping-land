@@ -1,34 +1,36 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button, Row, Col, Image, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { search } from "../store/actions/searchAction";
-import { listProductCategories } from "../store/actions/categoriesActions";
 import { listProfiles } from "../store/actions/userActions";
 import { Link } from "react-router-dom";
 import Loader from "../components/Loader";
 import useSWR from "swr";
 import axios from "axios";
 import { SELLER_PROFILES_RESET } from "../store/constants/userConstants";
+import { useQuery } from "@tanstack/react-query";
 
 export default function SellersScreen() {
   const [searchResult, setSearchResult] = useState(false);
-  const [resetFilter, setResetFilter] = useState(true)
+  const [resetFilter, setResetFilter] = useState(true);
 
   const dispatch = useDispatch();
 
-  const { profiles: filteredProfiles } = useSelector((state) => state.sellerProfiles);
+  const { profiles: filteredProfiles } = useSelector(
+    (state) => state.sellerProfiles
+  );
 
   const fetcher = (url) => axios.get(url).then((res) => res.data);
-
-  const { data: allProfiles, isLoading: loading } = useSWR("/api/profiles/sellers/", fetcher);
   const { data: categories } = useSWR("/api/product-categories/", fetcher);
 
-  let profiles;
-  (!searchResult) ? (profiles = allProfiles) : (profiles = filteredProfiles);
+  // Using React Query for faster reload after filtering by mounting cached components.
+  const { data: allProfiles, isLoading: loading } = useQuery({
+    queryKey: ["sellers"],
+    queryFn: () => axios.get("/api/profiles/sellers/").then((res) => res.data),
+  });
 
-  useEffect(() => {
-    dispatch(listProductCategories());
-  }, [dispatch, resetFilter]);
+  let profiles;
+  !searchResult ? (profiles = allProfiles) : (profiles = filteredProfiles);
 
   const filterOptionHandler = (event) => {
     dispatch({ type: SELLER_PROFILES_RESET });
@@ -39,7 +41,7 @@ export default function SellersScreen() {
   const filterResetHandler = () => {
     dispatch(listProfiles());
     setSearchResult(false);
-    setResetFilter(!resetFilter)
+    setResetFilter(!resetFilter);
   };
 
   return (
@@ -51,9 +53,10 @@ export default function SellersScreen() {
           aria-label="Default select example"
         >
           <option>Filter by Category</option>
-          {categories && categories.map((category, index) => {
-            return <option key={index}>{category.name}</option>;
-          })}
+          {categories &&
+            categories.map((category, index) => {
+              return <option key={index}>{category.name}</option>;
+            })}
         </Form.Select>
       </Row>
       <h2 className="text-center">Select a seller</h2>

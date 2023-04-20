@@ -3,8 +3,8 @@ import { useState } from "react";
 const AddressSuggestions = (initialValue) => {
   const [value, setValue] = useState(initialValue);
   const [suggestions, setSuggestions] = useState([]);
-  const [latitude, setLatitude] = useState('')
-  const [longitude, setLongitude] = useState('')
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
 
   const handleChange = async (event) => {
     setValue(event.target.value);
@@ -28,7 +28,7 @@ const AddressSuggestions = (initialValue) => {
     latitude,
     setLatitude,
     longitude,
-    setLongitude
+    setLongitude,
   };
 };
 

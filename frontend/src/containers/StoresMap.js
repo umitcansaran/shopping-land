@@ -27,8 +27,10 @@ function StoresMap() {
   const { categories } = useSelector((state) => state.productCategories);
 
   useEffect(() => {
+    if (stores.length === 0) {
       dispatch(listProfiles());
       dispatch(listStores());
+    }
       dispatch(listProductCategories());
   }, [dispatch]);
 
@@ -62,6 +64,7 @@ function StoresMap() {
             })}
           </Form.Select>
         </Col>
+        <p style={{margin:'0', padding:'0', textAlign:'center'}}>Click store icon for more info..</p>
         <Map
           {...viewState}
           mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}

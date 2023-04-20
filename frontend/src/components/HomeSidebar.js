@@ -4,7 +4,7 @@ import { Col } from "react-bootstrap";
 
 function HomeSidebar({ categories = [], categoryFilterHandler }) {
   return (
-    <>
+    <div className="home-sidebar">
       {categories.map((category) => {
         return (
           <>
@@ -30,7 +30,7 @@ function HomeSidebar({ categories = [], categoryFilterHandler }) {
           </>
         );
       })}
-    </>
+    </div>
   );
 }
 

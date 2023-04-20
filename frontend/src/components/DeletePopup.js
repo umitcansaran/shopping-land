@@ -18,26 +18,25 @@ function DeletePopup({
             </h2>
           )}
           {type === "store" && <h2>Delete {details.name}?</h2>}
-          
         </Row>
         <Row className="btn-container">
-            <Button
-              className="btn mb-1"
-              onClick={() => {
-                setDeleteConfirm("yes");
-              }}
-            >
-              Yes
-            </Button>
-            <Button
-              className="btn"
-              onClick={() => {
-                setDeleteWindow(false);
-              }}
-            >
-              No
-            </Button>
-          </Row>
+          <Button
+            className="btn mb-1"
+            onClick={() => {
+              setDeleteConfirm("yes");
+            }}
+          >
+            Yes
+          </Button>
+          <Button
+            className="btn"
+            onClick={() => {
+              setDeleteWindow(false);
+            }}
+          >
+            No
+          </Button>
+        </Row>
       </Row>
     </>
   );

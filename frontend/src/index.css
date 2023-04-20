@@ -151,3 +151,8 @@ h2 {
   }
 }
 
+.home-sidebar {
+  position: sticky;
+  top: 0;
+}
+

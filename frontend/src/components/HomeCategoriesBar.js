@@ -4,7 +4,7 @@ import { Nav } from 'react-bootstrap'
 function HomeCategoriesBar({ categories = [], categoryFilterHandler }) {
 
     return (
-        <Nav className='justify-content-evenly mb-3 categories-bar' style={{ borderBottom: '0.5px solid #818ca1' }}>
+        <Nav className='justify-content-evenly mb-3' style={{ borderBottom: '0.5px solid #818ca1' }}>
         {categories.map((category)=>{
         return (
             <Nav.Item key={category.id}>

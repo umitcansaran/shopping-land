@@ -4,14 +4,17 @@ import Rating from "../components/Rating";
 import { Link } from "react-router-dom";
 
 function Reviews({ latestReviews = [] }) {
+
+  const charLimit = (window.innerWidth < 1300) ? 30 : (window.innerWidth < 1600 ? 40 : 70)
+
   return (
     <Col md={3} className="pt-3">
       <h5 className="text-center">Latest Reviews</h5>
       <Carousel style={{ height: "23rem" }}>
-        {latestReviews.map((review) => {
+        {latestReviews.map((review, index) => {
           return (
             review && (
-              <Carousel.Item>
+              <Carousel.Item key={index}>
                 <div className="row text-center">
                   <Rating value={review.rating} color={"#f8e825"} />
                   <Link to={`/product/${review.product.id}`} style={{ color:'#32415c'}}>
@@ -31,12 +34,14 @@ function Reviews({ latestReviews = [] }) {
                         {review.product.name}
                       </h6>
                     </strong>
-                    <p style={{ fontSize: "1rem" }}>
+                    <div>
+                    <p>
                       <i className="fas fa-quote-left pe-2"></i>
-                      {review.comment.length > 70
-                        ? review.comment.substring(0, 70) + "..."
+                      {review.comment.length > charLimit
+                        ? review.comment.substring(0, charLimit) + "..."
                         : review.comment}
                     </p>
+                    </div>
                   </Link>
                   <p className="" style={{ fontSize: "0.9rem" }}>
                     reviewed by {review.name}

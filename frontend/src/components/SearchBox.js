@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { Row, Form, Col } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { search } from "../store/actions/searchAction";
-import { listProducts } from "../store/actions/productActions";
 
 export default function SearchBox({
   searchProps,
@@ -21,7 +20,7 @@ export default function SearchBox({
       if (actionType) {
         dispatch({ type: actionType });
       }
-        dispatch(search(rest));
+      dispatch(search(rest));
     }
   }, [dispatch, value]);
 

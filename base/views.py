@@ -9,6 +9,7 @@ from .models import Store, Product, Profile, ProductCategory, ProductSubcategory
 from base.permissions import IsAnon
 from .permissions import IsOwnerOrReadOnly
 from django.db.models import Q
+from rest_framework.pagination import LimitOffsetPagination
 
 from django.contrib.auth.hashers import make_password
 
@@ -37,7 +38,6 @@ class ProfileViewSet(ModelViewSet):
     """
     CRUD operations on the band model
     """
-    # permission_classes = [IsAuthenticated]
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
 
@@ -50,6 +50,7 @@ class ProductViewSet(ModelViewSet):
     """
     queryset = Product.objects.all().order_by('name')
     serializer_class = ProductSerializer
+    pagination_class = LimitOffsetPagination
 
     def perform_create(self, serializer):
         serializer.save()
@@ -138,7 +139,6 @@ class MeViewSet(ModelViewSet):
     GET: Get the user profile. (-> request.user)
     PATCH: Update the user profile. (-> request.user)
     """
-    permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
     queryset = User.objects.all()
 
@@ -147,7 +147,7 @@ class MeViewSet(ModelViewSet):
         return self.request.user
 
 class UserViewSet(ModelViewSet):
-
+        
     queryset = User.objects.all()
     serializer_class = UserSerializer
 

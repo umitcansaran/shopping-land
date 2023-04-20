@@ -24,7 +24,7 @@ urlpatterns = [
     path('profile/<int:pk>/', views.ProfileViewSet.as_view({'get': 'retrieve', 'patch': 'partial_update'})),
     path('profiles/sellers/', views.ListSellerProfiles.as_view()),
     path('profile/user/<int:user_id>/', views.ListProfileByUser.as_view()),
-
+ 
     # STORE
     path('stores/', views.StoreViewSet.as_view({'get': 'list'})),
     path('store/new/', views.StoreViewSet.as_view({'post': 'create'})),
