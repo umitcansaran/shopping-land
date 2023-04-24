@@ -4,25 +4,10 @@ import { useDispatch } from "react-redux";
 import { search } from "../store/actions/searchAction";
 
 export default function SearchBox({
-  searchProps,
   placeholder,
   value,
-  setValue,
-  actionType,
+  searchHandler
 }) {
-  const dispatch = useDispatch();
-
-  const { ...rest } = searchProps;
-  rest["searchString"] = value;
-
-  useEffect(() => {
-    if (value.length > 1) {
-      if (actionType) {
-        dispatch({ type: actionType });
-      }
-      dispatch(search(rest));
-    }
-  }, [dispatch, value]);
 
   return (
     <Row
@@ -32,17 +17,17 @@ export default function SearchBox({
         justifyContent: "center",
       }}
     >
-      <Col sm={12} lg={5}>
+      <Col xs={10} sm={6} lg={5}>
         <Form
           className="d-flex justify-content-center my-2"
-          style={{ height: "2rem" }}
+          style={{ height: "2rem" }}   
         >
           <Form.Control
-            type={searchProps.type}
+            type="text"
             placeholder={placeholder}
             aria-label="Search"
             value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(e) => searchHandler(e.target.value)}
           />
         </Form>
       </Col>

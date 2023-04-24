@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
-import {
-  Table,
-  Button
-} from "react-bootstrap";
+import { Table, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { listMyProducts, deleteProduct } from "../store/actions/productActions";
-import { listMyStores } from "../store/actions/storeActions";
-import { createStock, updateStock } from "../store/actions/stockActions";
-import AddProductButton from "../components/AddProductButton";
-import SearchBox from "../components/SearchBox";
+import {
+  listMyProducts,
+  deleteProduct,
+} from "../../store/actions/productActions";
+import { listMyStores } from "../../store/actions/storeActions";
+import { createStock, updateStock } from "../../store/actions/stockActions";
+import AddProductButton from "./AddProductButton";
+import SearchBox from "../../components/SearchBox";
 import { useLocation } from "react-router-dom";
-import Notification from "../components/Notification";
-import DeletePopup from "../components/DeletePopup";
-import { PRODUCT_DELETE_RESET } from "../store/constants/productConstants";
-import MyProductStocks from "../components/MyProductStocks"
+import Notification from "../../components/Notification";
+import DeletePopup from "../../components/DeletePopup";
+import { PRODUCT_DELETE_RESET } from "../../store/constants/productConstants";
+import MyProductStocks from "./MyProductStocks";
 
-function MyProductsScreen() {
+export default function MyProducts() {
   const [value, setValue] = useState("");
   const [stock, setStock] = useState({});
   const [stockInput, setStockInput] = useState({});
@@ -88,7 +88,6 @@ function MyProductsScreen() {
   };
 
   const stockInputHandler = (index) => {
-
     Object.keys(stockInput).forEach((key) => {
       stockInput[key] = false;
     });
@@ -96,7 +95,6 @@ function MyProductsScreen() {
       ...stockInput,
       [index]: true,
     });
-    
   };
 
   const deleteProductHandler = (product) => {
@@ -106,16 +104,15 @@ function MyProductsScreen() {
 
   const deleteStockHandler = (stock) => {
     if (window.confirm("Are you sure")) {
-      dispatch(updateStock( stock.id, { number: 0 } ));
+      dispatch(updateStock(stock.id, { number: 0 }));
     }
   };
 
   const saveHandler = async (index, stock, product, store, stockNumber) => {
-
     let stockNum = { number: stockInput[index] };
 
     if (stockInput[index] === true) {
-      stockNum = { number: stockNumber }
+      stockNum = { number: stockNumber };
     }
 
     if (stock) {
@@ -127,9 +124,10 @@ function MyProductsScreen() {
     }
   };
 
+  const isMobile = window.innerWidth < 576;
+
   return (
     <>
-      <AddProductButton />
       <SearchBox
         searchProps={{ type: "my_products" }}
         value={value}
@@ -137,10 +135,8 @@ function MyProductsScreen() {
         placeholder="Search for an id, name or brand.. "
         width="50%"
       />
-      <Table
-        hover
-        responsive
-        className="table-sm myproductstocks">
+      <AddProductButton />
+      <Table hover responsive className="table-sm">
         <thead style={{ backgroundColor: "#f2f5fa" }}>
           <tr style={{ textAlign: "center" }}>
             <th>ID</th>
@@ -148,14 +144,15 @@ function MyProductsScreen() {
             <th>NAME</th>
             <th>PRICE</th>
             <th>CATEGORY</th>
-            <th>STOCK</th>
-            <th>DELETE</th>
+            <th className="d-none d-sm-table-cell">STOCK</th>
+            <th className="d-none d-sm-table-cell">DELETE</th>
           </tr>
         </thead>
         <tbody>
           {myProducts.map((product, index) => (
             <>
-              <tr key={product.id} style={{ textAlign: "center" }}>
+              <tr key={product.id} style={{ textAlign: "center" }}
+              >
                 <td>{product.id}</td>
                 <td>
                   <strong>{product.brand}</strong>
@@ -163,7 +160,10 @@ function MyProductsScreen() {
                 <td>{product.name}</td>
                 <td>CHF {Math.trunc(product.price)}</td>
                 <td>{product.category}</td>
-                <td style={{ width: "9rem", textAlign: "center" }}>
+                <td
+                  style={{ width: "9rem", textAlign: "center" }}
+                  className="d-none d-sm-table-cell"
+                >
                   {button[index] ? (
                     <Button
                       onClick={() => {
@@ -182,15 +182,14 @@ function MyProductsScreen() {
                       stye={{ color: "#f2f5fa" }}
                       className="btn-block blue-button mystores-blue-button"
                     >
-                      { window.innerWidth < 600 ? (
-                        <i class="fa-solid fa-angle-down"></i>
-                      ) : (                      
-                      'View Stock'
-                      )}
+                      View Stock
                     </Button>
                   )}
                 </td>
-                <td style={{ width: "6rem", textAlign: "center" }}>
+                <td
+                  style={{ width: "6rem", textAlign: "center" }}
+                  className="d-none d-sm-table-cell"
+                >
                   <Button
                     onClick={() => {
                       deleteProductHandler(product);
@@ -198,16 +197,64 @@ function MyProductsScreen() {
                     stye={{ color: "#f2f5fa" }}
                     className="btn-block btn-danger mystores-blue-button"
                   >
-                     { window.innerWidth < 600 ? (
-                        <i class="fa-solid fa-trash-can"></i>
-                      ) : (                      
-                      'Delete'
-                      )}
+                    Delete
+                  </Button>
+                </td>
+              </tr>
+              <tr >
+                <td colSpan={5} className="d-table-cell d-sm-none">
+                  <Row style={{ justifyContent:'center' }}> 
+                    {button[index] ? (
+                      <Button
+                        onClick={() => {
+                          closeStockHandler(index);
+                        }}
+                        className="btn-block blue-button"
+                        style={{ width: "5rem", height:'1.5rem', padding:'0' }}
+                      >
+                        <i
+                          className="fa-solid fa-angle-up"
+                        ></i>
                       </Button>
+                    ) : (
+                      <Button
+                        onClick={() => {
+                          viewStockHandler(index);
+                        }}
+                        className="blue-button"
+                        style={{ width: "5rem", height:'1.5rem', padding:'0' }}
+                      >
+                        <i
+                          className="fa-solid fa-angle-down"
+                        ></i>
+                      </Button>
+                    )}
+                    <Button
+                      onClick={() => {
+                        deleteProductHandler(product);
+                      }}
+                      className="red-button"
+                      style={{ width: "5rem", height:'1.5rem', padding:'0' }}
+                    >
+                      <i
+                        className="fa-solid fa-trash-can"
+                      ></i>
+                    </Button>
+                  </Row>
                 </td>
               </tr>
               {button[index] && (
-                  < MyProductStocks product={product} myStores={myStores} stockInput={stockInput} setStockInput={setStockInput} stock={stock} stockInputHandler={stockInputHandler} saveHandler={saveHandler} deleteStockHandler={deleteStockHandler} loading={loading} />
+                <MyProductStocks
+                  product={product}
+                  myStores={myStores}
+                  stockInput={stockInput}
+                  setStockInput={setStockInput}
+                  stock={stock}
+                  stockInputHandler={stockInputHandler}
+                  saveHandler={saveHandler}
+                  deleteStockHandler={deleteStockHandler}
+                  loading={loading}
+                />
               )}
             </>
           ))}
@@ -217,7 +264,7 @@ function MyProductsScreen() {
         <DeletePopup
           setDeleteWindow={setDeleteWindow}
           setDeleteConfirm={setDeleteConfirm}
-          item={{ type: 'product', details: productToDelete }}
+          item={{ type: "product", details: productToDelete }}
         />
       )}
       {deleteProductSuccess && (
@@ -235,5 +282,3 @@ function MyProductsScreen() {
     </>
   );
 }
-
-export default MyProductsScreen;

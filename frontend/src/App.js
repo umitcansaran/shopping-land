@@ -3,14 +3,14 @@ import "./index.css";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import HomeScreen from "./containers/Home";
+import Home from "./containers/Home";
 import RegisterScreen from "./containers/Register";
 import LoginScreen from "./containers/Login";
-import AddProductScreen from "./containers/AddProduct";
-import AddStoreScreen from "./containers/AddStore";
-import StoresMapScreen from "./containers/StoresMap";
-import MyStoresScreen from "./containers/MyStores";
-import MyProductsScreen from "./containers/MyProducts.js";
+import AddProduct from "./containers/AddProduct/AddProduct";
+import AddStore from "./containers/AddStore/AddStore";
+import StoresMap from "./containers/StoresMap";
+import MyStores from "./containers/MyStores";
+import MyProducts from "./containers/MyProducts/index.js";
 import ProductScreen from "./containers/Product";
 import CartScreen from "./containers/Cart";
 import ProfileScreen from "./containers/MyProfile";
@@ -28,7 +28,7 @@ function App() {
       <Header />
       <main>
         <Routes>
-          <Route exact path="/" element={<HomeScreen />} />
+          <Route exact path="/" element={<Home />} />
           <Route path="/shipping" element={<ShippingScreen />} />
           <Route path="/payment" element={<PaymentScreen />} />
           <Route path="/placeorder" element={<PlaceOrderScreen />} />
@@ -40,14 +40,11 @@ function App() {
           <Route path="/profile" element={<ProfileScreen />} />
           <Route path="/cart" element={<CartScreen />} />
           <Route path="/product/:id" element={<ProductScreen />} />
-          <Route path="/mystores" element={<MyStoresScreen />} />
-          <Route path="/myproducts" element={<MyProductsScreen />} />
-          <Route path="/map" element={<StoresMapScreen />} />
-          <Route
-            path="/myproducts/add-product"
-            element={<AddProductScreen />}
-          />
-          <Route path="/mystores/add-store" element={<AddStoreScreen />} />
+          <Route path="/mystores" element={<MyStores />} />
+          <Route path="/myproducts" element={<MyProducts />} />
+          <Route path="/map" element={<StoresMap />} />
+          <Route path="/myproducts/add-product" element={<AddProduct />} />
+          <Route path="/mystores/add-store" element={<AddStore />} />
           <Route path="/register" element={<RegisterScreen />} />
           <Route path="/login" element={<LoginScreen />} />
         </Routes>

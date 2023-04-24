@@ -16,7 +16,7 @@ export default function SellersScreen() {
 
   const dispatch = useDispatch();
 
-  const { profiles: filteredProfiles } = useSelector(
+  const { profiles: filterSellerProfiles } = useSelector(
     (state) => state.sellerProfiles
   );
 
@@ -24,13 +24,13 @@ export default function SellersScreen() {
   const { data: categories } = useSWR("/api/product-categories/", fetcher);
 
   // Using React Query for faster reload after filtering by mounting cached components.
-  const { data: allProfiles, isLoading: loading } = useQuery({
+  const { data: sellerProfiles, isLoading: loading } = useQuery({
     queryKey: ["sellers"],
     queryFn: () => axios.get("/api/profiles/sellers/").then((res) => res.data),
   });
 
   let profiles;
-  !searchResult ? (profiles = allProfiles) : (profiles = filteredProfiles);
+  !searchResult ? (profiles = sellerProfiles) : (profiles = filterSellerProfiles);
 
   const filterOptionHandler = (event) => {
     dispatch({ type: SELLER_PROFILES_RESET });

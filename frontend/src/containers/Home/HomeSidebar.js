@@ -1,29 +1,27 @@
 import { CFormCheck } from "@coreui/react";
 import React from "react";
-import { Col } from "react-bootstrap";
 
-function HomeSidebar({ categories = [], categoryFilterHandler }) {
+export default function HomeSidebar({ categories = [], categoryFilterHandler }) {
   return (
     <div className="home-sidebar">
       {categories.map((category) => {
         return (
           <>
-            <h5 className="my-3" style={{ color: "#495b7a" }} key={category.id}>
+            <h5 className="my-3" key={category.id}>
               {category.name}
             </h5>
             {category.subcategory.map((subcategory) => {
               return (
                 <CFormCheck
+                  className="my-2 sidebar-form-check"
+                  key={subcategory.id}
                   type="radio"
                   name="flexRadioDefault"
                   id="flexRadioDefault1"
                   label={subcategory.name}
-                  style={{ backgroundColor: "#495b7a" }}
                   onChange={() => {
                     categoryFilterHandler(subcategory.name);
                   }}
-                  className="my-2"
-                  key={subcategory.id}
                 />
               );
             })}
@@ -33,5 +31,3 @@ function HomeSidebar({ categories = [], categoryFilterHandler }) {
     </div>
   );
 }
-
-export default HomeSidebar;

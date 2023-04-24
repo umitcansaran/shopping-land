@@ -42,9 +42,9 @@ function MyStoreStocks({ store }) {
             >
               <Form.Control
                 type="search"
-                placeholder="Search for an id, brand or name.."
+                placeholder="Search for an ID, brand or product name"
                 aria-label="Search"
-                style={{ width: "50%", borderRadius: "30px 30px 30px 30px" }}
+                style={{ width: "50%" }}
                 value={value}
                 onChange={(e) => searchHandler(e, store.name)}
               />

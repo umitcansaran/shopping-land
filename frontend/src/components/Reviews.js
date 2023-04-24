@@ -4,8 +4,8 @@ import Rating from "../components/Rating";
 import { Link } from "react-router-dom";
 
 function Reviews({ latestReviews = [] }) {
-
-  const charLimit = (window.innerWidth < 1300) ? 30 : (window.innerWidth < 1600 ? 40 : 70)
+  const charLimit =
+    window.innerWidth < 1300 ? 30 : window.innerWidth < 1600 ? 40 : 70;
 
   return (
     <Col md={3} className="pt-3">
@@ -17,7 +17,10 @@ function Reviews({ latestReviews = [] }) {
               <Carousel.Item key={index}>
                 <div className="row text-center">
                   <Rating value={review.rating} color={"#f8e825"} />
-                  <Link to={`/product/${review.product.id}`} style={{ color:'#32415c'}}>
+                  <Link
+                    to={`/product/${review.product.id}`}
+                    style={{ color: "#32415c" }}
+                  >
                     <div className="d-flex justify-content-center">
                       <img
                         src={review.product.image}
@@ -34,18 +37,16 @@ function Reviews({ latestReviews = [] }) {
                         {review.product.name}
                       </h6>
                     </strong>
-                    <div>
-                    <p>
-                      <i className="fas fa-quote-left pe-2"></i>
-                      {review.comment.length > charLimit
-                        ? review.comment.substring(0, charLimit) + "..."
-                        : review.comment}
-                    </p>
+                    <div style={{ height: 'auto' }}>
+                      <p>
+                        <i className="fas fa-quote-left pe-2"></i>
+                        {review.comment.length > charLimit
+                          ? review.comment.substring(0, charLimit) + "..."
+                          : review.comment}
+                      </p>
                     </div>
                   </Link>
-                  <p className="" style={{ fontSize: "0.9rem" }}>
-                    reviewed by {review.name}
-                  </p>
+                  <p>reviewed by {review.name}</p>
                 </div>
               </Carousel.Item>
             )

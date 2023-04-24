@@ -1,0 +1,38 @@
+.home-searchbox {
+  justify-content: center;
+  height: 3rem;
+  background-color: #495b7a;
+}
+
+.home-categories-bar {
+  border-bottom: 0.5px solid #818ca1;
+}
+
+.home-categories-link {
+  color: #32415c;
+}
+
+.home-sidebar h5 {
+  color: #495b7a;
+}
+
+.sidebar-form-check {
+  color: #495b7a;
+}
+
+.home-back-button-container {
+  justify-content: center;
+}
+
+.home-back-button {
+  width: 200px;
+  margin-top: 10px;
+}
+
+@media (min-width: 640px) {
+  .home-product-container {
+    min-width: 19rem;
+  }
+}
+
+

@@ -1,0 +1,74 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.marker-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.marker-btn img {
+  width: 20px;
+  height: 20px;
+}
+
+.map-filters-bar {
+  justify-content: center;
+  height: 3rem;
+  background-color: #495b7a;
+}
+
+.map-search,
+.map-filter {
+  width: 50%;
+  margin: auto;
+}
+
+.map {
+  height: 90vh;
+  width: 100vw;
+}
+
+.map-seller-image {
+  width: auto;
+  height: 13px;
+}
+
+.map-store-container {
+  overflow: visible;
+}
+
+.map-store-container h4 {
+  margin: 0;
+  padding: 0;
+}
+
+.map-store-image {
+  width: 100%;
+  height: auto;
+  max-height: 14rem;
+  object-fit: cover;
+}
+
+@media (max-width: 900px) {
+  .map-container {
+    height: 5.5rem;
+  }
+
+  .map-search,
+  .map-filter {
+    width: 100%;
+  }
+}

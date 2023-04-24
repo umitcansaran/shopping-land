@@ -77,20 +77,32 @@ h2 {
 }
 
 #adminmenu {
-  color: rgb(70, 69, 69)
+  color: rgb(70, 69, 69);
 }
 
 .blue-button {
   background-color: #648dc3;
-  box-shadow: none;
 }
 
-.blue-button:focus {
-  background-color: #7d9bc1;
+.blue-button:focus, .blue-button:hover {
+  background-color: #4b74aa;
 }
 
-.blue-button:hover {
-  background-color: #7d9bc1;
+.red-button {
+  background-color: rgb(238, 103, 103);
+}
+
+.red-button:hover, .red-button:focus {
+  background-color: rgb(190, 68, 68);
+}
+
+
+.red-badge {
+  background-color: rgb(238, 103, 103) !important;
+}
+
+.green-badge {
+  background-color: rgb(59, 145, 66) !important;
 }
 
 .product-card-name {
@@ -109,46 +121,9 @@ h2 {
   padding: 0;
 }
 
-.map-store-container {
-  overflow: visible;
-}
-
-/* .map-store-image {
-  width: auto;
-  height: 12rem;
-  object-fit: cover;
-} */
-.map-store-image {
-  width: 100%;
-  height: auto;
-  /* max-width: 14rem; */
-  max-height: 14rem;
-  object-fit: cover;
-}
-
 .sellers-page-filter {
   width: 40%;
   margin: auto;
-}
-
-@media (max-width: 600px) {
-  .card-img-container {
-    height: auto;
-    width: 100%;
-    /* max-height: 30rem !important; */
-    align-items: center;
-    margin: 0;
-  }
-  .mystores-container {
-    width: 60% !important;
-  }
-  .mystores-blue-button {
-    width: auto;
-  }
-
-  .sellers-page-filter {
-    width: 80%;
-  }
 }
 
 .home-sidebar {
@@ -156,3 +131,19 @@ h2 {
   top: 0;
 }
 
+@media (max-width: 640px) {
+  .card-img-top {
+    width: 100%;
+    height: auto;
+    max-width: 12rem;
+    max-height: 12rem;
+    object-fit: cover;
+
+  }
+  
+  .card-img-container {
+    height: 12.5rem;
+    align-items: center;
+    margin: auto;
+  }
+}

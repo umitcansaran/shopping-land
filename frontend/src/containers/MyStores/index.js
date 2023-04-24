@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Button, Container, Row, Table } from "react-bootstrap";
+import { Button, Row, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { listMyStores, deleteStore } from "../store/actions/storeActions";
-import AddStoreButton from "../components/AddStoreButton";
-import { listMyProducts } from "../store/actions/productActions";
-import { listStocks } from "../store/actions/stockActions";
-import { search } from "../store/actions/searchAction";
-import MyStoreStocks from "../components/MyStoreStocks";
-import Loader from "../components/Loader";
-import Message from "../components/Message";
-import Notification from "../components/Notification";
+import { listMyStores, deleteStore } from "../../store/actions/storeActions";
+import AddStoreButton from "./AddStoreButton";
+import { listMyProducts } from "../../store/actions/productActions";
+import { listStocks } from "../../store/actions/stockActions";
+import { search } from "../../store/actions/searchAction";
+import MyStoreStocks from "../../components/MyStoreStocks";
+import Loader from "../../components/Loader";
+import Message from "../../components/Message";
+import Notification from "../../components/Notification";
 import { useLocation } from "react-router-dom";
-import { STORE_DELETE_RESET } from "../store/constants/storeConstants";
-import DeletePopup from "../components/DeletePopup";
+import { STORE_DELETE_RESET } from "../../store/constants/storeConstants";
+import DeletePopup from "../../components/DeletePopup";
 
-function MyStoresScreen() {
+export default function MyStores() {
   const [button, setButton] = useState({});
   const [value, setValue] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState(null);
@@ -93,7 +93,7 @@ function MyStoresScreen() {
   };
 
   return (
-    <Container fluid >  
+    <Row >
       <AddStoreButton />
       {myStoresLoading ? (
         <Loader />
@@ -104,8 +104,9 @@ function MyStoresScreen() {
           striped
           hover
           responsive
-          className="table-sm my-3 mystores-container"
-          style={{ width: "90%", margin: "auto" }}>
+          className="table-sm my-3"
+          style={{ width: "100%" }}
+        >
           <thead style={{ backgroundColor: "#f2f5fa" }}>
             <tr style={{ textAlign: "center" }}>
               <th>ID</th>
@@ -176,7 +177,7 @@ function MyStoresScreen() {
         <DeletePopup
           setDeleteWindow={setDeleteWindow}
           setDeleteConfirm={setDeleteConfirm}
-          item={{ type: 'store', details: storeToDelete }}
+          item={{ type: "store", details: storeToDelete }}
         />
       )}
       {deleteStoreSuccess && (
@@ -185,8 +186,6 @@ function MyStoresScreen() {
       {createStoreSuccess && (
         <Notification status="success" message="Store Created Successfully!" />
       )}
-    </Container>
+    </Row>
   );
 }
-
-export default MyStoresScreen;
