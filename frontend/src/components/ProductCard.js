@@ -18,11 +18,11 @@ export default function ProductCard({ product, index }) {
           />
         </Link>
       </Row>
-      <Row >
+      <Row>
         <Card.Body className="product-row mt-1">
           <Link to={`/product/${product.id}`}>
             <Card.Title
-              className="text-center"
+              className="text-center product-title"
               style={{
                 fontSize: "16px",
                 letterSpacing: "0.06rem",
@@ -51,7 +51,7 @@ export default function ProductCard({ product, index }) {
           <Card.Text className="text-center m-0" style={{ fontSize: "1rem", color:'black' }}>
             CHF {Math.trunc(product.price)}
           </Card.Text>
-          <Card.Text style={{ fontSize: "1rem" }} className="text-center mb-1">
+          <Card.Text style={{ fontSize: "1rem" }} className="text-center mb-1 d-none d-sm-block">
             Sold by{" "}
             <Link
               to={`/seller/${

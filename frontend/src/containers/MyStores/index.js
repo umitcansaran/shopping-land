@@ -97,7 +97,7 @@ export default function MyStores() {
   };
 
   return (
-    <Row>
+    <>
       <SearchBox
         searchProps={{ type: "my_products" }}
         value={value}
@@ -227,6 +227,6 @@ export default function MyStores() {
       {createStoreSuccess && (
         <Notification status="success" message="Store Created Successfully!" />
       )}
-    </Row>
+    </>
   );
 }

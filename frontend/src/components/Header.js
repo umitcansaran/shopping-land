@@ -56,7 +56,7 @@ const Header = () => {
           style={{
             width: "2rem",
             backgroundImage:
-              "url('https://upload.wikimedia.org/wikipedia/commons/b/b2/Hamburger_icon.svg')",
+              "url('https://shoppingland.s3.eu-central-1.amazonaws.com/menu.svg')",
           }}
         />
         <Navbar.Collapse id="basic-navbar-nav">

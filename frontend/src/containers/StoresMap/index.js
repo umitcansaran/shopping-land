@@ -1,35 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Map from "react-map-gl";
-import { Col, Container, Form, Row } from "react-bootstrap";
+import { Col, Container, Form, Nav, Row } from "react-bootstrap";
 import "./index.css";
 import { search } from "../../store/actions/searchAction";
 import { Popup, Marker } from "react-map-gl";
 import Loader from "../../components/Loader";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import useDebounce from "../../utils/use-debouncer";
 import { STORE_LIST_RESET } from "../../store/constants/storeConstants";
+import SearchBox from "../../components/SearchBox";
 
 export default function StoresMap() {
+
+  let zoomNumber
+const isMobile = window.innerWidth < 991 ? zoomNumber = 6.5 : zoomNumber = 8.2 
+
   const [value, setValue] = useState("");
   const [filter, setFilter] = useState("");
   const [selectedStore, setSelectedStore] = useState(null);
   const [viewState, setViewState] = useState({
     latitude: 46.826908,
     longitude: 7.944633,
-    zoom: 8.2,
+    zoom: zoomNumber,
   });
-
-  const dispatch = useDispatch();
-  const debouncedSearchTerm = useDebounce(value, 500);
-
-  useEffect(() => {
-    dispatch({ type: STORE_LIST_RESET });
-    if (debouncedSearchTerm) {
-      dispatch(search({ type: "map", searchString: debouncedSearchTerm }));
-    }
-  }, [dispatch, debouncedSearchTerm]);
 
   const { stores: searchResult } = useSelector((state) => state.storeList);
 
@@ -60,39 +54,28 @@ export default function StoresMap() {
   return (
     <>
       <Container fluid>
-        <Row className="map-filters-bar">
-          <Col
-            sm={12}
-            lg={6}
-            className="align-self-center justify-content-center"
-          >
-            <Form>
-              <Form.Control
-                className="map-search"
-                type="text"
-                placeholder="Search for a seller name"
-                aria-label="Search"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-              />
-            </Form>
-          </Col>
-          <Col
-            sm={12}
-            lg={6}
-            className="align-self-center justify-content-center"
-          >
-            <Form.Select
-              className="map-filter"
-              onChange={(e) => setFilter(e.target.value)}
-              aria-label="Default select example"
-            >
-              <option>Filter by Category</option>
-              {categories?.map((category) => {
-                return <option>{category.name}</option>;
-              })}
-            </Form.Select>
-          </Col>
+        <SearchBox
+          searchProps={{ type: "map" }}
+          actionType="STORE_LIST_RESET"
+          value={value}
+          setValue={setValue}
+          placeholder="Search for an id, brand or name.. "
+        />
+        <Row>
+          <Nav className="justify-content-evenly home-categories-bar">
+            {categories?.map((category) => {
+              return (
+                <Nav.Item key={category.id}>
+                  <Nav.Link
+                    className="home-categories-link"
+                    onClick={() => setFilter(category.name)}
+                  >
+                    {category.name}
+                  </Nav.Link>
+                </Nav.Item>
+              );
+            })}
+          </Nav>
         </Row>
         <Row className="map">
           <Map
@@ -104,7 +87,7 @@ export default function StoresMap() {
             {loadingStores || loadingProfiles ? (
               <Loader />
             ) : (
-              stores.map((store, index) => {
+              stores?.map((store, index) => {
                 const profile = profiles.find(
                   (profile) => profile.name === store.owner_name
                 );
@@ -125,7 +108,6 @@ export default function StoresMap() {
                           className="map-seller-image"
                           src={profile.image}
                           alt="Store Icon"
-                          style={{ width: "auto", height: "13px" }}
                         />
                       </button>
                     )}

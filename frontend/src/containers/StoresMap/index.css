@@ -20,8 +20,8 @@ code {
 }
 
 .marker-btn img {
-  width: 20px;
-  height: 20px;
+  width: auto;
+  height: 18px;
 }
 
 .map-filters-bar {
@@ -62,7 +62,7 @@ code {
   object-fit: cover;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 991px) {
   .map-container {
     height: 5.5rem;
   }
@@ -70,5 +70,16 @@ code {
   .map-search,
   .map-filter {
     width: 100%;
+  }
+
+  .map-filters-bar {
+    justify-content: center;
+    height: 6rem;
+    background-color: #495b7a;
+  }
+
+  .marker-btn img {
+    width: auto;
+    height: 13px;
   }
 }
