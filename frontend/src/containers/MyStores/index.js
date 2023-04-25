@@ -1,21 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { Button, Row, Table } from "react-bootstrap";
+import { Button, Col, Form, Row, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { listMyStores, deleteStore } from "../../store/actions/storeActions";
 import AddStoreButton from "./AddStoreButton";
 import { listMyProducts } from "../../store/actions/productActions";
 import { listStocks } from "../../store/actions/stockActions";
 import { search } from "../../store/actions/searchAction";
-import MyStoreStocks from "../../components/MyStoreStocks";
+import MyStoreStocks from "./StoreStocks";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import Notification from "../../components/Notification";
 import { useLocation } from "react-router-dom";
 import { STORE_DELETE_RESET } from "../../store/constants/storeConstants";
 import DeletePopup from "../../components/DeletePopup";
+import SearchBox from "../../components/SearchBox";
+import MobileStockButtons from "../MyProducts/ProductButtons";
+import StoreButtons from "./StoreButtons";
+import StoreStocks from "./StoreStocks";
 
 export default function MyStores() {
-  const [button, setButton] = useState({});
+  const [viewButton, setViewButton] = useState({});
   const [value, setValue] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [deleteWindow, setDeleteWindow] = useState(false);
@@ -69,11 +73,11 @@ export default function MyStores() {
   };
 
   const viewStockHandler = (index) => {
-    Object.keys(button).forEach((key) => {
-      button[key] = false;
+    Object.keys(viewButton).forEach((key) => {
+      viewButton[key] = false;
     });
-    setButton({
-      ...button,
+    setViewButton({
+      ...viewButton,
       [index]: true,
     });
     setValue("");
@@ -81,8 +85,8 @@ export default function MyStores() {
   };
 
   const closeStockHandler = (index) => {
-    setButton({
-      ...button,
+    setViewButton({
+      ...viewButton,
       [index]: false,
     });
   };
@@ -93,18 +97,41 @@ export default function MyStores() {
   };
 
   return (
-    <Row >
+    <Row>
+      <SearchBox
+        searchProps={{ type: "my_products" }}
+        value={value}
+        searchHandler={searchHandler}
+        placeholder="Search for an id, brand or name.. "
+      />
+      {/* <Row
+      style={{
+        backgroundColor: "#495b7a",
+        height: "3rem",
+        justifyContent: "center",
+      }}
+    >
+      <Col xs={10} sm={6} lg={5}>
+        <Form
+          className="d-flex justify-content-center my-2"
+          style={{ height: "2rem" }}   
+        >
+          <Form.Control
+            type="text"
+            placeholder="Search for an id, brand or name.. "
+            aria-label="Search"
+            value={value}
+            onChange={(e) => searchHandler(e.target.value)}
+          />
+        </Form>
+      </Col>
+    </Row> */}
       <AddStoreButton />
-      {myStoresLoading ? (
-        <Loader />
-      ) : error ? (
-        <Message variant="danger">{error}</Message>
-      ) : (
         <Table
           striped
           hover
           responsive
-          className="table-sm my-3"
+          className="table-sm my-2"
           style={{ width: "100%" }}
         >
           <thead style={{ backgroundColor: "#f2f5fa" }}>
@@ -113,22 +140,25 @@ export default function MyStores() {
               <th>NAME</th>
               <th>ADDRESS</th>
               <th>PHONE</th>
-              <th></th>
-              <th></th>
+              <th className="d-none d-sm-table-cell">PRODUCT</th>
+              <th className="d-none d-sm-table-cell">DELETE</th>
             </tr>
           </thead>
           <tbody>
             {myStores.map((store, index) => (
               <>
-                <tr key={store.id} style={{ textAlign: "center" }}>
+                <tr key={index} style={{ textAlign: "center" }}>
                   <td>{index + 1}</td>
                   <td>
                     <strong>{store.name}</strong>
                   </td>
                   <td>{store.address}</td>
                   <td>{store.phone}</td>
-                  <td style={{ width: "11rem", textAlign: "center" }}>
-                    {button[index] ? (
+                  <td
+                    style={{ width: "11rem", textAlign: "center" }}
+                    className="d-none d-sm-table-cell"
+                  >
+                    {viewButton[index] ? (
                       <Button
                         onClick={() => {
                           closeStockHandler(index);
@@ -150,7 +180,10 @@ export default function MyStores() {
                       </Button>
                     )}
                   </td>
-                  <td style={{ width: "8rem", textAlign: "center" }}>
+                  <td
+                    style={{ width: "8rem", textAlign: "center" }}
+                    className="d-none d-sm-table-cell"
+                  >
                     <Button
                       onClick={() => {
                         deleteStoreHandler(store);
@@ -161,8 +194,17 @@ export default function MyStores() {
                     </Button>
                   </td>
                 </tr>
-                {button[index] && (
-                  <MyStoreStocks
+                {/* renders only on mobile screens */}
+                <StoreButtons
+                  store={store}
+                  index={index}
+                  viewButton={viewButton}
+                  viewStockHandler={viewStockHandler}
+                  closeStockHandler={closeStockHandler}
+                  deleteStoreHandler={deleteStoreHandler}
+                />
+                {viewButton[index] && (
+                  <StoreStocks
                     store={store}
                     searchHandler={searchHandler}
                     value={value}
@@ -172,7 +214,6 @@ export default function MyStores() {
             ))}
           </tbody>
         </Table>
-      )}
       {deleteWindow && (
         <DeletePopup
           setDeleteWindow={setDeleteWindow}

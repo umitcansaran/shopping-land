@@ -15,6 +15,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import axios from "axios";
+import useDebounce from "../../utils/use-debouncer";
 import "./index.css";
 
 export default function Home() {
@@ -24,13 +25,14 @@ export default function Home() {
 
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
+  const debouncedSearchTerm = useDebounce(value, 500);
 
   useEffect(() => {
-    if (value.length > 1) {
-      dispatch({ type: PRODUCT_LIST_RESET });
-      dispatch(search({ type: "all", searchString: value }));
+    dispatch({ type: PRODUCT_LIST_RESET });
+    if (debouncedSearchTerm) {
+      dispatch(search({ type: "all", searchString: debouncedSearchTerm }));
     }
-  }, [dispatch, value]);
+  }, [dispatch, debouncedSearchTerm]);
 
   const { products: searchResult } = useSelector((state) => state.productList);
 
@@ -149,8 +151,8 @@ export default function Home() {
           </>
         )}
       </Row>
-      <Row >
-        <Col md={2} lg={2} xl={2} className="d-md-block d-none" >
+      <Row>
+        <Col md={2} lg={2} xl={2} className="d-md-block d-none">
           <HomeSidebar
             categories={categoriesQuery.data}
             categoryFilterHandler={categoryFilterHandler}
@@ -160,11 +162,17 @@ export default function Home() {
           {value.length <= 1 && !searching ? (
             // show all products at first render
             <>
-              <Row className="justify-content-center" >
+              <Row className="justify-content-center">
                 {data?.pages.map((page, index) => {
                   return page.results.map((product) => {
                     return (
-                      <Col xs={6} md={4} lg={4} xl={3} className="gx-1 gy-1 home-product-container">
+                      <Col
+                        xs={6}
+                        md={4}
+                        lg={4}
+                        xl={3}
+                        className="gx-1 gy-1 home-product-container"
+                      >
                         <ProductCard product={product} key={index} />
                       </Col>
                     );
@@ -190,7 +198,13 @@ export default function Home() {
               {searchResult?.map((product, index) => {
                 return (
                   // <Col xs={6} md={3} lg={4} xl={3} className="gx-1 gy-1">
-                  <Col xs={6} md={4} lg={4} xl={3} className="gx-1 gy-1 home-product-container">
+                  <Col
+                    xs={6}
+                    md={4}
+                    lg={4}
+                    xl={3}
+                    className="gx-1 gy-1 home-product-container"
+                  >
                     <ProductCard product={product} key={index} />
                   </Col>
                 );

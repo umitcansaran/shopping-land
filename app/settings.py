@@ -36,7 +36,6 @@ ALLOWED_HOSTS = ['127.0.0.1', 'shopping-land.herokuapp.com', 'www.shopping-land.
 # Application definition
 CORS_ALLOW_ALL_ORIGINS = True
 
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",

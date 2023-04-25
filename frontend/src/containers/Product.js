@@ -56,8 +56,6 @@ function ProductScreen() {
     success: successProductReview,
   } = useSelector((state) => state.productReviewCreate);
 
-  console.log(stocks)
-
   useEffect(() => {
     if (successProductReview) {
       setRating(0);

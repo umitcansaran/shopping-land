@@ -9,12 +9,12 @@ export default function AddStoreButton() {
 
   return (
     <>
-      <Row style={{ backgroundColor: "#495b7a", height: "3rem" }}>
-        <Nav variant="pills" className="d-flex justify-content-center">
-          <Nav.Item>
+      <Row style={{ height:'2.5rem', margin:'0', padding:'0' }}>
+        <Nav variant="pills" className="d-flex justify-content-center" style={{ margin:'0', padding:'0'}}>
+          <Nav.Item> 
             <Nav.Link
               className="d-flex align-items-center"
-              style={{ height: "2rem", borderRadius: "30px 30px 30px 30px" }}
+              style={{ height: "2rem", backgroundColor: "#648dc3", color:'white' }}
               onClick={() => setSelect(!select)}
               eventKey="product"
             >

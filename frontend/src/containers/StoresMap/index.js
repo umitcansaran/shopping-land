@@ -8,6 +8,7 @@ import { Popup, Marker } from "react-map-gl";
 import Loader from "../../components/Loader";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import useDebounce from "../../utils/use-debouncer";
 import { STORE_LIST_RESET } from "../../store/constants/storeConstants";
 
 export default function StoresMap() {
@@ -21,17 +22,16 @@ export default function StoresMap() {
   });
 
   const dispatch = useDispatch();
+  const debouncedSearchTerm = useDebounce(value, 500);
 
   useEffect(() => {
-    if (value.length > 0) {
-      dispatch({ type: STORE_LIST_RESET });
-      dispatch(search({ type: "map", searchString: value }));
+    dispatch({ type: STORE_LIST_RESET });
+    if (debouncedSearchTerm) {
+      dispatch(search({ type: "map", searchString: debouncedSearchTerm }));
     }
-  }, [dispatch, value]);
+  }, [dispatch, debouncedSearchTerm]);
 
-  const { stores: searchResult } = useSelector(
-    (state) => state.storeList
-  );
+  const { stores: searchResult } = useSelector((state) => state.storeList);
 
   const { data: dataResult, isLoading: loadingStores } = useQuery(
     ["stores", filter],
@@ -104,7 +104,6 @@ export default function StoresMap() {
             {loadingStores || loadingProfiles ? (
               <Loader />
             ) : (
-              ((<h1>sssss</h1>),
               stores.map((store, index) => {
                 const profile = profiles.find(
                   (profile) => profile.name === store.owner_name
@@ -174,7 +173,7 @@ export default function StoresMap() {
                     ) : null}
                   </Marker>
                 );
-              }))
+              })
             )}
           </Map>
         </Row>

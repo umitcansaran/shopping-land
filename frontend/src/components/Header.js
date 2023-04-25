@@ -34,7 +34,7 @@ const Header = () => {
     navigate("/");
   };
 
-  const isMobile = window.innerWidth < 600;
+  const isMobile = window.innerWidth < 991;
 
   return (
     <Navbar bg="light" expand="lg">
@@ -68,7 +68,7 @@ const Header = () => {
               style={{ color: "rgb(70, 69, 69)" }}
             >
               <i className="fa-solid fa-store" style={{ color: "#1e478a" }}></i>{" "}
-              Sellers List
+              Sellers
             </Nav.Link>
             <Nav.Link
               as={Link}
@@ -128,14 +128,22 @@ const Header = () => {
                     <LinkContainer to="/myproducts">
                       <NavDropdown.Item>Products</NavDropdown.Item>
                     </LinkContainer>
-                    <NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
+                    <NavDropdown.Item onClick={logoutHandler}>
+                      Logout
+                    </NavDropdown.Item>
                   </NavDropdown>
                 </>
               )
             ) : (
-              <Nav.Link as={Link} className={isMobile ? "" : "ms-5"} to="/login">
-                <i class="fa-solid fa-user" style={{ color: "#1e478a" }}></i>Sign In</Nav.Link>
-                )}
+              <Nav.Link
+                as={Link}
+                className={isMobile ? "" : "ms-5"}
+                to="/login"
+              >
+                <i class="fa-solid fa-user" style={{ color: "#1e478a" }}></i>
+                Sign In
+              </Nav.Link>
+            )}
             <Nav.Link
               as={Link}
               className={isMobile ? "" : "ms-5"}

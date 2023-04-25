@@ -9,12 +9,12 @@ export default function AddProductButton() {
 
   return (
     <>
-      <Row style={{ height: "2.5rem", marginBottom:'0.5rem' }}>
-        <Nav variant="pills" className="d-flex justify-content-center">
+      <Row style={{ height:'2.5rem', margin:'0', padding:'0' }}>
+        <Nav variant="pills" className="d-flex justify-content-center" style={{ margin:'0', padding:'0'}}>
           <Nav.Item>
             <Nav.Link
               className="d-flex align-items-center"
-              style={{ height: "2rem", backgroundColor: "#99abc3" }}
+              style={{ height: "2rem", backgroundColor: "#648dc3", color:'white' }}
               onClick={() => setSelect(!select)}
               eventKey="product"
             >

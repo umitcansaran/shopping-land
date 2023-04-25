@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Row, Col } from "react-bootstrap";
+import { Table, Button, Row, Col, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import {
   listMyProducts,
@@ -14,12 +14,15 @@ import Notification from "../../components/Notification";
 import DeletePopup from "../../components/DeletePopup";
 import { PRODUCT_DELETE_RESET } from "../../store/constants/productConstants";
 import MyProductStocks from "./MyProductStocks";
+import { search } from "../../store/actions/searchAction";
+import MobileStockButtons from "./ProductButtons";
+import ProductButtons from "./ProductButtons";
 
 export default function MyProducts() {
   const [value, setValue] = useState("");
   const [stock, setStock] = useState({});
   const [stockInput, setStockInput] = useState({});
-  const [button, setButton] = useState({});
+  const [viewButton, setViewButton] = useState({});
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [deleteWindow, setDeleteWindow] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
@@ -68,21 +71,21 @@ export default function MyProducts() {
   }, [dispatch]);
 
   const viewStockHandler = (index) => {
-    Object.keys(button).forEach((key) => {
-      button[key] = false;
+    Object.keys(viewButton).forEach((key) => {
+      viewButton[key] = false;
     });
     Object.keys(stockInput).forEach((key) => {
       stockInput[key] = false;
     });
-    setButton({
-      ...button,
+    setViewButton({
+      ...viewButton,
       [index]: true,
     });
   };
 
   const closeStockHandler = (index) => {
-    setButton({
-      ...button,
+    setViewButton({
+      ...viewButton,
       [index]: false,
     });
   };
@@ -124,19 +127,21 @@ export default function MyProducts() {
     }
   };
 
-  const isMobile = window.innerWidth < 576;
+  const searchHandler = (keyword) => {
+    setValue(keyword);
+    dispatch(search({ type: "my_products", searchString: keyword }));
+  };
 
   return (
     <>
       <SearchBox
         searchProps={{ type: "my_products" }}
         value={value}
-        setValue={setValue}
-        placeholder="Search for an id, name or brand.. "
-        width="50%"
+        searchHandler={searchHandler}
+        placeholder="Search for an id, brand or name.. "
       />
       <AddProductButton />
-      <Table hover responsive className="table-sm">
+      <Table hover responsive className="table-sm my-2">
         <thead style={{ backgroundColor: "#f2f5fa" }}>
           <tr style={{ textAlign: "center" }}>
             <th>ID</th>
@@ -151,8 +156,7 @@ export default function MyProducts() {
         <tbody>
           {myProducts.map((product, index) => (
             <>
-              <tr key={product.id} style={{ textAlign: "center" }}
-              >
+              <tr key={product.id} style={{ textAlign: "center" }}>
                 <td>{product.id}</td>
                 <td>
                   <strong>{product.brand}</strong>
@@ -164,7 +168,7 @@ export default function MyProducts() {
                   style={{ width: "9rem", textAlign: "center" }}
                   className="d-none d-sm-table-cell"
                 >
-                  {button[index] ? (
+                  {viewButton[index] ? (
                     <Button
                       onClick={() => {
                         closeStockHandler(index);
@@ -201,49 +205,16 @@ export default function MyProducts() {
                   </Button>
                 </td>
               </tr>
-              <tr >
-                <td colSpan={5} className="d-table-cell d-sm-none">
-                  <Row style={{ justifyContent:'center' }}> 
-                    {button[index] ? (
-                      <Button
-                        onClick={() => {
-                          closeStockHandler(index);
-                        }}
-                        className="btn-block blue-button"
-                        style={{ width: "5rem", height:'1.5rem', padding:'0' }}
-                      >
-                        <i
-                          className="fa-solid fa-angle-up"
-                        ></i>
-                      </Button>
-                    ) : (
-                      <Button
-                        onClick={() => {
-                          viewStockHandler(index);
-                        }}
-                        className="blue-button"
-                        style={{ width: "5rem", height:'1.5rem', padding:'0' }}
-                      >
-                        <i
-                          className="fa-solid fa-angle-down"
-                        ></i>
-                      </Button>
-                    )}
-                    <Button
-                      onClick={() => {
-                        deleteProductHandler(product);
-                      }}
-                      className="red-button"
-                      style={{ width: "5rem", height:'1.5rem', padding:'0' }}
-                    >
-                      <i
-                        className="fa-solid fa-trash-can"
-                      ></i>
-                    </Button>
-                  </Row>
-                </td>
-              </tr>
-              {button[index] && (
+              {/* renders only on mobile screens */}
+              <ProductButtons
+                product={product}
+                index={index}
+                viewButton={viewButton}
+                viewStockHandler={viewStockHandler}
+                closeStockHandler={closeStockHandler}
+                deleteProductHandler={deleteProductHandler}
+              />
+              {viewButton[index] && (
                 <MyProductStocks
                   product={product}
                   myStores={myStores}
