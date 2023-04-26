@@ -42,7 +42,7 @@ export default function SellerScreen() {
       search({
         type: "product_in_store",
         store: storeName,
-        searchString: e.target.value
+        searchString: e.target.value,
       })
     );
   };
@@ -72,23 +72,29 @@ export default function SellerScreen() {
         placeholder="Search for a product, brand.."
         width="50%"
       /> */}
-          <Row style={{ backgroundColor: "#495b7a", height: "3rem", justifyContent:'center' }}>
-      <Col sm={12} lg={5}>
-      <Form
-        className="d-flex justify-content-center my-2"
-        style={{ height: "2rem" }}
+      <Row
+        style={{
+          backgroundColor: "#495b7a",
+          height: "3rem",
+          justifyContent: "center",
+        }}
       >
-        <Form.Control
-          // type={searchProps.type}
-          placeholder="Search for a product, brand.."
-          aria-label="Search"
-          // style={{ width: width }}
-          value={value}
-          onChange={(e) => searchHandler(e)}
-          />
-      </Form>
-      </Col>
-    </Row>
+        <Col sm={12} lg={5}>
+          <Form
+            className="d-flex justify-content-center my-2"
+            style={{ height: "2rem" }}
+          >
+            <Form.Control
+              // type={searchProps.type}
+              placeholder="Search for a product, brand.."
+              aria-label="Search"
+              // style={{ width: width }}
+              value={value}
+              onChange={(e) => searchHandler(e)}
+            />
+          </Form>
+        </Col>
+      </Row>
       <Container>
         <Row
           className="mt-3 justify-content-center pb-2"
@@ -157,14 +163,20 @@ export default function SellerScreen() {
             })}
         </Col>
         <Col>
-          <Row style={{ textAlign:'center'}}> 
-            { products && products.length === 0 && (
+          <Row style={{ textAlign: "center" }}>
+            {products && products.length === 0 && (
               <h2>Currently no products in stocks!</h2>
             )}
             {products &&
               products.map((product, index) => {
                 return (
-                  <Col sm={12} md={6} lg={4} xl={3} className="gx-1 gy-1 product-card">
+                  <Col
+                    xs={6}
+                    md={4}
+                    lg={4}
+                    xl={3}
+                    className="gx-1 gy-1 product-card"
+                  >
                     <ProductCard product={product} key={index} />
                   </Col>
                 );

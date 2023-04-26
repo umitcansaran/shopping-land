@@ -32,7 +32,7 @@ export default function MyProducts() {
 
   const { createProductSuccess } = location.state ? location.state : false;
 
-  const { myProducts } = useSelector((state) => state.productMyList);
+  const { myProducts, loading: myProductsLoading } = useSelector((state) => state.productMyList);
   const { myStores, loading } = useSelector((state) => state.storeMyList);
   const { stock: newStock } = useSelector((state) => state.createStock);
   const { stock: updatedStock } = useSelector((state) => state.stockUpdate);
@@ -46,7 +46,9 @@ export default function MyProducts() {
         window.history.replaceState({}, document.title);
       }, 500);
     }
-    dispatch(listMyProducts());
+    if (value.length === 0) {
+      dispatch(listMyProducts());
+    }
     dispatch(listMyStores());
   }, [
     dispatch,
@@ -54,6 +56,7 @@ export default function MyProducts() {
     deleteProductSuccess,
     newStock,
     updatedStock,
+    value
   ]);
 
   useEffect(() => {
@@ -127,20 +130,16 @@ export default function MyProducts() {
     }
   };
 
-  const searchHandler = (keyword) => {
-    setValue(keyword);
-    dispatch(search({ type: "my_products", searchString: keyword }));
-  };
-
   return (
     <>
       <SearchBox
         searchProps={{ type: "my_products" }}
         value={value}
-        searchHandler={searchHandler}
-        placeholder="Search for an id, brand or name.. "
+        setValue={setValue}
+        placeholder="Search by id, brand or name"
       />
       <AddProductButton />
+            {!myProductsLoading && myProducts.length != 0 && (
       <Table hover responsive className="table-sm my-2">
         <thead style={{ backgroundColor: "#f2f5fa" }}>
           <tr style={{ textAlign: "center" }}>
@@ -231,6 +230,7 @@ export default function MyProducts() {
           ))}
         </tbody>
       </Table>
+            )}
       {deleteWindow && (
         <DeletePopup
           setDeleteWindow={setDeleteWindow}

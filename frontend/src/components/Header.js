@@ -9,6 +9,7 @@ import {
   NavDropdown,
   Row,
   Image,
+  Col,
 } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { myDetails, logout } from "../store/actions/userActions";
@@ -63,7 +64,7 @@ const Header = () => {
           <Nav className="me-auto">
             <Nav.Link
               as={Link}
-              className={isMobile ? "mt-2" : "ms-5"}
+              className={isMobile ? "mt-2" : "ms-5 " + " header-nav-link"}
               to="/sellers"
               style={{ color: "rgb(70, 69, 69)" }}
             >
@@ -72,7 +73,7 @@ const Header = () => {
             </Nav.Link>
             <Nav.Link
               as={Link}
-              className={isMobile ? "" : "ms-5"}
+              className={isMobile ? "" : "ms-5" + " header-nav-link"}
               to="/map"
               style={{ color: "rgb(70, 69, 69)" }}
             >
@@ -137,7 +138,7 @@ const Header = () => {
             ) : (
               <Nav.Link
                 as={Link}
-                className={isMobile ? "" : "ms-5"}
+                className={isMobile ? "" : "ms-5" + " header-nav-link"}
                 to="/login"
               >
                 <i class="fa-solid fa-user" style={{ color: "#1e478a" }}></i>
@@ -146,7 +147,7 @@ const Header = () => {
             )}
             <Nav.Link
               as={Link}
-              className={isMobile ? "" : "ms-5"}
+              className={isMobile ? "" : "ms-5" + " header-nav-link"}
               to="/cart"
               style={{ color: "rgb(70, 69, 69)" }}
             >

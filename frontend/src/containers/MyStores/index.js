@@ -44,8 +44,10 @@ export default function MyStores() {
       }, 500);
     }
     dispatch(listMyProducts());
-    dispatch(listMyStores());
-  }, [dispatch, createStoreSuccess, deleteStoreSuccess]);
+    if (value.length === 0) {
+      dispatch(listMyStores());
+    }
+  }, [dispatch, value, createStoreSuccess, deleteStoreSuccess]);
 
   useEffect(() => {
     if (deleteConfirm === "yes") {
@@ -99,34 +101,13 @@ export default function MyStores() {
   return (
     <>
       <SearchBox
-        searchProps={{ type: "my_products" }}
+        searchProps={{ type: "my_stores" }}
         value={value}
-        searchHandler={searchHandler}
-        placeholder="Search for an id, brand or name.. "
+        setValue={setValue}
+        placeholder="Search by id or name"
       />
-      {/* <Row
-      style={{
-        backgroundColor: "#495b7a",
-        height: "3rem",
-        justifyContent: "center",
-      }}
-    >
-      <Col xs={10} sm={6} lg={5}>
-        <Form
-          className="d-flex justify-content-center my-2"
-          style={{ height: "2rem" }}   
-        >
-          <Form.Control
-            type="text"
-            placeholder="Search for an id, brand or name.. "
-            aria-label="Search"
-            value={value}
-            onChange={(e) => searchHandler(e.target.value)}
-          />
-        </Form>
-      </Col>
-    </Row> */}
       <AddStoreButton />
+      {!myStoresLoading && myStores.length != 0 && (
         <Table
           striped
           hover
@@ -147,7 +128,7 @@ export default function MyStores() {
           <tbody>
             {myStores.map((store, index) => (
               <>
-                <tr key={index} style={{ textAlign: "center" }}>
+                <tr style={{ textAlign: "center" }}>
                   <td>{index + 1}</td>
                   <td>
                     <strong>{store.name}</strong>
@@ -214,6 +195,8 @@ export default function MyStores() {
             ))}
           </tbody>
         </Table>
+      )}
+
       {deleteWindow && (
         <DeletePopup
           setDeleteWindow={setDeleteWindow}

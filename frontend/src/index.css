@@ -84,7 +84,8 @@ h2 {
   background-color: #648dc3;
 }
 
-.blue-button:focus, .blue-button:hover {
+.blue-button:focus,
+.blue-button:hover {
   background-color: #4b74aa;
 }
 
@@ -92,10 +93,10 @@ h2 {
   background-color: rgb(238, 103, 103);
 }
 
-.red-button:hover, .red-button:focus {
+.red-button:hover,
+.red-button:focus {
   background-color: rgb(190, 68, 68);
 }
-
 
 .red-badge {
   background-color: rgb(238, 103, 103) !important;
@@ -137,18 +138,23 @@ h2 {
     height: auto;
     max-height: 8.5rem;
     object-fit: cover;
-
   }
-  
+
   .card-img-container {
     height: 8.5rem;
     align-items: center;
     margin: auto;
   }
 
-  .product-card-description, .product-card-name, .product-title {
+  .product-card-description,
+  .product-card-name,
+  .product-title {
     font-size: 0.9rem;
     margin: 0;
     padding: 0.1rem;
   }
+}
+
+.header-nav-link {
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
 }

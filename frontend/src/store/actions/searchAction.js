@@ -10,6 +10,9 @@ import {
   MY_PRODUCTS_SEARCH_REQUEST,
   MY_PRODUCTS_SEARCH_SUCCESS,
   MY_PRODUCTS_SEARCH_FAIL,
+  MY_STORES_SEARCH_REQUEST,
+  MY_STORES_SEARCH_SUCCESS,
+  MY_STORES_SEARCH_FAIL,
   STORE_STOCKS_SEARCH_REQUEST,
   STORE_STOCKS_SEARCH_SUCCESS,
   STORE_STOCKS_SEARCH_FAIL,
@@ -33,6 +36,9 @@ import {
   STORE_LIST_FAIL,
   STORE_LIST_REQUEST,
   STORE_LIST_SUCCESS,
+  STORE_MY_LIST_REQUEST,
+  STORE_MY_LIST_SUCCESS,
+  STORE_MY_LIST_FAIL,
 } from "../constants/storeConstants";
 
 export const search = (searchData) => async (dispatch, getState) => {
@@ -219,6 +225,43 @@ export const search = (searchData) => async (dispatch, getState) => {
     } catch (error) {
       dispatch({
         type: MY_PRODUCTS_SEARCH_FAIL,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
+      });
+    }
+  }
+
+  if (searchData.type === "my_stores") {
+    try {
+      dispatch({
+        type: STORE_MY_LIST_REQUEST,
+      });
+
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${userInfo.access}`,
+        },
+      };
+
+      const { data } = await axios.get(
+        `${baseUrl}/api/search/?type=${searchData.type}&search_string=${searchData.searchString}`,
+        config
+      );
+
+      dispatch({
+        type: STORE_MY_LIST_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: STORE_MY_LIST_FAIL,
         payload:
           error.response && error.response.data.detail
             ? error.response.data.detail

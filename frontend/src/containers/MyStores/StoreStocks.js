@@ -17,7 +17,7 @@ export default function StoreStocks({ store }) {
     if (value === "") {
       dispatch(listStoreStocks(store.id));
     }
-    dispatch({ type: STORE_STOCKS_RESET });
+    // dispatch({ type: STORE_STOCKS_RESET });
   }, [dispatch, value, store.id]);
 
   const searchHandler = (e, storeName) => {
