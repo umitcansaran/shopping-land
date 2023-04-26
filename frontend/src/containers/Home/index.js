@@ -197,7 +197,6 @@ export default function Home() {
             <Row>
               {searchResult?.map((product, index) => {
                 return (
-                  // <Col xs={6} md={3} lg={4} xl={3} className="gx-1 gy-1">
                   <Col
                     xs={6}
                     md={4}

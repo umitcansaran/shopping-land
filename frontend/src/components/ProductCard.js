@@ -51,7 +51,7 @@ export default function ProductCard({ product, index }) {
           <Card.Text className="text-center m-0" style={{ fontSize: "1rem", color:'black' }}>
             CHF {Math.trunc(product.price)}
           </Card.Text>
-          <Card.Text style={{ fontSize: "1rem" }} className="text-center mb-1 d-none d-sm-block">
+          <Card.Text style={{ fontSize: "1rem" }} className="text-center mb-1">
             Sold by{" "}
             <Link
               to={`/seller/${
