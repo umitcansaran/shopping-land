@@ -135,12 +135,12 @@ h2 {
 @media (max-width: 640px) {
   .card-img-top {
     width: 100%;
-    max-height: 10rem;
+    max-height: 11rem;
     object-fit: cover;
   }
 
   .card-img-container {
-    height: 10.5rem;
+    height: 11.5rem;
     align-items: center;
     margin: auto;
   }
