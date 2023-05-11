@@ -30,7 +30,9 @@ export default function SellersScreen() {
   });
 
   let profiles;
-  !searchResult ? (profiles = sellerProfiles) : (profiles = filterSellerProfiles);
+  !searchResult
+    ? (profiles = sellerProfiles)
+    : (profiles = filterSellerProfiles);
 
   const filterOptionHandler = (event) => {
     dispatch({ type: SELLER_PROFILES_RESET });
@@ -73,25 +75,34 @@ export default function SellersScreen() {
               Back
             </Button>
           )}
-          <Row className="align-items-center">
-            {profiles &&
-              profiles.map((profile, index) => {
-                return (
-                  <>
-                    <Col xs={6} md={2}>
-                      <Link to={`/seller/${profile.id}`}>
-                        <Image
-                          className="p-2"
-                          src={profile.image}
-                          alt={profile.name}
-                          key={index}
-                          style={{ width: "60%", margin: "3rem" }}
-                        />
-                      </Link>
-                    </Col>
-                  </>
-                );
-              })}
+          <Row
+            className="align-items-center"
+            style={{ justifyContent: "center" }}
+          >
+            <Row style={{ width: "90%", textAlign: "center" }}>
+              {profiles &&
+                profiles.map((profile, index) => {
+                  return (
+                    <>
+                      <Col xs={6} md={2} className="seller-image-col">
+                        <Link to={`/seller/${profile.id}`}>
+                          <Image
+                            className="p-2 seller-image"
+                            src={profile.image}
+                            alt={profile.name}
+                            key={index}
+                            style={{
+                              maxWidth: "60%",
+                              maxHeight: "4rem",
+                              margin: "3rem"
+                            }}
+                          />
+                        </Link>
+                      </Col>
+                    </>
+                  );
+                })}
+            </Row>
           </Row>
         </>
       )}

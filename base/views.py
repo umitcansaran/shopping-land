@@ -437,6 +437,14 @@ class LatestReviews(ListAPIView):
     serializer_class = ReviewSerializer
 
 
+class LatestSellers(ListAPIView):
+    """
+    GET: Get most recently added five reviews. 
+    """ 
+    queryset = Profile.objects.filter(status='STORE_OWNER').order_by('-id')[:5]
+    serializer_class = ProfileSerializer
+
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def addOrderItems(request):

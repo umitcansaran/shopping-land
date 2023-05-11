@@ -22,11 +22,7 @@ h2 {
   margin: 0.1rem;
 }
 
-.carousel-item-next,
-.carousel-item-prev,
-.carousel-item.active {
-  display: flex;
-}
+
 .carousel-caption {
   position: absolute;
   top: 0;
@@ -47,6 +43,8 @@ h2 {
 }
 
 .carousel {
+  display: flex;
+  justify-content: center;
   height: 25rem;
   width: 80%;
   margin: auto;
@@ -73,7 +71,7 @@ h2 {
 }
 
 .main-product-card:hover {
-  border: 0.1rem solid #537adc;
+  border: 0.1rem solid #d8dbe2d8;
 }
 
 #adminmenu {
@@ -130,6 +128,11 @@ h2 {
 .home-sidebar {
   position: sticky;
   top: 0;
+}
+
+.seller-image:hover {
+  opacity: 0.9;
+  transform:scale(1.1);
 }
 
 @media (max-width: 640px) {

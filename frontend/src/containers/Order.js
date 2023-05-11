@@ -46,7 +46,7 @@ function OrderScreen() {
     const script = document.createElement("script");
     script.type = "text/javascript";
     script.src =
-      "https://www.paypal.com/sdk/js?client-id=AT6MhRztRISStak0lmDzrzY7PrhW0rOoqycaiiqm9DZNZ5g0G8DOnlDPkJa6zLoyrOr-gZGvUCd34W8q";
+      `https://www.paypal.com/sdk/js?client-id=${process.env.REACT_APP_PAYPAL_ID}`;
     script.async = true;
     script.onload = () => {
       setSdkReady(true);
@@ -68,7 +68,7 @@ function OrderScreen() {
       dispatch({ type: ORDER_DELIVER_RESET });
       dispatch(getOrderDetails(orderId));
     } else if (!order.isPaid) {
-      if (!window.paypal) {
+      if (!window.paypal && process.env.PAYPAL_CLIENT_ID) {
         addPayPalScript();
       } else {
         setSdkReady(true);
@@ -218,11 +218,11 @@ function OrderScreen() {
                   {loadingPay && <Loader />}
                   {!sdkReady ? (
                     <Loader />
-                  ) : (
+                  ) : ( 
                     <PayPalScriptProvider
                       options={{
                         "client-id":
-                          "AT6MhRztRISStak0lmDzrzY7PrhW0rOoqycaiiqm9DZNZ5g0G8DOnlDPkJa6zLoyrOr-gZGvUCd34W8q",
+                        process.env.REACT_APP_PAYPAL_ID
                       }}
                     >
                       <PayPalButtons

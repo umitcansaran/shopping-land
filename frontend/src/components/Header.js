@@ -84,7 +84,7 @@ const Header = () => {
               Find a Store
             </Nav.Link>
           </Nav>
-          <Nav>
+          <Nav className="me-4">
             {user && user.profile[0].status === "CUSTOMER" && (
               <>
                 <Row className="align-items-center">
@@ -141,7 +141,7 @@ const Header = () => {
                 className={isMobile ? "" : "ms-5" + " header-nav-link"}
                 to="/login"
               >
-                <i class="fa-solid fa-user" style={{ color: "#1e478a" }}></i>
+                <i class="fa-solid fa-user" style={{ color: "#1e478a", marginRight:'0.3rem' }}></i>
                 Sign In
               </Nav.Link>
             )}
@@ -153,9 +153,9 @@ const Header = () => {
             >
               <i
                 className="fa-solid fa-cart-shopping"
-                style={{ color: "#1e478a" }}
-              ></i>{" "}
-              Cart{" "}
+                style={{ color: "#1e478a",  marginRight:'0.3rem' }}
+              ></i>
+              Cart
               {cartItemsQuantities > 0 && (
                 <Badge bg="primary" pill style={{ borderRadius: "0" }}>
                   {cartItemsQuantities}

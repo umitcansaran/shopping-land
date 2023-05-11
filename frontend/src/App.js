@@ -4,23 +4,23 @@ import { HashRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./containers/Home";
-import RegisterScreen from "./containers/Register";
-import LoginScreen from "./containers/Login";
-import AddProduct from "./containers/AddProduct/AddProduct";
-import AddStore from "./containers/AddStore/AddStore";
-import StoresMap from "./containers/StoresMap";
+import Register from "./containers/Register";
+import Login from "./containers/Login";
+import MyProfile from "./containers/MyProfile";
 import MyStores from "./containers/MyStores";
-import MyProducts from "./containers/MyProducts/index.js";
-import ProductScreen from "./containers/Product";
-import CartScreen from "./containers/Cart";
-import ProfileScreen from "./containers/MyProfile";
-import SellerScreen from "./containers/Seller";
-import SellersScreen from "./containers/Sellers";
-import ShippingScreen from "./containers/Shipping";
-import PaymentScreen from "./containers/Payment";
-import PlaceOrderScreen from "./containers/PlaceOrder";
-import OrderScreen from "./containers/Order";
-import OrdersScreen from "./containers/Orders";
+import MyProducts from "./containers/MyProducts";
+import AddStore from "./containers/AddStore";
+import AddProduct from "./containers/AddProduct";
+import Product from "./containers/Product";
+import Map from "./containers/Map";
+import Seller from "./containers/Seller";
+import Sellers from "./containers/Sellers";
+import Cart from "./containers/Cart";
+import PlaceOrder from "./containers/PlaceOrder";
+import Order from "./containers/Order";
+import Orders from "./containers/Orders";
+import Shipping from "./containers/Shipping";
+import Payment from "./containers/Payment";
 
 function App() {
   return (
@@ -29,24 +29,23 @@ function App() {
       <main>
         <Routes>
           <Route exact path="/" element={<Home />} />
-          <Route path="/shipping" element={<ShippingScreen />} />
-          <Route path="/payment" element={<PaymentScreen />} />
-          <Route path="/placeorder" element={<PlaceOrderScreen />} />
-          <Route path="/order/:id" element={<OrderScreen />} />
-          <Route path="/orders" element={<OrdersScreen />} />
-          <Route path="/orders" element={<OrdersScreen />} />
-          <Route path="/sellers" element={<SellersScreen />} />
-          <Route path="/seller/:id" element={<SellerScreen />} />
-          <Route path="/profile" element={<ProfileScreen />} />
-          <Route path="/cart" element={<CartScreen />} />
-          <Route path="/product/:id" element={<ProductScreen />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/profile" element={<MyProfile />} />
           <Route path="/mystores" element={<MyStores />} />
           <Route path="/myproducts" element={<MyProducts />} />
-          <Route path="/map" element={<StoresMap />} />
-          <Route path="/myproducts/add-product" element={<AddProduct />} />
           <Route path="/mystores/add-store" element={<AddStore />} />
-          <Route path="/register" element={<RegisterScreen />} />
-          <Route path="/login" element={<LoginScreen />} />
+          <Route path="/myproducts/add-product" element={<AddProduct />} />
+          <Route path="/product/:id" element={<Product />} />
+          <Route path="/map" element={<Map />} />
+          <Route path="/seller/:id" element={<Seller />} />
+          <Route path="/sellers" element={<Sellers />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/placeorder" element={<PlaceOrder />} />
+          <Route path="/order/:id" element={<Order />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/shipping" element={<Shipping />} />
+          <Route path="/payment" element={<Payment />} />
         </Routes>
       </main>
       <Footer />

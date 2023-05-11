@@ -45,7 +45,7 @@ export default function StoreStocks({ store }) {
                   >
                     <Form.Control
                       type="search"
-                      placeholder="Search for an ID, brand or product name"
+                      placeholder="Search by id, brand or product name"
                       aria-label="Search"
                       value={value}
                       onChange={(e) => searchHandler(e, store.name)}

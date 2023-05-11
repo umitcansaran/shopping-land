@@ -117,7 +117,7 @@ function CartScreen() {
         <Card>
           <ListGroup variant="flush">
             <ListGroup.Item>
-              <h2 style={{ fontSize: "1.4rem", padding: "0.5rem 0" }}>
+              <h2>
                 Subtotal (
                 {cartItems.reduce((acc, product) => acc + product.quantity, 0)})
                 items

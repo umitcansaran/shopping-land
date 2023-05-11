@@ -25,14 +25,17 @@ export default function MyProducts() {
   const [viewButton, setViewButton] = useState({});
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [deleteWindow, setDeleteWindow] = useState(false);
-  const [productToDelete, setProductToDelete] = useState(null);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [type, setType] = useState(null);
 
   const dispatch = useDispatch();
   const location = useLocation();
 
   const { createProductSuccess } = location.state ? location.state : false;
 
-  const { myProducts, loading: myProductsLoading } = useSelector((state) => state.productMyList);
+  const { myProducts, loading: myProductsLoading } = useSelector(
+    (state) => state.productMyList
+  );
   const { myStores, loading } = useSelector((state) => state.storeMyList);
   const { stock: newStock } = useSelector((state) => state.createStock);
   const { stock: updatedStock } = useSelector((state) => state.stockUpdate);
@@ -56,18 +59,25 @@ export default function MyProducts() {
     deleteProductSuccess,
     newStock,
     updatedStock,
-    value
+    value,
   ]);
 
   useEffect(() => {
-    if (deleteConfirm === "yes") {
+    if (deleteConfirm === "product") {
       setDeleteConfirm(null);
       setDeleteWindow(false);
       setTimeout(() => {
-        dispatch(deleteProduct(productToDelete.id));
+        dispatch(deleteProduct(itemToDelete.id));
       }, 50);
     }
-  }, [dispatch, deleteConfirm, productToDelete]);
+    if (deleteConfirm === "stock") {
+      setDeleteConfirm(null);
+      setDeleteWindow(false);
+      setTimeout(() => {
+        dispatch(updateStock(itemToDelete, { number: 0 }));
+      }, 50);
+    }
+  }, [dispatch, deleteConfirm, itemToDelete]);
 
   useEffect(() => {
     dispatch({ type: PRODUCT_DELETE_RESET });
@@ -104,14 +114,15 @@ export default function MyProducts() {
   };
 
   const deleteProductHandler = (product) => {
+    setType("product");
     setDeleteWindow(true);
-    setProductToDelete(product);
+    setItemToDelete(product);
   };
 
   const deleteStockHandler = (stock) => {
-    if (window.confirm("Are you sure")) {
-      dispatch(updateStock(stock.id, { number: 0 }));
-    }
+    setType("stock");
+    setDeleteWindow(true);
+    setItemToDelete(stock.id);
   };
 
   const saveHandler = async (index, stock, product, store, stockNumber) => {
@@ -139,103 +150,103 @@ export default function MyProducts() {
         placeholder="Search by id, brand or name"
       />
       <AddProductButton />
-            {!myProductsLoading && myProducts.length != 0 && (
-      <Table hover responsive className="table-sm my-2">
-        <thead style={{ backgroundColor: "#f2f5fa" }}>
-          <tr style={{ textAlign: "center" }}>
-            <th>ID</th>
-            <th>BRAND</th>
-            <th>NAME</th>
-            <th>PRICE</th>
-            <th>CATEGORY</th>
-            <th className="d-none d-sm-table-cell">STOCK</th>
-            <th className="d-none d-sm-table-cell">DELETE</th>
-          </tr>
-        </thead>
-        <tbody>
-          {myProducts.map((product, index) => (
-            <>
-              <tr key={product.id} style={{ textAlign: "center" }}>
-                <td>{product.id}</td>
-                <td>
-                  <strong>{product.brand}</strong>
-                </td>
-                <td>{product.name}</td>
-                <td>CHF {Math.trunc(product.price)}</td>
-                <td>{product.category}</td>
-                <td
-                  style={{ width: "9rem", textAlign: "center" }}
-                  className="d-none d-sm-table-cell"
-                >
-                  {viewButton[index] ? (
-                    <Button
-                      onClick={() => {
-                        closeStockHandler(index);
-                      }}
-                      stye={{ color: "#f2f5fa" }}
-                      className="btn-block blue-button mystores-blue-button"
-                    >
-                      <i class="fa-solid fa-angle-up"></i>
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={() => {
-                        viewStockHandler(index);
-                      }}
-                      stye={{ color: "#f2f5fa" }}
-                      className="btn-block blue-button mystores-blue-button"
-                    >
-                      View Stock
-                    </Button>
-                  )}
-                </td>
-                <td
-                  style={{ width: "6rem", textAlign: "center" }}
-                  className="d-none d-sm-table-cell"
-                >
-                  <Button
-                    onClick={() => {
-                      deleteProductHandler(product);
-                    }}
-                    stye={{ color: "#f2f5fa" }}
-                    className="btn-block btn-danger mystores-blue-button"
+      {!myProductsLoading && myProducts.length != 0 && (
+        <Table hover responsive className="table-sm my-2">
+          <thead style={{ backgroundColor: "#f2f5fa" }}>
+            <tr style={{ textAlign: "center" }}>
+              <th>ID</th>
+              <th>BRAND</th>
+              <th>NAME</th>
+              <th>PRICE</th>
+              <th>CATEGORY</th>
+              <th className="d-none d-sm-table-cell">STOCK</th>
+              <th className="d-none d-sm-table-cell">DELETE</th>
+            </tr>
+          </thead>
+          <tbody>
+            {myProducts.map((product, index) => (
+              <>
+                <tr key={product.id} style={{ textAlign: "center" }}>
+                  <td>{product.id}</td>
+                  <td>
+                    <strong>{product.brand}</strong>
+                  </td>
+                  <td>{product.name}</td>
+                  <td>CHF {Math.trunc(product.price)}</td>
+                  <td>{product.category}</td>
+                  <td
+                    style={{ width: "9rem", textAlign: "center" }}
+                    className="d-none d-sm-table-cell"
                   >
-                    Delete
-                  </Button>
-                </td>
-              </tr>
-              {/* renders only on mobile screens */}
-              <ProductButtons
-                product={product}
-                index={index}
-                viewButton={viewButton}
-                viewStockHandler={viewStockHandler}
-                closeStockHandler={closeStockHandler}
-                deleteProductHandler={deleteProductHandler}
-              />
-              {viewButton[index] && (
-                <MyProductStocks
+                    {viewButton[index] ? (
+                      <Button
+                        onClick={() => {
+                          closeStockHandler(index);
+                        }}
+                        stye={{ color: "#f2f5fa" }}
+                        className="btn-block blue-button mystores-blue-button"
+                      >
+                        <i class="fa-solid fa-angle-up"></i>
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => {
+                          viewStockHandler(index);
+                        }}
+                        stye={{ color: "#f2f5fa" }}
+                        className="btn-block blue-button mystores-blue-button"
+                      >
+                        View Stock
+                      </Button>
+                    )}
+                  </td>
+                  <td
+                    style={{ width: "6rem", textAlign: "center" }}
+                    className="d-none d-sm-table-cell"
+                  >
+                    <Button
+                      onClick={() => {
+                        deleteProductHandler(product);
+                      }}
+                      stye={{ color: "#f2f5fa" }}
+                      className="btn-block btn-danger mystores-blue-button"
+                    >
+                      Delete
+                    </Button>
+                  </td>
+                </tr>
+                {/* renders only on mobile screens */}
+                <ProductButtons
                   product={product}
-                  myStores={myStores}
-                  stockInput={stockInput}
-                  setStockInput={setStockInput}
-                  stock={stock}
-                  stockInputHandler={stockInputHandler}
-                  saveHandler={saveHandler}
-                  deleteStockHandler={deleteStockHandler}
-                  loading={loading}
+                  index={index}
+                  viewButton={viewButton}
+                  viewStockHandler={viewStockHandler}
+                  closeStockHandler={closeStockHandler}
+                  deleteProductHandler={deleteProductHandler}
                 />
-              )}
-            </>
-          ))}
-        </tbody>
-      </Table>
-            )}
+                {viewButton[index] && (
+                  <MyProductStocks
+                    product={product}
+                    myStores={myStores}
+                    stockInput={stockInput}
+                    setStockInput={setStockInput}
+                    stock={stock}
+                    stockInputHandler={stockInputHandler}
+                    saveHandler={saveHandler}
+                    deleteStockHandler={deleteStockHandler}
+                    loading={loading}
+                  />
+                )}
+              </>
+            ))}
+          </tbody>
+        </Table>
+      )}
       {deleteWindow && (
         <DeletePopup
           setDeleteWindow={setDeleteWindow}
           setDeleteConfirm={setDeleteConfirm}
-          item={{ type: "product", details: productToDelete }}
+          item={{ type: type, details: itemToDelete }}
         />
       )}
       {deleteProductSuccess && (

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Row, Button, Col, Container, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import Reviews from "../../components/Reviews";
-import News from "../../components/News";
+import LatestReviews from './LatestReviews'
+import LatestSellers from "./LatestSellers";
 import ProductCard from "../../components/ProductCard";
 import ProductCarousel from "../../components/ProductCarousel";
 import HomeSidebar from "./HomeSidebar";
@@ -17,6 +17,7 @@ import {
 import axios from "axios";
 import useDebounce from "../../utils/use-debouncer";
 import "./index.css";
+import SearchBox from "../../components/SearchBox";
 
 export default function Home() {
   const [value, setValue] = useState("");
@@ -37,7 +38,7 @@ export default function Home() {
   const { products: searchResult } = useSelector((state) => state.productList);
 
   // Using React Query for faster reload by mounting cached components.
-  const [latestReviewsQuery, latestProductsQuery, categoriesQuery] = useQueries(
+  const [latestReviewsQuery, latestProductsQuery, latestSellersQuery, categoriesQuery] = useQueries(
     {
       queries: [
         {
@@ -49,6 +50,11 @@ export default function Home() {
           queryKey: ["latestProducts"],
           queryFn: () =>
             axios.get("/api/latest-products/").then((res) => res.data),
+        },
+        {
+          queryKey: ["latestSellers"],
+          queryFn: () =>
+            axios.get("/api/latest-sellers/").then((res) => res.data),
         },
         {
           queryKey: ["categories"],
@@ -112,19 +118,13 @@ export default function Home() {
 
   return (
     <Container fluid>
-      <Row className="home-searchbox">
-        <Col sm={12} lg={5} className="align-self-center">
-          <Form>
-            <Form.Control
-              type="text"
-              placeholder="Search for a product, brand or seller name"
-              aria-label="Search"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-            />
-          </Form>
-        </Col>
-      </Row>
+      <SearchBox
+        searchProps={{ type: "all" }}
+        actionType="PRODUCT_LIST_RESET"
+        value={value}
+        setValue={setValue}
+        placeholder="Search by product, brand or seller name"
+      />
       <HomeCategoriesBar
         categories={categoriesQuery.data}
         categoryFilterHandler={categoryFilterHandler}
@@ -145,9 +145,9 @@ export default function Home() {
         {!searching && value.length < 2 && (
           // do not render these components if searching or screen size is mobile
           <>
-            <Reviews latestReviews={latestReviewsQuery.data} />
+            <LatestReviews latestReviews={latestReviewsQuery.data} />
             <ProductCarousel latestProducts={latestProductsQuery.data} />
-            <News />
+            <LatestSellers latestSellers={latestSellersQuery.data} />
           </>
         )}
       </Row>

@@ -47,6 +47,9 @@ urlpatterns = [
     path('latest-reviews/', views.LatestReviews.as_view(), name='latest-reviews'),
     path('product/reviews/<int:product_id>/', views.ListProductReviews.as_view()),
 
+    # SELLER
+    path('latest-sellers/', views.LatestSellers.as_view(), name='latest-sellers'),
+
     # STOCK
     path('stocks/', views.StockViewSet.as_view({'get': 'list'})),
     path('stock/new/', views.StockViewSet.as_view({'post': 'create'})),

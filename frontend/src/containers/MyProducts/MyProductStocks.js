@@ -31,7 +31,10 @@ function MyProductStocks({
 
             return (
               <>
-                <Row className="d-flex justify-content-center" style={{ width:'90%' }}>
+                <Row
+                  className="d-flex justify-content-center"
+                  style={{ width: "90%" }}
+                >
                   <Col
                     xs={8}
                     sm={8}
@@ -51,7 +54,7 @@ function MyProductStocks({
                               <Form.Group controlId={index}>
                                 <Form.Control
                                   style={{
-                                    width: "3rem",
+                                    width: "3.5rem",
                                     height: "1.3rem",
                                   }}
                                   type="number"
@@ -119,11 +122,17 @@ function MyProductStocks({
                       onClick={() => deleteStockHandler(productStock)}
                       className="btn-sm my-2 m-2 red-button"
                       type="submit"
+                      disabled={stockNumber === 0}
+                      style={{
+                        backgroundColor:
+                          stockNumber === 0 && "rgb(238, 103, 103)",
+                        opacity: stockNumber === 0 && "0.3",
+                      }}
                     >
-                      <i className="fa-regular fa-paper-plane-top d-none d-sm-block">delete</i>
-                      <i
-                        className="fa-solid fa-trash-can d-sm-none"
-                      ></i>
+                      <i className="fa-regular fa-paper-plane-top d-none d-sm-block">
+                        delete
+                      </i>
+                      <i className="fa-solid fa-trash-can d-sm-none"></i>
                     </Button>
                   </Col>
                 </Row>

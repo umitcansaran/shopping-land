@@ -10,7 +10,6 @@ function DeletePopup({
   return (
     <>
       <Row className="delete-popup">
-        {console.log(details)}
         <Row>
           {type === "product" && (
             <h2>
@@ -18,12 +17,14 @@ function DeletePopup({
             </h2>
           )}
           {type === "store" && <h2>Delete {details.name}?</h2>}
+          {type === "stock" && <h2>Delete Stock?</h2>}
+          {type === "account" && <h2>Delete Account?</h2>}
         </Row>
         <Row className="btn-container">
           <Button
             className="btn mb-1"
             onClick={() => {
-              setDeleteConfirm("yes");
+              setDeleteConfirm(type);
             }}
           >
             Yes

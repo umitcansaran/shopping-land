@@ -45,7 +45,10 @@ import {
   SELLER_PROFILES_RESET,
   PROFILE_BY_USER_REQUEST,
   PROFILE_BY_USER_SUCCESS,
-  PROFILE_BY_USER_FAIL
+  PROFILE_BY_USER_FAIL,
+  LATEST_SELLERS_LIST_REQUEST,
+  LATEST_SELLERS_LIST_SUCCESS,
+  LATEST_SELLERS_LIST_FAIL,
 } from "../constants/userConstants";
 
 export const userLoginReducer = (state = {}, action) => {
@@ -185,23 +188,23 @@ export const profileDetailsReducer = (state = { profile: {} }, action) => {
 };
 
 export const sellerProfilesReducer = (state = { profiles: [] }, action) => {
-    switch (action.type) {
-      case SELLER_PROFILES_REQUEST:
-        return { ...state, loading: true };
-  
-      case SELLER_PROFILES_SUCCESS:
-        return { loading: false, profiles: action.payload };
-  
-      case SELLER_PROFILES_FAIL:
-        return { loading: false, error: action.payload };
+  switch (action.type) {
+    case SELLER_PROFILES_REQUEST:
+      return { ...state, loading: true };
 
-      case SELLER_PROFILES_RESET:
-        return { profile: {} };
-  
-      default:
-        return state;
-    }
-  };
+    case SELLER_PROFILES_SUCCESS:
+      return { loading: false, profiles: action.payload };
+
+    case SELLER_PROFILES_FAIL:
+      return { loading: false, error: action.payload };
+
+    case SELLER_PROFILES_RESET:
+      return { profile: {} };
+
+    default:
+      return state;
+  }
+};
 
 export const userListReducer = (state = { users: [] }, action) => {
   switch (action.type) {
@@ -259,16 +262,38 @@ export const userUpdateReducer = (state = { user: {} }, action) => {
 
 export const profileByUserReducer = (state = { profile: {} }, action) => {
   switch (action.type) {
-      case PROFILE_BY_USER_REQUEST:
-          return { loading: true }
+    case PROFILE_BY_USER_REQUEST:
+      return { loading: true };
 
-      case PROFILE_BY_USER_SUCCESS:
-          return { loading: false, profile: action.payload }
+    case PROFILE_BY_USER_SUCCESS:
+      return { loading: false, profile: action.payload };
 
-      case PROFILE_BY_USER_FAIL:
-          return { loading: false, error: action.payload }
+    case PROFILE_BY_USER_FAIL:
+      return { loading: false, error: action.payload };
 
-      default:
-          return state
+    default:
+      return state;
   }
-}
+};
+
+export const latestSellerssListReducer = (
+  state = { latestSellers: [] },
+  action
+) => {
+  switch (action.type) {
+    case LATEST_SELLERS_LIST_REQUEST:
+      return { loading: true, latestSellers: [] };
+
+    case LATEST_SELLERS_LIST_SUCCESS:
+      return {
+        loading: false,
+        latestSellers: action.payload,
+      };
+
+    case LATEST_SELLERS_LIST_FAIL:
+      return { loading: false, error: action.payload };
+
+    default:
+      return state;
+  }
+};

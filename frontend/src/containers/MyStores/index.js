@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Form, Row, Table } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { listMyStores, deleteStore } from "../../store/actions/storeActions";
 import AddStoreButton from "./AddStoreButton";
 import { listMyProducts } from "../../store/actions/productActions";
 import { listStocks } from "../../store/actions/stockActions";
 import { search } from "../../store/actions/searchAction";
-import MyStoreStocks from "./StoreStocks";
-import Loader from "../../components/Loader";
-import Message from "../../components/Message";
 import Notification from "../../components/Notification";
 import { useLocation } from "react-router-dom";
 import { STORE_DELETE_RESET } from "../../store/constants/storeConstants";
 import DeletePopup from "../../components/DeletePopup";
 import SearchBox from "../../components/SearchBox";
-import MobileStockButtons from "../MyProducts/ProductButtons";
 import StoreButtons from "./StoreButtons";
 import StoreStocks from "./StoreStocks";
 
