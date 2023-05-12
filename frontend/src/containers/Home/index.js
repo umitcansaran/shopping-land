@@ -152,7 +152,7 @@ export default function Home() {
         )}
       </Row>
       <Row>
-        <Col md={2} lg={2} xl={2} className="d-md-block d-none">
+        <Col md={2} className="d-md-block d-none">
           <HomeSidebar
             categories={categoriesQuery.data}
             categoryFilterHandler={categoryFilterHandler}

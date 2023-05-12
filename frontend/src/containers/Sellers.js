@@ -61,7 +61,6 @@ export default function SellersScreen() {
             })}
         </Form.Select>
       </Row>
-      <h2 className="text-center">Select a seller</h2>
       {loading ? (
         <Loader />
       ) : (

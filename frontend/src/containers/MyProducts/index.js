@@ -74,7 +74,7 @@ export default function MyProducts() {
       setDeleteConfirm(null);
       setDeleteWindow(false);
       setTimeout(() => {
-        dispatch(updateStock(itemToDelete, { number: 0 }));
+        dispatch(updateStock(itemToDelete.id, { number: 0 }));
       }, 50);
     }
   }, [dispatch, deleteConfirm, itemToDelete]);
@@ -122,7 +122,7 @@ export default function MyProducts() {
   const deleteStockHandler = (stock) => {
     setType("stock");
     setDeleteWindow(true);
-    setItemToDelete(stock.id);
+    setItemToDelete(stock);
   };
 
   const saveHandler = async (index, stock, product, store, stockNumber) => {

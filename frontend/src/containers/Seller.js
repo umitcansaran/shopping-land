@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, ListGroup, Form, Image, Container } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  ListGroup,
+  Form,
+  Button,
+  Image,
+  Container,
+} from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -18,7 +26,7 @@ import { PRODUCT_LIST_RESET } from "../store/constants/productConstants";
 
 export default function SellerScreen() {
   const [value, setValue] = useState("");
-  const [radioSearchValue, setRadioSearchValue] = useState("");
+  const [storeSearchValue, setStoreSearchValue] = useState("");
   const [storeName, setStoreName] = useState("");
 
   const dispatch = useDispatch();
@@ -36,32 +44,52 @@ export default function SellerScreen() {
     dispatch(listProductsByUser(params.id));
   }, [dispatch, params.id]);
 
-  const radioSearchHandler = (e) => {
-    setRadioSearchValue(e.target.value);
-    dispatch(
-      search({
-        type: "product_in_store",
-        store: storeName,
-        searchString: e.target.value,
-      })
-    );
-  };
+  useEffect(() => {
+    if (storeName != "" && value === "") {
+      dispatch(
+        search({
+          type: "product_in_store",
+          store: storeName,
+          searchString: "",
+        })
+      );
+    }
+    if (storeName != "" && value != "") {
+      dispatch(
+        search({
+          type: "product_in_store",
+          store: storeName,
+          searchString: value,
+        })
+      );
+    }
+  }, [storeName, value]);
 
-  const radioChange = (store) => {
-    setStoreName(store);
-    setRadioSearchValue("");
-  };
-
-  const searchHandler = (e) => {
+  const storeSearchHandler = (e) => {
     setValue(e.target.value);
-    dispatch(
-      search({
-        type: "products_by_seller",
-        seller_id: profile.id,
-        searchString: e.target.value,
-      })
-    );
+    if (storeName === "") {
+      dispatch(
+        search({
+          type: "products_by_seller",
+          seller_id: profile.id,
+          searchString: e.target.value,
+        })
+      );
+    }
   };
+
+  const storeChange = (store) => {
+    setStoreName(store);
+    setStoreSearchValue("");
+  };
+
+  const showAllProducts = () => {
+    setStoreName("");
+    dispatch(listProductsByUser(params.id));
+  };
+
+  const placeholder =
+    `Search by brand or product name` + (storeName ? ` in ${storeName}` : "");
 
   return (
     <>
@@ -86,11 +114,11 @@ export default function SellerScreen() {
           >
             <Form.Control
               // type={searchProps.type}
-              placeholder="Search for a product, brand.."
+              placeholder={placeholder}
               aria-label="Search"
               // style={{ width: width }}
               value={value}
-              onChange={(e) => searchHandler(e)}
+              onChange={(e) => storeSearchHandler(e)}
             />
           </Form>
         </Col>
@@ -125,48 +153,47 @@ export default function SellerScreen() {
         </Row>
       </Container>
       <Row className="mt-3 px-2">
-        <Col md={2} className="m-4">
-          <strong>
-            <p style={{ textAlign: "center", fontSize: "0.9rem" }}>
-              Select a store to search for a product id, brand or name..
-            </p>
-          </strong>
-          <Form className="d-flex justify-content-center mb-3">
-            <Form.Control
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-              style={{
-                width: "100%",
-                borderRadius: "20px 20px 20px 20px",
-                borderColor: "#233fa6",
-              }}
-              value={radioSearchValue}
-              onChange={(e) => radioSearchHandler(e)}
-            />
-          </Form>
+        <Col md={2}>
+          <p style={{ textAlign: "center", fontSize: "0.9rem" }}>
+            {storeName === ""
+              ? "Filter products by store"
+              : `You can search in store`}
+          </p>
+          {storeName != "" && (
+            <i class="fa-solid fa-x" onClick={() => showAllProducts()}></i>
+          )}
           {stores &&
             stores.map((store) => {
               return (
-                <CFormCheck
-                  type="radio"
-                  name="flexRadioDefault"
-                  id="flexRadioDefault1"
-                  label={store.name}
-                  onClick={(e) => {
-                    radioChange(store.name);
-                  }}
-                  style={{ backgroundColor: "#233fa6" }}
-                  className="my-2"
-                />
+                <Row style={{ justifyContent: "center" }}>
+                  <Button
+                    onClick={() => setStoreName(store.name)}
+                    style={{
+                      display: "block",
+                      width: "70%",
+                    }}
+                    variant={storeName === store.name ? "primary" : "secondary"}
+                    className="my-2"
+                  >
+                    {store.name}
+                  </Button>
+                </Row>
               );
             })}
         </Col>
         <Col>
           <Row style={{ textAlign: "center" }}>
-            {products && products.length === 0 && (
-              <h2>Currently no products in stocks!</h2>
-            )}
+            {products &&
+              products.length === 0 &&
+              (value != "" ? (
+                storeName != "" ? (
+                  <h5>No search results in {storeName} store!</h5>
+                ) : (
+                  <h5>No search results in stocks!</h5>
+                )
+              ) : (
+                <h5>Currently no product to show!</h5>
+              ))}
             {products &&
               products.map((product, index) => {
                 return (
