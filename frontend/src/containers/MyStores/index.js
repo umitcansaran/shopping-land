@@ -63,7 +63,7 @@ export default function MyStores() {
     setValue(e.target.value);
     dispatch(
       search({
-        type: "product_in_my_store",
+        type: "products_in_my_store",
         store: storeName,
         searchString: e.target.value,
       })
@@ -100,7 +100,7 @@ export default function MyStores() {
         searchProps={{ type: "my_stores" }}
         value={value}
         setValue={setValue}
-        placeholder="Search by id or name"
+        placeholder="Search for id or name"
       />
       <AddStoreButton />
       {!myStoresLoading && myStores.length != 0 && (
@@ -141,7 +141,7 @@ export default function MyStores() {
                           closeStockHandler(index);
                         }}
                         stye={{ color: "#f2f5fa" }}
-                        className="btn-block"
+                        className="btn-block blue-button"
                       >
                         Close
                       </Button>
@@ -151,7 +151,7 @@ export default function MyStores() {
                           viewStockHandler(index);
                         }}
                         stye={{ color: "#f2f5fa" }}
-                        className="btn-block"
+                        className="btn-block blue-button"
                       >
                         View Products
                       </Button>
@@ -165,7 +165,7 @@ export default function MyStores() {
                       onClick={() => {
                         deleteStoreHandler(store);
                       }}
-                      className="btn-block btn-danger"
+                      className="btn-block red-button"
                     >
                       Delete
                     </Button>

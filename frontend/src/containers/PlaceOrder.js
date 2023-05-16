@@ -40,7 +40,7 @@ function PlaceOrderScreen() {
     }
   }, [dispatch, success, navigate]);
 
-  // !! Currently updating stocks in the backend !!
+  // !! Updating stock number in the backend !!
   // const updateProductStock = () => {
   //   cart.cartItems.forEach((item) =>
   //     dispatch(updateStock(item.stockID, { number: item.storeStock - item.quantity}))

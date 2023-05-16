@@ -133,7 +133,6 @@ export default function MyProducts() {
     }
 
     if (stock) {
-      console.log(stockNum)
       dispatch(updateStock(stock.id, stockNum));
       setStockInput({});
     } else {
@@ -148,7 +147,7 @@ export default function MyProducts() {
         searchProps={{ type: "my_products" }}
         value={value}
         setValue={setValue}
-        placeholder="Search by id, brand or name"
+        placeholder="Search for id, brand or name"
       />
       <AddProductButton />
       {!myProductsLoading && myProducts.length != 0 && (
@@ -185,7 +184,7 @@ export default function MyProducts() {
                           closeStockHandler(index);
                         }}
                         stye={{ color: "#f2f5fa" }}
-                        className="btn-block blue-button mystores-blue-button"
+                        className="btn-block blue-button"
                       >
                         <i class="fa-solid fa-angle-up"></i>
                       </Button>
@@ -195,7 +194,7 @@ export default function MyProducts() {
                           viewStockHandler(index);
                         }}
                         stye={{ color: "#f2f5fa" }}
-                        className="btn-block blue-button mystores-blue-button"
+                        className="btn-block blue-button"
                       >
                         View Stock
                       </Button>
@@ -210,7 +209,7 @@ export default function MyProducts() {
                         deleteProductHandler(product);
                       }}
                       stye={{ color: "#f2f5fa" }}
-                      className="btn-block btn-danger mystores-blue-button"
+                      className="btn-block red-button"
                     >
                       Delete
                     </Button>

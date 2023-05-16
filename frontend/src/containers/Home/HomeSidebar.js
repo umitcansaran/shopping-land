@@ -3,8 +3,7 @@ import React from "react";
 
 export default function HomeSidebar({ categories = [], categoryFilterHandler }) {
   return (
-    <div className="home-sidebar">
-      {categories.map((category) => {
+      categories.map((category) => {
         return (
           <>
             <h5 className="my-3" key={category.id}>
@@ -27,7 +26,6 @@ export default function HomeSidebar({ categories = [], categoryFilterHandler }) 
             })}
           </>
         );
-      })}
-    </div>
+      })
   );
 }

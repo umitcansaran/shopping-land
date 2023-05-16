@@ -56,7 +56,7 @@ export default function Map() {
           actionType="STORE_LIST_RESET"
           value={value}
           setValue={setValue}
-          placeholder="Search by seller name"
+          placeholder="Search for seller"
         />
         <Row>
           <Nav className="justify-content-evenly home-categories-bar">
@@ -125,7 +125,6 @@ export default function Map() {
                           <h5 className="text-center mt-1">
                             {selectedStore.name}
                           </h5>
-                          {console.log(selectedStore)}
                           <img
                             src={selectedStore.image}
                             alt="Store Icon"

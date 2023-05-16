@@ -22,7 +22,6 @@ h2 {
   margin: 0.1rem;
 }
 
-
 .carousel-caption {
   position: absolute;
   top: 0;
@@ -33,9 +32,18 @@ h2 {
 }
 
 .main-carousel-img {
-  height: 16rem;
-  margin-left: auto;
-  margin-right: auto;
+  width: auto;
+  height: auto;
+  max-height: 13rem;
+  margin: 0 auto;
+}
+
+.main-carousel-img-container {
+  display: flex;
+  justify-content: center;
+  height: 15.5rem;
+  align-items: center;
+  margin: auto;
 }
 
 .carousel a {
@@ -45,33 +53,30 @@ h2 {
 .carousel {
   display: flex;
   justify-content: center;
-  height: 25rem;
-  width: 80%;
+  height: 23.5rem;
   margin: auto;
 }
 
-@media (max-width: 900px) {
-  .carousel-caption h2 {
-    font-size: 2.5vw;
-  }
+.main-carousel-container {
+  width: 50%;
+  height: 25.5rem;
 }
 
-.card-img-top {
-  width: 100%;
-  height: auto;
-  max-width: 20rem;
-  max-height: 20rem;
-  object-fit: cover;
+.main-carousel {
+  width: 90%;
+  height: 25rem;
 }
 
-.card-img-container {
-  height: 20.5rem;
-  align-items: center;
-  margin: 0;
+.reviews-carousel {
+  width: 25%;
+}
+
+.sellers-carousel {
+  width: 25%;
 }
 
 .main-product-card:hover {
-  border: 0.1rem solid #d8dbe2d8;
+  box-shadow: rgba(114, 112, 112, 0.476) 0px 3px 12px;
 }
 
 #adminmenu {
@@ -80,6 +85,20 @@ h2 {
 
 .blue-button {
   background-color: #648dc3;
+}
+
+.seller-store-button {
+  background-color: #648dc328;
+  color:rgb(70, 69, 69);
+  width: 70%;
+  margin-bottom: 0.3rem;
+  box-shadow: none;
+}
+
+.seller-store-button:focus,
+.seller-store-button:hover  {
+  background-color: #648dc38a;
+  color:rgb(70, 69, 69);
 }
 
 .blue-button:focus,
@@ -132,19 +151,69 @@ h2 {
 
 .seller-image:hover {
   opacity: 0.9;
-  transform:scale(1.1);
+  transform: scale(1.1);
 }
 
-@media (max-width: 640px) {
+.home-sidebar-container {
+  width: 14rem;
+}
+
+.card-img-top {
+  width: 100%;
+  height: auto;
+  max-height: 17rem;
+  object-fit: cover;
+}
+
+.card-img-container {
+  display: flex;
+  justify-content: center;
+  height: 17.5rem;
+  align-items: center;
+  margin: auto;
+}
+
+.main-product-card {
+  width: 100%;
+  height: auto;
+  min-width: 15rem;
+  max-width: 22rem;
+}
+
+@media (max-width: 767px) {
+  .home-sidebar-container {
+    width: 100%;
+  }
+}
+
+@media (min-width: 767) and (max-width: 992px) {
+  .home-sidebar-container {
+    width: 9rem;
+  }
+
+  .main-carousel {
+    width: 100%;
+  }
+}
+
+@media (max-width: 767px) {
+  .main-product-card {
+    width: 100%;
+    height: auto;
+    min-width: 11rem;
+    max-width: 16.5rem;
+    min-height: 22rem;
+  }
+
   .card-img-top {
     width: 100%;
     height: auto;
-    max-height: 12rem;
+    max-height: 12.5rem;
     object-fit: cover;
   }
 
   .card-img-container {
-    height: 12.5rem;
+    height: 13rem;
     align-items: center;
     margin: auto;
   }
@@ -154,10 +223,6 @@ h2 {
   .product-title {
     font-size: 0.9rem;
     margin: 0;
-    padding: 0.1rem;
+    padding: 0 0.3rem;
   }
-}
-
-.header-nav-link {
-  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
 }

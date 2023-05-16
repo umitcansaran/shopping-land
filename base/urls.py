@@ -15,7 +15,7 @@ urlpatterns = [
     # USER
     path('users/', views.UserViewSet.as_view({'get': 'list'})),
     path('user/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('user/<int:pk>/', views.UserViewSet.as_view({'get': 'retrieve','delete': 'destroy'})),
+    path('user/<int:pk>/', views.UserViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})),
 
     # PROFILE
     path('me/', views.MeViewSet.as_view({'get': 'retrieve', 'patch': 'partial_update'})),
@@ -28,21 +28,21 @@ urlpatterns = [
     # STORE
     path('stores/', views.StoreViewSet.as_view({'get': 'list'})),
     path('store/new/', views.StoreViewSet.as_view({'post': 'create'})),
-    path('store/<str:pk>/', views.StoreViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})),
-    path('mystores/', views.MyStoresViewSet.as_view({'get': 'list','delete': 'destroy'})),
+    path('store/<int:pk>/', views.StoreViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})),
+    path('mystores/', views.MyStoresViewSet.as_view({'get': 'list', 'delete': 'destroy'})),
     path('stores/user/<int:user_id>/', views.ListStoresByUser.as_view()),
 
     # PRODUCT
     path('products/', views.ProductViewSet.as_view({'get': 'list'})),
     path('product/new/', views.ProductViewSet.as_view({'post': 'create'})),
-    path('product/<str:pk>/', views.ProductViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})),
+    path('product/<int:pk>/', views.ProductViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})),
     path('product/stocks/<int:product_id>/', views.ListProductStocks.as_view()),
     path('myproducts/', views.MyProductsViewSet.as_view({'get': 'list'})),
     path('latest-products/', views.LatestProducts.as_view(), name='latest-products'),
     path('products/user/<int:user_id>/', views.ListProductssByUser.as_view()),
 
     # REVIEW
-    path('product/<str:pk>/reviews/', views.createProductReview, name="create-review"),
+    path('product/<int:pk>/reviews/', views.createProductReview, name="create-review"),
     path('reviews/', views.Reviews.as_view(), name='reviews'),
     path('latest-reviews/', views.LatestReviews.as_view(), name='latest-reviews'),
     path('product/reviews/<int:product_id>/', views.ListProductReviews.as_view()),
@@ -53,8 +53,8 @@ urlpatterns = [
     # STOCK
     path('stocks/', views.StockViewSet.as_view({'get': 'list'})),
     path('stock/new/', views.StockViewSet.as_view({'post': 'create'})),
-    path('stock/<str:pk>/', views.updateStock, name="stock-update"),
-    path('stocks/<str:pk>/', views.StockViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})),
+    path('stock/<int:pk>/', views.updateStock, name="stock-update"),
+    path('stocks/<int:pk>/', views.StockViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})),
     path('store/stocks/<int:store_id>/', views.ListStoreStocks.as_view()),
 
     # CATEGORIES
@@ -65,11 +65,11 @@ urlpatterns = [
     path('search/', views.Search.as_view()),
 
     # ORDER
-    path('orders', views.getOrders, name='orders'),
+    path('orders/', views.getOrders, name='orders'),
     path('orders/add/', views.addOrderItems, name='orders-add'),
     path('orders/myorders/', views.getMyOrders, name='myorders'),
-    path('orders/<str:pk>/deliver/', views.updateOrderToDelivered, name='order-delivered'),
-    path('orders/<str:pk>/', views.getOrderById, name='user-order'),
-    path('orders/<str:pk>/pay/', views.updateOrderToPaid, name='pay')
+    path('orders/<int:pk>/deliver/', views.updateOrderToDelivered, name='order-delivered'),
+    path('orders/<int:pk>/', views.getOrderById, name='user-order'),
+    path('orders/<int:pk>/pay/', views.updateOrderToPaid, name='pay')
 ]
 

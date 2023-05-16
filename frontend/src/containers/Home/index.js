@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Row, Button, Col, Container, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import LatestReviews from './LatestReviews'
+import LatestReviews from "./LatestReviews";
 import LatestSellers from "./LatestSellers";
 import ProductCard from "../../components/ProductCard";
 import ProductCarousel from "../../components/ProductCarousel";
@@ -38,32 +38,35 @@ export default function Home() {
   const { products: searchResult } = useSelector((state) => state.productList);
 
   // Using React Query for faster reload by mounting cached components.
-  const [latestReviewsQuery, latestProductsQuery, latestSellersQuery, categoriesQuery] = useQueries(
-    {
-      queries: [
-        {
-          queryKey: ["latestReviews"],
-          queryFn: () =>
-            axios.get("/api/latest-reviews/").then((res) => res.data),
-        },
-        {
-          queryKey: ["latestProducts"],
-          queryFn: () =>
-            axios.get("/api/latest-products/").then((res) => res.data),
-        },
-        {
-          queryKey: ["latestSellers"],
-          queryFn: () =>
-            axios.get("/api/latest-sellers/").then((res) => res.data),
-        },
-        {
-          queryKey: ["categories"],
-          queryFn: () =>
-            axios.get("api/product-categories/").then((res) => res.data),
-        },
-      ],
-    }
-  );
+  const [
+    latestReviewsQuery,
+    latestProductsQuery,
+    latestSellersQuery,
+    categoriesQuery,
+  ] = useQueries({
+    queries: [
+      {
+        queryKey: ["latestReviews"],
+        queryFn: () =>
+          axios.get("/api/latest-reviews/").then((res) => res.data),
+      },
+      {
+        queryKey: ["latestProducts"],
+        queryFn: () =>
+          axios.get("/api/latest-products/").then((res) => res.data),
+      },
+      {
+        queryKey: ["latestSellers"],
+        queryFn: () =>
+          axios.get("/api/latest-sellers/").then((res) => res.data),
+      },
+      {
+        queryKey: ["categories"],
+        queryFn: () =>
+          axios.get("api/product-categories/").then((res) => res.data),
+      },
+    ],
+  });
 
   const fetchProducts = async (pageParam = 0) => {
     const { data } = await axios.get(
@@ -123,7 +126,7 @@ export default function Home() {
         actionType="PRODUCT_LIST_RESET"
         value={value}
         setValue={setValue}
-        placeholder="Search by product, brand or seller name"
+        placeholder="Search for product, brand or seller"
       />
       <HomeCategoriesBar
         categories={categoriesQuery.data}
@@ -141,7 +144,7 @@ export default function Home() {
           Back
         </Button>
       )}
-      <Row className="d-lg-flex d-md-none d-none">
+      <Row className="d-md-flex d-sm-none d-none home-carousel-container">
         {!searching && value.length < 2 && (
           // do not render these components if searching or screen size is mobile
           <>
@@ -152,62 +155,44 @@ export default function Home() {
         )}
       </Row>
       <Row>
-        <Col md={2} className="d-md-block d-none">
+        <div className=" home-sidebar-container">
           <HomeSidebar
             categories={categoriesQuery.data}
             categoryFilterHandler={categoryFilterHandler}
           />
-        </Col>
-        <Col>
+        </div>
+        <Col className="mx-1">
           {value.length <= 1 && !searching ? (
             // show all products at first render
-            <>
-              <Row className="justify-content-center">
+            <Row className="justify-content-center">
+              <Row>
                 {data?.pages.map((page, index) => {
-                  return page.results.map((product) => {
-                    return (
-                      <Col
-                        xs={6}
-                        md={4}
-                        lg={4}
-                        xl={3}
-                        className="gx-1 gy-1 home-product-container"
-                      >
-                        <ProductCard product={product} key={index} />
-                      </Col>
-                    );
-                  });
+                  return page.results.map((product) => (
+                    <ProductCard product={product} key={index} />
+                  ));
                 })}
               </Row>
-              <Row className="home-back-button-container">
-                {data && value.length === 0 && hasNextPage && (
+              {data && value.length === 0 && hasNextPage && (
+                <Row className="justify-content-center">
                   <Button
-                    className="home-back-button"
+                    className="home-button blue-button"
                     onClick={() => fetchNextPage()}
                   >
                     {isFetchingNextPage
                       ? "Loading more..."
                       : hasNextPage && "Load More"}
                   </Button>
-                )}
-              </Row>
-            </>
+                </Row>
+              )}
+            </Row>
           ) : (
             // show search results
             <Row>
-              {searchResult?.map((product, index) => {
-                return (
-                  <Col
-                    xs={6}
-                    md={4}
-                    lg={4}
-                    xl={3}
-                    className="gx-1 gy-1 home-product-container"
-                  >
-                    <ProductCard product={product} key={index} />
-                  </Col>
-                );
-              })}
+              <Row>
+                {searchResult?.map((product, index) => (
+                  <ProductCard product={product} key={index} />
+                ))}
+              </Row>
             </Row>
           )}
         </Col>

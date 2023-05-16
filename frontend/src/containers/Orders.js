@@ -21,10 +21,6 @@ function OrdersScreen() {
   const orderMyList = useSelector((state) => state.orderMyList);
   const { loading: loadingOrders, error: errorOrders, orders } = orderMyList;
 
-  console.log("userinfo", userInfo);
-  console.log("user", user.name);
-  console.log("orderMyList", orderMyList);
-
   useEffect(() => {
     if (!userInfo) {
       navigate("/login");

@@ -8,7 +8,7 @@ export default function LatestReviews({ latestReviews = [] }) {
     window.innerWidth < 1300 ? 30 : window.innerWidth < 1600 ? 40 : 70;
 
   return (
-    <Col md={3}>
+    <div className="reviews-carousel">
       <h5 className="text-center">Latest Reviews</h5>
       <Carousel>
         {latestReviews.map((review, index) => {
@@ -51,6 +51,6 @@ export default function LatestReviews({ latestReviews = [] }) {
           );
         })}
       </Carousel>
-    </Col>
+    </div>
   );
 }

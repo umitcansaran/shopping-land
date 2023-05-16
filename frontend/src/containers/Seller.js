@@ -42,7 +42,7 @@ export default function SellerScreen() {
     if (store !== "" && value === "") {
       dispatch(
         search({
-          type: "product_in_store",
+          type: "products_in_store",
           store: store.id,
           searchString: "",
         })
@@ -51,7 +51,7 @@ export default function SellerScreen() {
     if (store !== "" && value != "") {
       dispatch(
         search({
-          type: "product_in_store",
+          type: "products_in_store",
           store: store.id,
           searchString: value,
         })
@@ -156,15 +156,8 @@ export default function SellerScreen() {
               return (
                 <Row style={{ justifyContent: "center" }}>
                   <Button
-                    onClick={() => setStore(sellerStore)}
-                    style={{
-                      width: "70%",
-                    }}
-                    variant={
-                      store.name === sellerStore.name ? "secondary" : "light"
-                    }
-                    // className={'mx2' + (store.name === sellerStore.name) ? ' blue-button' : ''}
-                    style={{ marginBottom: "0.3rem" }}
+                    onClick={() => setStore(sellerStore)}                   
+                    className="seller-store-button"
                   >
                     {sellerStore.name}
                   </Button>
@@ -172,8 +165,11 @@ export default function SellerScreen() {
               );
             })}
         </Col>
-        <Col>
-          <Row style={{ textAlign: "center" }}>
+        <Col className="mx-1">
+          <Row
+            style={{ textAlign: "center" }}
+            className="justify-content-center"
+          >
             {products &&
               products.length === 0 &&
               (value !== "" ? (
@@ -185,20 +181,12 @@ export default function SellerScreen() {
               ) : (
                 <h5>Currently no product to show!</h5>
               ))}
-            {products &&
-              products.map((product, index) => {
-                return (
-                  <Col
-                    xs={6}
-                    md={4}
-                    lg={4}
-                    xl={3}
-                    className="gx-1 gy-1 product-card"
-                  >
-                    <ProductCard product={product} key={index} />
-                  </Col>
-                );
-              })}
+            <Row className="product-container">
+              {products &&
+                products.map((product, index) => {
+                  return <ProductCard product={product} key={index} />;
+                })}
+            </Row>
           </Row>
         </Col>
       </Row>

@@ -20,11 +20,11 @@
   color: #495b7a;
 }
 
-.home-back-button-container {
+.home-load-button-container {
   justify-content: center;
 }
 
-.home-back-button {
+.home-button {
   width: 200px;
   margin-top: 10px;
 }

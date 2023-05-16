@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 function ProductCarousel({ latestProducts = [] }) {
   return (
-    <Col md={6}>
+    <div className="text-center main-carousel-container">
       <Carousel
         pause="hover"
         style={{ backgroundColor: "#f7f7f7" }}
@@ -20,7 +20,9 @@ function ProductCarousel({ latestProducts = [] }) {
                 <h5 style={{ color: "black", fontSize: "1rem" }}>
                   {product.name}
                 </h5>
+                <div className="main-carousel-img-container">
                 <Image className="main-carousel-img" src={product.image} alt={product.name} fluid/>
+                </div>
                 <h5 className="pt-2" style={{ color: "black" }}>
                   CHF {Math.trunc(product.price)}
                 </h5>
@@ -29,7 +31,7 @@ function ProductCarousel({ latestProducts = [] }) {
           );
         })}
       </Carousel>
-    </Col>
+    </div>
   );
 }
 

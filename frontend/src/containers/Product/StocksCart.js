@@ -15,6 +15,7 @@ export default function StocksCart({
           <Col>Select a store:</Col>
         </Row>
         {stocks.map((stock, index) => {
+          console.log(stock)
           return (
             <>
               <Row className="my-2" key={index}>
@@ -63,7 +64,7 @@ export default function StocksCart({
                       as="select"
                       value={quantity}
                       onChange={(e) =>
-                        storeInfo(e, stock.store_name, Number(stock.number), stock.id)
+                        storeInfo(e, stock.store_name, Number(stock.number), stock.id, stock.store)
                       }
                     >
                       <option key={0} value={0}>

@@ -18,17 +18,16 @@ function CartScreen() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { quantity, id, storeName, storeStock, stockID } = location.state
+  const { quantity, id, storeName, storeStock, stockID, storeID } = location.state
     ? location.state
     : 1;
-
+ 
   const { userInfo } = useSelector((state) => state.userLogin);
   const { cartItems } = useSelector((state) => state.cart);
-  console.log('storestock', storeStock)
-
+ 
   useEffect(() => {
     if (id) {
-      dispatch(addToCart(id, quantity, storeName, storeStock, stockID));
+      dispatch(addToCart(id, quantity, storeName, storeStock, stockID, storeID));
     }
   }, [dispatch, id, quantity, storeName, storeStock]);
 
@@ -74,7 +73,6 @@ function CartScreen() {
                   <Col md={3}>
                     <>
                       {product.storeName}
-                      {console.log("dddddddddddddddd", product)}
                       <Form.Control
                         as="select"
                         value={product.quantity}

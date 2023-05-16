@@ -7,7 +7,7 @@ export default function LatestSellers({ latestSellers = [] }) {
     window.innerWidth < 1300 ? 30 : window.innerWidth < 1600 ? 40 : 70;
 
   return (
-    <Col md={3} className="text-center">
+    <div className="text-center sellers-carousel">
       <h5>Latest Sellers</h5>
       <Carousel style={{ alignItems: "center" }}>
         {latestSellers.map((seller, index) => {
@@ -38,6 +38,6 @@ export default function LatestSellers({ latestSellers = [] }) {
           );
         })}
       </Carousel>
-    </Col>
+    </div>
   );
 }

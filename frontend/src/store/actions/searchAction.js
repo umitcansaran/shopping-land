@@ -68,7 +68,6 @@ export const search = (searchData) => async (dispatch, getState) => {
   }
 
   if (searchData.type === "map") {
-    console.log(searchData);
     try {
       dispatch({
         type: STORE_LIST_REQUEST,
@@ -168,7 +167,7 @@ export const search = (searchData) => async (dispatch, getState) => {
     }
   }
 
-  if (searchData.type === "product_in_store") {
+  if (searchData.type === "products_in_store") {
     try {
       dispatch({
         type: PRODUCTS_BY_USER_REQUEST,
@@ -270,16 +269,15 @@ export const search = (searchData) => async (dispatch, getState) => {
     }
   }
 
-  if (searchData.type === "product_in_my_store") {
+  if (searchData.type === "products_in_my_store") {
     try {
       dispatch({
         type: STORE_STOCKS_SEARCH_REQUEST,
       });
 
       const { data } = await axios.get(
-        `${baseUrl}/api/search/?type=${searchData.type}&store_name=${searchData.store}&search_string=${searchData.searchString}`
+        `${baseUrl}/api/search/?type=${searchData.type}&store_id=${searchData.store}&search_string=${searchData.searchString}`
       );
-      console.log(data);
 
       dispatch({
         type: STORE_STOCKS_SEARCH_SUCCESS,
