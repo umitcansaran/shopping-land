@@ -30,7 +30,7 @@ class Profile(models.Model):
     description = models.TextField(verbose_name='profile description', blank=True, null=True)
 
     # Relations:
-    user = models.ForeignKey(to=User, related_name='profile', on_delete=models.CASCADE, blank=True, null=True)
+    user = models.OneToOneField(to=User, related_name='profile', on_delete=models.CASCADE, blank=True, null=True)
     category = models.ManyToManyField( to=ProductCategory, related_name='profile', blank=True)
 
     def __str__(self):

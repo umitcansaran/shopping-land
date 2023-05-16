@@ -122,14 +122,14 @@ def getProduct(request, pk):
 
 class ProductCategory(ListAPIView):
     """
-    GET: Get the list of all the categories.
+    GET: Get the list of all categories.
     """
     queryset = ProductCategory.objects.all()
     serializer_class = ProductCategorySerializer
 
 class ProductSubcategory(ListAPIView):
     """
-    GET: Get the list of all the subcategories.
+    GET: Get the list of all subcategories.
     """
     queryset = ProductSubcategory.objects.all()
     serializer_class = ProductSubcategorySerializer

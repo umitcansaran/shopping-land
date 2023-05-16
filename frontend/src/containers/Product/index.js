@@ -197,12 +197,11 @@ function ProductScreen() {
                   {/* 
                   // Add to cart feature is active during development. 
                   Visitors can log in with the provided credentials and test both the admin panel and the checkout steps.
-                  { user && user.profile[0].status === 'STORE_OWNER' && (
+                  { user && user.profile.status === 'STORE_OWNER' && (
                                             <ListGroup.Item>
                                                 <Message variant='danger'>Seller accounts are not able to make purchases.</Message>
                                             </ListGroup.Item>
                                             )} */}
-
                   <ListGroup.Item>
                     <Button
                       onClick={addToCartHandler}
@@ -246,7 +245,7 @@ function ProductScreen() {
                   )}
 
                   {userInfo ? (
-                    user && user.profile[0].status === "CUSTOMER" ? (
+                    user && user.profile.status === "CUSTOMER" ? (
                       <Form onSubmit={submitHandler}>
                         <Form.Group controlId="rating">
                           <Form.Label>Rating</Form.Label>

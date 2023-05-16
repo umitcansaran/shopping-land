@@ -157,7 +157,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class UserSerializer(ModelSerializer):
     name = serializers.SerializerMethodField(read_only=True)
-    profile = ProfileSerializer(many=True)
+    profile = ProfileSerializer(many=False)
     product = ProductSerializer(many=True)
     store = StoreSerializer(many=True)
 

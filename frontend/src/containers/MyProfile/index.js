@@ -24,7 +24,7 @@ function ProfileScreen() {
   const { user } = useSelector((state) => state.myDetails);
   const { categories } = useSelector((state) => state.productCategories);
 
-  const profile = user?.profile[0];
+  const profile = user?.profile;
 
   useEffect(() => {
     if (deleteConfirm === "account") {
@@ -50,7 +50,7 @@ function ProfileScreen() {
       {!editProfile && profile.status === "STORE_OWNER" && (
         <>
           <Row className="mt-4 justify-content-center">
-            <Image className="profile-img" src={user.profile[0].image} />
+            <Image className="profile-img" src={user.profile.image} />
           </Row>
           <Row className="mt-3 d-flex justify-content-center">
             <Col md={4}>
@@ -95,7 +95,7 @@ function ProfileScreen() {
       {!editProfile && profile.status === "CUSTOMER" && (
         <>
           <Row className="mt-4 justify-content-center">
-            <Image className="profile-img" src={user.profile[0].image} />
+            <Image className="profile-img" src={user.profile.image} />
           </Row>
           <Row className="mt-3 d-flex justify-content-center">
             <Col md={4}>

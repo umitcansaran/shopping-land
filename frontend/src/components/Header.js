@@ -85,11 +85,11 @@ const Header = () => {
             </Nav.Link>
           </Nav>
           <Nav className="me-4">
-            {user && user.profile[0].status === "CUSTOMER" && (
+            {user && user.profile.status === "CUSTOMER" && (
               <>
                 <Row className="align-items-center">
                   <img
-                    src={user && user.profile[0].image}
+                    src={user && user.profile.image}
                     alt="customer-profile"
                     style={{ width: "3.3rem", height: "auto" }}
                   />
@@ -108,12 +108,12 @@ const Header = () => {
               </>
             )}
             {user ? (
-              user.profile[0].status === "STORE_OWNER" && (
+              user.profile.status === "STORE_OWNER" && (
                 <>
                   <NavDropdown
                     title={
                       <Image
-                        src={user && user.profile[0].image}
+                        src={user && user.profile.image}
                         alt="retailer-profile"
                         style={{ height: "1.6rem" }}
                       />

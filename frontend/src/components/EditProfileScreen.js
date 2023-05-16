@@ -8,7 +8,7 @@ function EditProfileScreen() {
   const { user } = useSelector((state) => state.myDetails);
   const { categories } = useSelector((state) => state.productCategories);
 
-  const profile = user && user.profile[0];
+  const profile = user && user.profile;
 
   const [industry, setIndustry] = useState(profile.industry);
   const [headquarter, setHeadquarter] = useState(profile.headquarter);
@@ -67,7 +67,7 @@ function EditProfileScreen() {
       <Row className="mt-3 justify-content-center text-center">
         <h5>{user.username}</h5>
         <Image
-          src={user.profile[0].image}
+          src={user.profile.image}
           style={{ width: "10rem", height: "auto" }}
         />
       </Row>
