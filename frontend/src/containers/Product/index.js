@@ -33,6 +33,7 @@ function ProductScreen() {
   const [selectedStore, setSelectedStore] = useState({});
   const [storeName, setStoreName] = useState("");
   const [storeStock, setStoreStock] = useState("");
+  const [stockID, setStockID] = useState("");
 
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
@@ -58,6 +59,8 @@ function ProductScreen() {
     success: successProductReview,
   } = useSelector((state) => state.productReviewCreate);
 
+  console.log('stockid', stockID)
+
   useEffect(() => {
     if (successProductReview) {
       setRating(0);
@@ -72,15 +75,16 @@ function ProductScreen() {
     dispatch(myDetails());
   }, [dispatch, params, successProductReview]);
 
-  const storeInfo = (e, store, stock) => {
+  const storeInfo = (e, store, stockNumber, stockID) => {
     setQuantity(Number(e.target.value));
     setStoreName(store);
-    setStoreStock(stock);
+    setStoreStock(stockNumber);
+    setStockID(stockID)
   };
 
   const addToCartHandler = () => {
     navigate("/cart", {
-      state: { quantity, id: product.id, storeName, storeStock },
+      state: { quantity, id: product.id, storeName, storeStock, stockID },
     });
   };
 

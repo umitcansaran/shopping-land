@@ -133,6 +133,7 @@ export default function MyProducts() {
     }
 
     if (stock) {
+      console.log(stockNum)
       dispatch(updateStock(stock.id, stockNum));
       setStockInput({});
     } else {

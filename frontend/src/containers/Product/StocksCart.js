@@ -63,7 +63,7 @@ export default function StocksCart({
                       as="select"
                       value={quantity}
                       onChange={(e) =>
-                        storeInfo(e, stock.store_name, Number(stock.number))
+                        storeInfo(e, stock.store_name, Number(stock.number), stock.id)
                       }
                     >
                       <option key={0} value={0}>

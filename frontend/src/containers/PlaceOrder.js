@@ -6,6 +6,7 @@ import Message from "../components/Message";
 import CheckoutSteps from "../components/CheckoutSteps";
 import { createOrder } from "../store/actions/orderActions";
 import { ORDER_CREATE_RESET } from "../store/constants/orderConstants";
+import { updateStock } from "../store/actions/stockActions";
 
 function PlaceOrderScreen() {
   const orderCreate = useSelector((state) => state.orderCreate);
@@ -39,18 +40,26 @@ function PlaceOrderScreen() {
     }
   }, [dispatch, success, navigate]);
 
+  // !! Currently updating stocks in the backend !!
+  // const updateProductStock = () => {
+  //   cart.cartItems.forEach((item) =>
+  //     dispatch(updateStock(item.stockID, { number: item.storeStock - item.quantity}))
+  //   );
+  // };
+
   const placeOrder = () => {
     dispatch(
       createOrder({
         orderItems: cart.cartItems,
         shippingAddress: cart.shippingAddress,
-        paymentMethod: cart.paymentMethod,
         itemsPrice: cart.itemsPrice,
-        shippingPrice: cart.shippingPrice,
+        paymentMethod: cart.paymentMethod,
         taxPrice: cart.taxPrice,
+        shippingPrice: cart.shippingPrice,
         totalPrice: cart.totalPrice,
       })
     );
+    // updateProductStock();
   };
 
   return (

@@ -65,7 +65,6 @@ class Product(models.Model):
     image = models.ImageField(null=True, blank=True, upload_to='product', default='/no-image.jpeg')
     rating = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
     numReviews = models.IntegerField(null=True, blank=True, default=0)
-    countInStock = models.IntegerField(null=True, blank=True, default=0)
     createdAt = models.DateTimeField(auto_now_add=True)
 
     # Relations:

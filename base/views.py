@@ -192,6 +192,7 @@ class Search(ListAPIView):
         search_type = self.request.query_params.get('type', None)
         search_string = self.request.query_params.get('search_string', None)
         store_name = self.request.query_params.get('store_name', None)
+        store_id = self.request.query_params.get('store_id', None)
         seller_id = self.request.query_params.get('seller_id', None)
         if search_type is not None:
             if search_type == 'stores':
@@ -234,9 +235,11 @@ class Search(ListAPIView):
                         ))
                     return queryset
             if search_type == 'product_in_store':
-                if store_name is not None:
-                    storeId = Store.objects.get(name=store_name).id
-                    store_stocks = Stock.objects.filter(store=storeId)
+                if store_id is not None:
+                    # storeId = Store.objects.get(name=store_name)
+                    # print(storeId)
+                    store_stocks = Stock.objects.filter(store=store_id)
+                    print(store_stocks)
                 if search_string is not None:
                     queryset = store_stocks.filter(Q(
                        Q(product__id__icontains=search_string) |
@@ -359,7 +362,6 @@ def updateStock(request, pk):
     stock = Stock.objects.get(id=pk)
 
     stock.number = data['number']
-
     stock.save()
 
     serializer = StockSerializer(stock, many=False)
@@ -475,7 +477,7 @@ def addOrderItems(request):
             country=data['shippingAddress']['country'],
         )
 
-        # (3) Create order items adn set order to orderItem relationship
+        # (3) Create order items and set order to orderItem relationship
         for i in orderItems:
             product = Product.objects.get(id=i['id'])
 
@@ -489,8 +491,9 @@ def addOrderItems(request):
             )
 
             # (4) Update stock
-            product.countInStock -= item.quantity
-            product.save()
+            stock = Stock.objects.get(id=i['stockID'])
+            stock.number = stock.number - i['quantity']
+            stock.save()
 
         serializer = OrderSerializer(order, many=False)
         return Response(serializer.data)

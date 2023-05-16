@@ -10,24 +10,18 @@ import {
 } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  listReviews,
-  listLatestProducts,
-  listProductsByUser,
-} from "../store/actions/productActions";
+import { listProductsByUser } from "../store/actions/productActions";
 import { search } from "../store/actions/searchAction";
 import { listStoresByUser } from "../store/actions/storeActions";
 import { getProfileDetails } from "../store/actions/userActions";
 import { PROFILE_DETAILS_RESET } from "../store/constants/userConstants";
-import { CFormCheck } from "@coreui/react";
 import ProductCard from "../components/ProductCard";
 import SearchBox from "../components/SearchBox";
 import { PRODUCT_LIST_RESET } from "../store/constants/productConstants";
 
 export default function SellerScreen() {
   const [value, setValue] = useState("");
-  const [storeSearchValue, setStoreSearchValue] = useState("");
-  const [storeName, setStoreName] = useState("");
+  const [store, setStore] = useState("");
 
   const dispatch = useDispatch();
   const params = useParams();
@@ -45,29 +39,29 @@ export default function SellerScreen() {
   }, [dispatch, params.id]);
 
   useEffect(() => {
-    if (storeName != "" && value === "") {
+    if (store !== "" && value === "") {
       dispatch(
         search({
           type: "product_in_store",
-          store: storeName,
+          store: store.id,
           searchString: "",
         })
       );
     }
-    if (storeName != "" && value != "") {
+    if (store !== "" && value != "") {
       dispatch(
         search({
           type: "product_in_store",
-          store: storeName,
+          store: store.id,
           searchString: value,
         })
       );
     }
-  }, [storeName, value]);
+  }, [store, value]);
 
   const storeSearchHandler = (e) => {
     setValue(e.target.value);
-    if (storeName === "") {
+    if (store === "") {
       dispatch(
         search({
           type: "products_by_seller",
@@ -78,18 +72,8 @@ export default function SellerScreen() {
     }
   };
 
-  const storeChange = (store) => {
-    setStoreName(store);
-    setStoreSearchValue("");
-  };
-
-  const showAllProducts = () => {
-    setStoreName("");
-    dispatch(listProductsByUser(params.id));
-  };
-
   const placeholder =
-    `Search by brand or product name` + (storeName ? ` in ${storeName}` : "");
+    `Search by brand or product name` + (store ? ` in ${store.name}` : "");
 
   return (
     <>
@@ -155,27 +139,34 @@ export default function SellerScreen() {
       <Row className="mt-3 px-2">
         <Col md={2}>
           <p style={{ textAlign: "center", fontSize: "0.9rem" }}>
-            {storeName === ""
+            {store === ""
               ? "Filter products by store"
               : `You can search in store`}
           </p>
-          {storeName != "" && (
-            <i class="fa-solid fa-x" onClick={() => showAllProducts()}></i>
+          {store !== "" && (
+            <i
+              class="fa-solid fa-x"
+              onClick={() => (
+                setStore(""), dispatch(listProductsByUser(params.id))
+              )}
+            ></i>
           )}
           {stores &&
-            stores.map((store) => {
+            stores.map((sellerStore) => {
               return (
                 <Row style={{ justifyContent: "center" }}>
                   <Button
-                    onClick={() => setStoreName(store.name)}
+                    onClick={() => setStore(sellerStore)}
                     style={{
-                      display: "block",
                       width: "70%",
                     }}
-                    variant={storeName === store.name ? "primary" : "secondary"}
-                    className="my-2"
+                    variant={
+                      store.name === sellerStore.name ? "secondary" : "light"
+                    }
+                    // className={'mx2' + (store.name === sellerStore.name) ? ' blue-button' : ''}
+                    style={{ marginBottom: "0.3rem" }}
                   >
-                    {store.name}
+                    {sellerStore.name}
                   </Button>
                 </Row>
               );
@@ -185,9 +176,9 @@ export default function SellerScreen() {
           <Row style={{ textAlign: "center" }}>
             {products &&
               products.length === 0 &&
-              (value != "" ? (
-                storeName != "" ? (
-                  <h5>No search results in {storeName} store!</h5>
+              (value !== "" ? (
+                store !== "" ? (
+                  <h5>No search results in {store.name} store!</h5>
                 ) : (
                   <h5>No search results in stocks!</h5>
                 )

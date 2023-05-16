@@ -18,16 +18,17 @@ function CartScreen() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { quantity, id, storeName, storeStock } = location.state
+  const { quantity, id, storeName, storeStock, stockID } = location.state
     ? location.state
     : 1;
 
   const { userInfo } = useSelector((state) => state.userLogin);
   const { cartItems } = useSelector((state) => state.cart);
+  console.log('storestock', storeStock)
 
   useEffect(() => {
     if (id) {
-      dispatch(addToCart(id, quantity, storeName, storeStock));
+      dispatch(addToCart(id, quantity, storeName, storeStock, stockID));
     }
   }, [dispatch, id, quantity, storeName, storeStock]);
 

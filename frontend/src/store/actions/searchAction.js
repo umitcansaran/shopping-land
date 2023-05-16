@@ -175,7 +175,7 @@ export const search = (searchData) => async (dispatch, getState) => {
       });
 
       const { data } = await axios.get(
-        `${baseUrl}/api/search/?type=${searchData.type}&store_name=${searchData.store}&search_string=${searchData.searchString}`
+        `${baseUrl}/api/search/?type=${searchData.type}&store_id=${searchData.store}&search_string=${searchData.searchString}`
       );
       const result = data
         .filter((data) => data.number > 0)
@@ -279,7 +279,7 @@ export const search = (searchData) => async (dispatch, getState) => {
       const { data } = await axios.get(
         `${baseUrl}/api/search/?type=${searchData.type}&store_name=${searchData.store}&search_string=${searchData.searchString}`
       );
-      console.log(data)
+      console.log(data);
 
       dispatch({
         type: STORE_STOCKS_SEARCH_SUCCESS,
