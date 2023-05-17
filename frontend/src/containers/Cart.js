@@ -18,18 +18,36 @@ function CartScreen() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { quantity, id, storeName, storeStock, stockID, storeID } = location.state
-    ? location.state
-    : 1;
- 
+  const { quantity, id, storeName, storeStock, stockID, storeID, productInfo } =
+    location.state ? location.state : 1;
+
   const { userInfo } = useSelector((state) => state.userLogin);
   const { cartItems } = useSelector((state) => state.cart);
- 
+
   useEffect(() => {
     if (id) {
-      dispatch(addToCart(id, quantity, storeName, storeStock, stockID, storeID));
+      dispatch(
+        addToCart(
+          id,
+          quantity,
+          storeName,
+          storeStock,
+          productInfo.seller_details.name,
+          stockID,
+          storeID
+        )
+      );
     }
-  }, [dispatch, id, quantity, storeName, storeStock]);
+  }, [
+    dispatch,
+    id,
+    quantity,
+    storeName,
+    storeStock,
+    stockID,
+    storeID,
+    productInfo,
+  ]);
 
   const removeFromCartHandler = (id) => {
     dispatch(removeFromCart(id));
@@ -43,6 +61,26 @@ function CartScreen() {
     }
   };
 
+  // Get unique seller names
+  let sellers = cartItems
+    .reduce((accumulator, current) => {
+      if (!accumulator.find((item) => item.seller === current.seller)) {
+        accumulator.push(current);
+      }
+      return accumulator;
+    }, [])
+    .map((product) => product.seller);
+
+  // Show total price of products by seller
+  let totalPriceBySeller = sellers.map((seller) => {
+    return cartItems
+      .filter((product) => product.seller === seller)
+      .reduce((acc, item) => acc + item.price * item.quantity, 0);
+  });
+
+  let shippingCost;
+  let subTotalPrice;
+
   return (
     <Row className="m-3">
       <Col md={8}>
@@ -52,63 +90,118 @@ function CartScreen() {
             Your cart is empty <Link to="/">Go Back</Link>
           </Message>
         ) : (
-          <ListGroup variant="flush">
-            {cartItems.map((product) => (
-              <ListGroup.Item key={product.id}>
-                <Row>
-                  <Col md={2}>
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fluid
-                      rounded
-                    />
-                  </Col>
-                  <Col md={3}>
-                    <Link to={`/product/${product.id}`}>{product.name}</Link>
-                  </Col>
-
-                  <Col md={2}>${product.price}</Col>
-
-                  <Col md={3}>
-                    <>
-                      {product.storeName}
-                      <Form.Control
-                        as="select"
-                        value={product.quantity}
-                        onChange={(e) =>
-                          dispatch(
-                            addToCart(
-                              product.id,
-                              Number(e.target.value),
-                              product.storeName,
-                              product.storeStock
-                            )
-                          )
-                        }
-                      >
-                        {[...Array(product.storeStock).keys()].map((x) => (
-                          <option key={x + 1} value={x + 1}>
-                            {x + 1}
-                          </option>
-                        ))}
-                      </Form.Control>
-                    </>
-                  </Col>
-
-                  <Col md={1}>
-                    <Button
-                      type="button"
-                      variant="light"
-                      onClick={() => removeFromCartHandler(product.id)}
-                    >
-                      <i className="fas fa-trash"></i>
-                    </Button>
-                  </Col>
+          sellers.map((seller, index) => {
+            return (
+              <ListGroup variant="flush" key={index}>
+                <Row className="justify-content-center">
+                  <h4
+                    style={{
+                      textAlign: "center",
+                      width: "auto",
+                      margin: "1rem",
+                      color: "#698bc2",
+                    }}
+                  >
+                    {seller}
+                  </h4>
                 </Row>
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
+                {cartItems
+                  .filter((cartItem) => cartItem.seller === seller)
+                  .map((product) => {
+                    shippingCost = totalPriceBySeller[index] >= 100 ? 0 : 20;
+                    subTotalPrice = totalPriceBySeller[index] + shippingCost;
+                    return (
+                      <ListGroup.Item key={product.id}>
+                        <Row>
+                          <Col md={2}>
+                            <Image
+                              src={product.image}
+                              alt={product.name}
+                              fluid
+                              rounded
+                            />
+                          </Col>
+                          <Col md={3}>
+                            <Link to={`/product/${product.id}`}>
+                              {product.name}
+                            </Link>
+                          </Col>
+
+                          <Col md={2}>${product.price}</Col>
+
+                          <Col md={3}>
+                            <>
+                              <p
+                                style={{
+                                  textAlign: "center",
+                                }}
+                              >
+                                {product.storeName}
+                              </p>
+                              <Form.Control
+                                as="select"
+                                value={product.quantity}
+                                onChange={(e) =>
+                                  dispatch(
+                                    addToCart(
+                                      product.id,
+                                      Number(e.target.value),
+                                      product.storeName,
+                                      product.storeStock,
+                                      seller
+                                    )
+                                  )
+                                }
+                              >
+                                {[...Array(product.storeStock).keys()].map(
+                                  (x) => (
+                                    <option key={x + 1} value={x + 1}>
+                                      {x + 1}
+                                    </option>
+                                  )
+                                )}
+                              </Form.Control>
+                            </>
+                          </Col>
+
+                          <Col md={1}>
+                            <Button
+                              type="button"
+                              variant="light"
+                              onClick={() => removeFromCartHandler(product.id)}
+                            >
+                              <i className="fas fa-trash"></i>
+                            </Button>
+                          </Col>
+                        </Row>
+                      </ListGroup.Item>
+                    );
+                  })}
+                <Row className="justify-content-end">
+                  <h6
+                    style={{
+                      textAlign: "center",
+                      width: "auto",
+                      margin: "0.5rem",
+                    }}
+                  >
+                    {shippingCost === 0 ? "Free Shipping" : "Shipping: CHF 20"}
+                  </h6>
+                </Row>
+                <Row className="justify-content-end">
+                  <h6
+                    style={{
+                      textAlign: "center",
+                      width: "auto",
+                      margin: "0.5rem",
+                    }}
+                  >
+                    Subtotal: CHF {subTotalPrice}
+                  </h6>
+                </Row>
+              </ListGroup>
+            );
+          })
         )}
       </Col>
 
@@ -117,17 +210,15 @@ function CartScreen() {
           <ListGroup variant="flush">
             <ListGroup.Item>
               <h2>
-                Subtotal (
+                Total Price (
                 {cartItems.reduce((acc, product) => acc + product.quantity, 0)})
                 items
               </h2>
-              $
-              {cartItems
-                .reduce(
-                  (acc, product) => acc + product.quantity * product.price,
-                  0
-                )
-                .toFixed(2)}
+              CHF{" "}
+              {cartItems.reduce(
+                (acc, product) => acc + product.quantity * product.price,
+                0
+              )}
             </ListGroup.Item>
           </ListGroup>
           <ListGroup.Item>

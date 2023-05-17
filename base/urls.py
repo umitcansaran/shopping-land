@@ -67,6 +67,7 @@ urlpatterns = [
     # ORDER
     path('orders/', views.getOrders, name='orders'),
     path('orders/add/', views.addOrderItems, name='orders-add'),
+    path('orders/mypurchases/', views.getMyPurchases, name='mypurchases'),
     path('orders/myorders/', views.getMyOrders, name='myorders'),
     path('orders/<int:pk>/deliver/', views.updateOrderToDelivered, name='order-delivered'),
     path('orders/<int:pk>/', views.getOrderById, name='user-order'),

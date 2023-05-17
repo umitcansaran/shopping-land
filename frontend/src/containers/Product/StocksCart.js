@@ -15,7 +15,6 @@ export default function StocksCart({
           <Col>Select a store:</Col>
         </Row>
         {stocks.map((stock, index) => {
-          console.log(stock)
           return (
             <>
               <Row className="my-2" key={index}>

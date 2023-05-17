@@ -8,7 +8,7 @@ import {
 } from "../constants/cartConstants";
 
 export const addToCart =
-  (id, quantity, storeName, storeStock, stockID, storeID) => async (dispatch, getState) => {
+  (id, quantity, storeName, storeStock, seller, stockID, storeID) => async (dispatch, getState) => {
     const { data } = await axios.get(`${baseUrl}/api/product/${id}`);
 
     dispatch({
@@ -24,7 +24,8 @@ export const addToCart =
         storeName,
         storeStock,
         stockID,
-        storeID
+        storeID,
+        seller
       },
     });
     localStorage.setItem(

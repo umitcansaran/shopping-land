@@ -460,7 +460,6 @@ def addOrderItems(request):
         order = Order.objects.create(
             user=user,
             paymentMethod=data['paymentMethod'],
-            taxPrice=data['taxPrice'],
             shippingPrice=data['shippingPrice'],
             totalPrice=data['totalPrice']
         )
@@ -477,6 +476,7 @@ def addOrderItems(request):
         # (3) Create order items and set order to orderItem relationship
         for i in orderItems:
             product = Product.objects.get(id=i['id'])
+            store = Store.objects.get(id=i['storeID'])
 
             item = OrderItem.objects.create(
                 product=product,
@@ -485,6 +485,7 @@ def addOrderItems(request):
                 quantity=i['quantity'],
                 price=i['price'],
                 image=product.image.url,
+                store=store
             )
 
             # (4) Update stock
@@ -498,12 +499,19 @@ def addOrderItems(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def getMyOrders(request):
+def getMyPurchases(request):
     user = request.user
     orders = user.order_set.all()
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getMyOrders(request):
+    user = request.user
+    orders = user.order_set.all()
+    serializer = OrderSerializer(orders, many=True)
+    return Response(serializer.data)
 
 @api_view(['GET'])
 @permission_classes([IsAdminUser])

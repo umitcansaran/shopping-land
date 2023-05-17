@@ -4,7 +4,7 @@ import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
-import { listMyOrders } from "../store/actions/orderActions";
+import { listMyPurchases } from "../store/actions/orderActions";
 import { useNavigate } from "react-router-dom";
 
 function OrdersScreen() {
@@ -18,7 +18,7 @@ function OrdersScreen() {
 
   const { userInfo } = useSelector((state) => state.userLogin);
 
-  const orderMyList = useSelector((state) => state.orderMyList);
+  const orderMyList = useSelector((state) => state.purchaseMyList);
   const { loading: loadingOrders, error: errorOrders, orders } = orderMyList;
 
   useEffect(() => {
@@ -26,7 +26,7 @@ function OrdersScreen() {
       navigate("/login");
     } else {
       if (!user || !user.name || userInfo.id !== user.id) {
-        dispatch(listMyOrders());
+        dispatch(listMyPurchases());
       } else {
         setName(user.name);
         setEmail(user.email);

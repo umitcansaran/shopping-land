@@ -84,7 +84,7 @@ function ProductScreen() {
 
   const addToCartHandler = () => {
     navigate("/cart", {
-      state: { quantity, id: product.id, storeName, storeStock, stockID, storeID },
+      state: { quantity, id: product.id, storeName, storeStock, stockID, storeID, productInfo: product},
     });
   };
 
@@ -206,7 +206,7 @@ function ProductScreen() {
                     <Button
                       onClick={addToCartHandler}
                       className="btn-block btn-primary"
-                      disabled={stocks && stocks.length === 0}
+                      disabled={(stocks && stocks.length === 0) || (storeStock === '')}
                       type="button"
                     >
                       Add to Cart
