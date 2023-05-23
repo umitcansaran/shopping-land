@@ -39,7 +39,7 @@ urlpatterns = [
     path('product/stocks/<int:product_id>/', views.ListProductStocks.as_view()),
     path('myproducts/', views.MyProductsViewSet.as_view({'get': 'list'})),
     path('latest-products/', views.LatestProducts.as_view(), name='latest-products'),
-    path('products/user/<int:user_id>/', views.ListProductssByUser.as_view()),
+    path('products/user/<int:user_id>/', views.ListProductsByUser.as_view()),
 
     # REVIEW
     path('product/<int:pk>/reviews/', views.createProductReview, name="create-review"),
@@ -66,11 +66,14 @@ urlpatterns = [
 
     # ORDER
     path('orders/', views.getOrders, name='orders'),
+    path('suborders/', views.getSubOrders, name='suborders'),
     path('orders/add/', views.addOrderItems, name='orders-add'),
     path('orders/mypurchases/', views.getMyPurchases, name='mypurchases'),
     path('orders/myorders/', views.getMyOrders, name='myorders'),
     path('orders/<int:pk>/deliver/', views.updateOrderToDelivered, name='order-delivered'),
     path('orders/<int:pk>/', views.getOrderById, name='user-order'),
+    path('suborders/<int:pk>/', views.ListSubOrder.as_view()),
+    # path('suborders/<int:pk>/', views.getSubOrderById, name='user-suborder'),
     path('orders/<int:pk>/pay/', views.updateOrderToPaid, name='pay')
 ]
 

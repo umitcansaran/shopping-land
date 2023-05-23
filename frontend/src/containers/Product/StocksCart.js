@@ -5,18 +5,23 @@ export default function StocksCart({
   stocks,
   selectedStore,
   setSelectedStore,
+  selectedOnline,
+  setSelectedOnline,
+  onlineStock,
   quantity,
+  setQuantity,
   storeInfo,
+  totalStock,
 }) {
   return (
     <>
       <ListGroup.Item>
         <Row>
-          <Col>Select a store:</Col>
+          <Col>Pick up in-store:</Col>
         </Row>
         {stocks.map((stock, index) => {
           return (
-            <>
+            stock.number > 0 && (
               <Row className="my-2" key={index}>
                 <Col md={9}>
                   <Button
@@ -29,6 +34,8 @@ export default function StocksCart({
                     }}
                     onClick={() => {
                       Object.keys(stocks).forEach((key) => {
+                        setQuantity(0);
+                        setSelectedOnline(false);
                         selectedStore[key] = false;
                         setSelectedStore({
                           ...selectedStore,
@@ -63,7 +70,13 @@ export default function StocksCart({
                       as="select"
                       value={quantity}
                       onChange={(e) =>
-                        storeInfo(e, stock.store_name, Number(stock.number), stock.id, stock.store)
+                        storeInfo(
+                          e,
+                          stock.store_name,
+                          Number(stock.number),
+                          stock.id,
+                          stock.store
+                        )
                       }
                     >
                       <option key={0} value={0}>
@@ -78,9 +91,69 @@ export default function StocksCart({
                   </Col>
                 )}
               </Row>
-            </>
+            )
           );
         })}
+      </ListGroup.Item>
+      <ListGroup.Item>
+        <Row>
+          <Col>Buy online:</Col>
+        </Row>
+        <Row className="my-2">
+          <Col md={9}>
+            <Button
+              variant="light"
+              style={{
+                width: "100%",
+                textAlign: "left",
+                fontSize: "0.8rem",
+                textTransform: "unset",
+              }}
+              onClick={() => {
+                setSelectedStore({});
+                setQuantity(0);
+                setSelectedOnline(true);
+              }}
+              disabled={totalStock === 0}
+            >
+              <Row>
+                <Col
+                  className="d-flex justify-content-start align-items-center"
+                  style={{ color: "#233fa6" }}
+                >
+                  Online
+                </Col>
+                <Col>
+                  Stock{" "}
+                  <Badge
+                    bg={totalStock > 0 ? "success" : "danger"}
+                    className="d-flex justify-content-start"
+                  >
+                    {totalStock}
+                  </Badge>
+                </Col>
+              </Row>
+            </Button>
+          </Col>
+          {selectedOnline && (
+            <Col md={3} className="d-flex align-items-center">
+              <Form.Select
+                as="select"
+                value={quantity}
+                onChange={(e) => onlineStock(e, Number(e.target.value))}
+              >
+                <option key={0} value={0}>
+                  0
+                </option>
+                {[...Array(totalStock).keys()].map((x) => (
+                  <option key={x + 1} value={x + 1}>
+                    {x + 1}
+                  </option>
+                ))}
+              </Form.Select>
+            </Col>
+          )}
+        </Row>
       </ListGroup.Item>
     </>
   );

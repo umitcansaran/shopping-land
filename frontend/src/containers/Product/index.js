@@ -32,9 +32,11 @@ function ProductScreen() {
   const [quantity, setQuantity] = useState(0);
   const [selectedStore, setSelectedStore] = useState({});
   const [storeName, setStoreName] = useState("");
-  const [storeStock, setStoreStock] = useState("");
+  const [productStock, setProductStock] = useState("");
   const [stockID, setStockID] = useState("");
   const [storeID, setStoreID] = useState("");
+
+  const [selectedOnline, setSelectedOnline] = useState(false)
 
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
@@ -74,18 +76,32 @@ function ProductScreen() {
     dispatch(myDetails());
   }, [dispatch, params, successProductReview]);
 
+  const totalStock = stocks.reduce((acc, stock) => acc + stock.number, 0);
+
   const storeInfo = (e, store, stockNumber, stockID, storeID) => {
     setQuantity(Number(e.target.value));
     setStoreName(store);
-    setStoreStock(stockNumber);
+    setProductStock(stockNumber);
     setStockID(stockID)
     setStoreID(storeID)
   };
 
+  const onlineStock= (e, stockNumber) => {
+    setQuantity(stockNumber);
+    setProductStock(totalStock);
+  }
+
   const addToCartHandler = () => {
-    navigate("/cart", {
-      state: { quantity, id: product.id, storeName, storeStock, stockID, storeID, productInfo: product},
-    });
+    if (selectedStore) {
+      navigate("/cart", {
+        state: { quantity, id: product.id, storeName, productStock, stockID, storeID, productInfo: product, selectedStore},
+      });
+    }
+    if (selectedOnline) {
+          navigate("/cart", {
+        state: { quantity, id: product.id, productStock, productInfo: product, selectedOnline},
+      });
+    }
   };
 
   const submitHandler = (e) => {
@@ -190,7 +206,12 @@ function ProductScreen() {
                       selectedStore={selectedStore}
                       setSelectedStore={setSelectedStore}
                       quantity={quantity}
+                      setQuantity={setQuantity}
                       storeInfo={storeInfo}
+                      onlineStock={onlineStock}
+                      selectedOnline={selectedOnline}
+                      setSelectedOnline={setSelectedOnline}
+                      totalStock={totalStock}
                     />
                   )}
 
@@ -206,7 +227,7 @@ function ProductScreen() {
                     <Button
                       onClick={addToCartHandler}
                       className="btn-block btn-primary"
-                      disabled={(stocks && stocks.length === 0) || (storeStock === '')}
+                      disabled={(stocks && stocks.length === 0) || (quantity === 0)}
                       type="button"
                     >
                       Add to Cart

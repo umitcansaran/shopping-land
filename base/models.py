@@ -12,6 +12,8 @@ class ProductCategory(models.Model):
 
 class ProductSubcategory(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True)
+
+    # Relations:
     category = models.ForeignKey(to=ProductCategory, related_name='subcategories', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
@@ -102,15 +104,29 @@ class Review(models.Model):
 
 
 class Order(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    createdAt = models.DateTimeField(auto_now_add=True)
     paymentMethod = models.CharField(max_length=200, null=True, blank=True)
-    shippingPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+    totalShippingPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
     totalPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
     isPaid = models.BooleanField(default=False)
     paidAt = models.DateTimeField(auto_now_add=False, null=True, blank=True)
-    isDelivered = models.BooleanField(default=False)
-    deliveredAt = models.DateTimeField(auto_now_add=False, null=True, blank=True)
+
+    # Relations:
+    customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return str(self.createdAt)
+    
+class SubOrder(models.Model):
     createdAt = models.DateTimeField(auto_now_add=True)
+    shippingPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+    isShipped = models.BooleanField(default=False)
+    ShippedAt = models.DateTimeField(auto_now_add=False, null=True, blank=True)
+    
+    # Relations:
+    seller = models.ForeignKey(User, related_name='suborders', on_delete=models.SET_NULL, null=True)
+    order = models.ForeignKey(Order, related_name='suborders', on_delete=models.CASCADE, null=True)
+    customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return str(self.createdAt)
@@ -123,21 +139,23 @@ class OrderItem(models.Model):
     image = models.CharField(max_length=200, null=True, blank=True)
 
     # Relations:
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
-    store = models.ForeignKey(Store, on_delete=models.CASCADE, null=True)
+    subOrder = models.ForeignKey(SubOrder, related_name='orderitems', on_delete=models.CASCADE, null=True)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    store = models.ForeignKey(Store, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return str(self.name)
 
 
 class ShippingAddress(models.Model):
-    order = models.OneToOneField(Order, on_delete=models.CASCADE, null=True, blank=True)
     address = models.CharField(max_length=200, null=True, blank=True)
     city = models.CharField(max_length=200, null=True, blank=True)
     postalCode = models.CharField(max_length=200, null=True, blank=True)
     country = models.CharField(max_length=200, null=True, blank=True)
     shippingPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+
+    # Relations:
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return str(self.address)

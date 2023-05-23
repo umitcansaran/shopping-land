@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 from django.contrib.auth.models import User
-from .models import Store, Profile, Product, ProductCategory, ProductSubcategory, Stock, Review, Order, OrderItem, ShippingAddress
+from .models import Store, Profile, Product, ProductCategory, ProductSubcategory, Stock, Review, Order, SubOrder, OrderItem, ShippingAddress
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 
@@ -211,28 +211,59 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    orderItems = serializers.SerializerMethodField(read_only=True)
-    shippingAddress = serializers.SerializerMethodField(read_only=True)
-    user = serializers.SerializerMethodField(read_only=True)
+    subOrder = serializers.SerializerMethodField(read_only=True)
+    # shippingAddress = serializers.SerializerMethodField(read_only=True)
+    # user = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Order
         fields = '__all__'
 
-    def get_orderItems(self, obj):
-        items = obj.orderitem_set.all()
-        serializer = OrderItemSerializer(items, many=True)
+    def get_subOrder(self, obj):
+        subOrders = obj.suborders
+        serializer = SubOrderSerializer(subOrders, many=True)
         return serializer.data
 
-    def get_shippingAddress(self, obj):
-        try:
-            address = ShippingAddressSerializer(
-                obj.shippingaddress, many=False).data
-        except:
-            address = False
-        return address
+    # def get_shippingAddress(self, obj):
+    #     try:
+    #         address = ShippingAddressSerializer(
+    #             obj.shippingaddress, many=False).data
+    #     except:
+    #         address = False
+    #     return address
 
-    def get_user(self, obj):
-        user = obj.user
-        serializer = UserSerializer(user, many=False)
+    # def get_user(self, obj):
+    #     user = obj.user
+    #     serializer = UserSerializer(user, many=False)
+    #     return serializer.data
+    
+class SubOrderSerializer(serializers.ModelSerializer):
+    seller_details = serializers.SerializerMethodField(read_only=True)
+    customer_details = serializers.SerializerMethodField(read_only=True)
+    # order = serializers.SerializerMethodField(read_only=True)
+    products_details = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = SubOrder
+        fields = '__all__'
+
+    def get_products_details(self, obj):
+        orderitems = obj.orderitems
+        serializer = OrderItemSerializer(orderitems, many=True)
         return serializer.data
+
+    def get_seller_details(self, obj):
+        seller = obj.seller
+        serializer = UserSerializer(seller, many=False)
+        return serializer.data
+    
+    def get_customer_details(self, obj):
+        customer = obj.customer
+        serializer = UserSerializer(customer, many=False)
+        return serializer.data
+    
+    # def get_order(self, obj):
+    #     order = obj.order
+    #     serializer = OrderSerializer(order, many=False)
+    #     return serializer.data
+    

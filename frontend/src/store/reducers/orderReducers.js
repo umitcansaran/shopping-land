@@ -29,6 +29,9 @@ import {
     ORDER_DELIVER_RESET,
 
     ORDER_DETAILS_RESET,
+    SUBORDER_LIST_REQUEST,
+    SUBORDER_LIST_SUCCESS,
+    SUBORDER_LIST_FAIL,
     
 } from '../constants/orderConstants'
 
@@ -197,6 +200,29 @@ export const orderListReducer = (state = { orders: [] }, action) => {
             }
 
         case ORDER_LIST_FAIL:
+            return {
+                loading: false,
+                error: action.payload
+            }
+        default:
+            return state
+    }
+}
+
+export const subOrderListReducer = (state = { suborders: [] }, action) => {
+    switch (action.type) {
+        case SUBORDER_LIST_REQUEST:
+            return {
+                loading: true
+            }
+
+        case SUBORDER_LIST_SUCCESS:
+            return {
+                loading: false,
+                suborders: action.payload
+            }
+
+        case SUBORDER_LIST_FAIL:
             return {
                 loading: false,
                 error: action.payload

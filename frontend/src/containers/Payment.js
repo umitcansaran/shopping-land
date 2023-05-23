@@ -7,8 +7,7 @@ import CheckoutSteps from "../components/CheckoutSteps";
 import { savePaymentMethod } from "../store/actions/cartActions";
 
 function PaymentScreen() {
-  const cart = useSelector((state) => state.cart);
-  const { shippingAddress } = cart;
+  const { shippingAddress } = useSelector((state) => state.cart);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -27,7 +26,7 @@ function PaymentScreen() {
 
   return (
     <FormContainer>
-      <CheckoutSteps step1 step2 step3 />
+        <CheckoutSteps step1  step2 step3/>
 
       <Form onSubmit={submitHandler}>
         <Form.Group>

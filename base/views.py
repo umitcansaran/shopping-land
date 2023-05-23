@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, GenericAPIView
-from .models import Store, Product, Profile, ProductCategory, ProductSubcategory, Stock, Review, Order, OrderItem, ShippingAddress
+from .models import Store, Product, Profile, ProductCategory, ProductSubcategory, Stock, Review, Order, SubOrder, OrderItem, ShippingAddress
 from base.permissions import IsAnon
 from .permissions import IsOwnerOrReadOnly
 from django.db.models import Q
@@ -18,7 +18,7 @@ from datetime import datetime
 
 User = get_user_model()
 
-from .serializers import StoreSerializer, MyStoreSerializer, UserSerializer, RegistrationSerializer, StockSerializer ,ProductSerializer, ProductSubcategorySerializer, ProductCategorySerializer, ProfileSerializer, ReviewSerializer, SearchStockSerializer, OrderSerializer
+from .serializers import StoreSerializer, MyStoreSerializer, UserSerializer, RegistrationSerializer, StockSerializer ,ProductSerializer, ProductSubcategorySerializer, ProductCategorySerializer, ProfileSerializer, ReviewSerializer, SearchStockSerializer, OrderSerializer, SubOrderSerializer
 
 class StoreViewSet(ModelViewSet):
     """
@@ -314,7 +314,7 @@ class ListProfileByUser(ListAPIView):
         return queryset
     
     
-class ListProductssByUser(ListAPIView):
+class ListProductsByUser(ListAPIView):
     """
     List all the products of a seller (int: user_id)
     """
@@ -324,6 +324,18 @@ class ListProductssByUser(ListAPIView):
         queryset = Product.objects.all()
         user = self.kwargs.get('user_id')
         queryset = queryset.filter(seller=user)
+        return queryset
+    
+class ListSubOrder(ListAPIView):
+    """
+    List all the products of a seller (int: user_id)
+    """
+    serializer_class = SubOrderSerializer
+
+    def get_queryset(self):
+        queryset = SubOrder.objects.all()
+        keyword = self.kwargs.get('pk')
+        queryset = queryset.filter(id=keyword)
         return queryset
 
 
@@ -451,6 +463,17 @@ def addOrderItems(request):
     data = request.data
 
     orderItems = data['orderItems']
+    sellerList = []
+    sellerNames = []
+
+    # Get seller names
+    for i in orderItems:
+        sellerList.append(i['seller'])
+
+    # Remove duplicates
+    for i in sellerList: 
+        if i not in sellerNames: 
+            sellerNames.append(i) 
 
     if orderItems and len(orderItems) == 0:
         return Response({'detail': 'No Order Items'}, status=status.HTTP_400_BAD_REQUEST)
@@ -458,40 +481,63 @@ def addOrderItems(request):
 
         # (1) Create order
         order = Order.objects.create(
-            user=user,
+            customer=user,
             paymentMethod=data['paymentMethod'],
-            shippingPrice=data['shippingPrice'],
+            totalShippingPrice=data['totalShippingPrice'],
             totalPrice=data['totalPrice']
         )
 
         # (2) Create shipping address
-        shipping = ShippingAddress.objects.create(
-            order=order,
-            address=data['shippingAddress']['address'],
-            city=data['shippingAddress']['city'],
-            postalCode=data['shippingAddress']['postalCode'],
-            country=data['shippingAddress']['country'],
-        )
-
-        # (3) Create order items and set order to orderItem relationship
-        for i in orderItems:
-            product = Product.objects.get(id=i['id'])
-            store = Store.objects.get(id=i['storeID'])
-
-            item = OrderItem.objects.create(
-                product=product,
+        if data['shippingAddress'] :
+            shipping = ShippingAddress.objects.create(
                 order=order,
-                name=product.name,
-                quantity=i['quantity'],
-                price=i['price'],
-                image=product.image.url,
-                store=store
+                address=data['shippingAddress']['address'],
+                city=data['shippingAddress']['city'],
+                postalCode=data['shippingAddress']['postalCode'],
+                country=data['shippingAddress']['country'],
             )
 
-            # (4) Update stock
-            stock = Stock.objects.get(id=i['stockID'])
-            stock.number = stock.number - i['quantity']
-            stock.save()
+        for i in sellerNames:
+            seller = User.objects.get(username=i)
+            
+            subOrder = SubOrder.objects.create(
+                # shippingPrice=data['shippingPrice'],
+                seller=seller,
+                order=order,
+                customer=user
+            )
+
+            for x in orderItems:
+                if x['seller'] == i:
+                    product = Product.objects.get(id=x['id'])
+                    store = Store.objects.get(id=x['storeID'])
+                    seller = User.objects.get(username=x['seller'])
+
+
+                    item = OrderItem.objects.create(
+                        product=product,
+                        subOrder=subOrder,
+                        name=product.name,
+                        quantity=x['quantity'],
+                        price=x['price'],
+                        image=product.image.url,
+                        store=store
+                    )
+
+                    # (4) Update stock
+                    # stock = Stock.objects.get(id=i['stockID'])
+                    # stock.number = stock.number - i['quantity']
+                    # stock.save()
+
+                    stocks = Stock.objects.filter(product=product.id)
+                    for y in stocks:
+                        if y.number is not None and y.number >= x['quantity']:
+                            print('quantity', x['quantity'])
+                            print('stock num', y.number)
+                            y.number = y.number - x['quantity']
+                            y.save()
+                            break
+
 
         serializer = OrderSerializer(order, many=False)
         return Response(serializer.data)
@@ -514,10 +560,17 @@ def getMyOrders(request):
     return Response(serializer.data)
 
 @api_view(['GET'])
-@permission_classes([IsAdminUser])
+@permission_classes([IsAuthenticated])
 def getOrders(request):
     orders = Order.objects.all()
     serializer = OrderSerializer(orders, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getSubOrders(request):
+    suborders = SubOrder.objects.all().order_by('-createdAt')
+    serializer = SubOrderSerializer(suborders, many=True)
     return Response(serializer.data)
 
 
@@ -537,6 +590,24 @@ def getOrderById(request, pk):
                      status=status.HTTP_400_BAD_REQUEST)
     except:
         return Response({'detail': 'Order does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getSubOrderById(request, pk):
+
+    user = request.user
+
+    try:
+        subOrder = SubOrder.objects.get(id=pk)
+        print(subOrder)
+        if user.is_staff or subOrder.user == user:
+            serializer = SubOrderSerializer(subOrder, many=False)
+            return Response(serializer.data)
+        else:
+            Response({'detail': 'Not authorized to view this suborder'},
+                     status=status.HTTP_400_BAD_REQUEST)
+    except:
+        return Response({'detail': 'Suborder does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['PUT'])

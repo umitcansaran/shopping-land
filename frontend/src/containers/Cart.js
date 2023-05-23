@@ -18,11 +18,23 @@ function CartScreen() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { quantity, id, storeName, storeStock, stockID, storeID, productInfo } =
-    location.state ? location.state : 1;
+  const {
+    quantity,
+    id,
+    storeName,
+    productStock,
+    stockID,
+    storeID,
+    productInfo,
+    selectedOnline,
+    selectedStore,
+  } = location.state ? location.state : 1;
 
   const { userInfo } = useSelector((state) => state.userLogin);
   const { cartItems } = useSelector((state) => state.cart);
+
+  let shippingCost;
+  let subTotalPrice;
 
   useEffect(() => {
     if (id) {
@@ -31,10 +43,12 @@ function CartScreen() {
           id,
           quantity,
           storeName,
-          storeStock,
-          productInfo.seller_details.name,
+          productStock,
           stockID,
-          storeID
+          storeID,
+          productInfo.seller_details.name,
+          selectedOnline,
+          selectedStore
         )
       );
     }
@@ -43,10 +57,11 @@ function CartScreen() {
     id,
     quantity,
     storeName,
-    storeStock,
+    productStock,
     stockID,
     storeID,
     productInfo,
+    selectedOnline,
   ]);
 
   const removeFromCartHandler = (id) => {
@@ -56,8 +71,11 @@ function CartScreen() {
   const checkoutHandler = () => {
     if (!userInfo) {
       navigate("/login");
-    } else {
+    }
+    if (selectedOnline) {
       navigate("/shipping");
+    } else {
+      navigate("/payment");
     }
   };
 
@@ -78,9 +96,6 @@ function CartScreen() {
       .reduce((acc, item) => acc + item.price * item.quantity, 0);
   });
 
-  let shippingCost;
-  let subTotalPrice;
-
   return (
     <Row className="m-3">
       <Col md={8}>
@@ -92,114 +107,125 @@ function CartScreen() {
         ) : (
           sellers.map((seller, index) => {
             return (
-              <ListGroup variant="flush" key={index}>
-                <Row className="justify-content-center">
-                  <h4
-                    style={{
-                      textAlign: "center",
-                      width: "auto",
-                      margin: "1rem",
-                      color: "#698bc2",
-                    }}
+              <Card style={{ marginBlockStart: "1rem" }}>
+                <Card.Body>
+                  <Card.Title
+                    className="text-center"
+                    style={{ color: "#698bc2" }}
                   >
                     {seller}
-                  </h4>
-                </Row>
-                {cartItems
-                  .filter((cartItem) => cartItem.seller === seller)
-                  .map((product) => {
-                    shippingCost = totalPriceBySeller[index] >= 100 ? 0 : 20;
-                    subTotalPrice = totalPriceBySeller[index] + shippingCost;
-                    return (
-                      <ListGroup.Item key={product.id}>
-                        <Row>
-                          <Col md={2}>
-                            <Image
-                              src={product.image}
-                              alt={product.name}
-                              fluid
-                              rounded
-                            />
-                          </Col>
-                          <Col md={3}>
-                            <Link to={`/product/${product.id}`}>
-                              {product.name}
-                            </Link>
-                          </Col>
+                  </Card.Title>
+                </Card.Body>
 
-                          <Col md={2}>${product.price}</Col>
+                <ListGroup variant="flush" key={index}>
+                  {cartItems
+                    .filter((cartItem) => cartItem.seller === seller)
+                    .map((product) => {
+                      shippingCost = totalPriceBySeller[index] >= 100 ? 0 : 20;
+                      subTotalPrice = totalPriceBySeller[index] + shippingCost;
+                      // InstorePickup = cartItem.selectedOnline
+                      return (
+                        <>
+                          <ListGroup.Item key={product.id}>
+                            <Row>
+                              <Col md={1}>
+                                <Image
+                                  src={product.image}
+                                  alt={product.name}
+                                  fluid
+                                  rounded
+                                />
+                              </Col>
+                              <Col md={3}>
+                                <Link to={`/product/${product.id}`}>
+                                  {product.name}
+                                </Link>
+                              </Col>
 
-                          <Col md={3}>
-                            <>
-                              <p
+                              <Col md={2}>CHF {product.price}</Col>
+
+                              <Col md={3}>
+                                <>
+                                  <p>
+                                    {product.storeName
+                                      ? product.storeName
+                                      : "Online"}
+                                  </p>
+                                  <Form.Control
+                                    as="select"
+                                    value={product.quantity}
+                                    style={{ width: "auto" }}
+                                    onChange={(e) =>
+                                      dispatch(
+                                        addToCart(
+                                          product.id,
+                                          Number(e.target.value),
+                                          product.storeName,
+                                          product.productStock,
+                                          stockID,
+                                          storeID,
+                                          seller
+                                        )
+                                      )
+                                    }
+                                  >
+                                    {[
+                                      ...Array(product.productStock).keys(),
+                                    ].map((x) => (
+                                      <option key={x + 1} value={x + 1}>
+                                        {x + 1}
+                                      </option>
+                                    ))}
+                                  </Form.Control>
+                                </>
+                              </Col>
+                              <Col md={1}>
+                                <Button
+                                  type="button"
+                                  variant="light"
+                                  onClick={() =>
+                                    removeFromCartHandler(product.id)
+                                  }
+                                >
+                                  <i className="fas fa-trash"></i>
+                                </Button>
+                              </Col>
+                            </Row>
+                          </ListGroup.Item>
+                          <ListGroup.Item>
+                            <Row className="justify-content-end">
+                              <h6
                                 style={{
                                   textAlign: "center",
+                                  width: "auto",
+                                  margin: "0.5rem",
+                                  color: "#698bc2",
                                 }}
                               >
-                                {product.storeName}
-                              </p>
-                              <Form.Control
-                                as="select"
-                                value={product.quantity}
-                                onChange={(e) =>
-                                  dispatch(
-                                    addToCart(
-                                      product.id,
-                                      Number(e.target.value),
-                                      product.storeName,
-                                      product.storeStock,
-                                      seller
-                                    )
-                                  )
-                                }
+                                {product.selectedOnline
+                                  ? shippingCost === 0
+                                    ? "Free Shipping"
+                                    : "Shipping: CHF 20"
+                                  : "Pick up in-store"}
+                              </h6>
+                            </Row>
+                            <Row className="justify-content-end">
+                              <h6
+                                style={{
+                                  textAlign: "center",
+                                  width: "auto",
+                                  margin: "0.5rem",
+                                }}
                               >
-                                {[...Array(product.storeStock).keys()].map(
-                                  (x) => (
-                                    <option key={x + 1} value={x + 1}>
-                                      {x + 1}
-                                    </option>
-                                  )
-                                )}
-                              </Form.Control>
-                            </>
-                          </Col>
-
-                          <Col md={1}>
-                            <Button
-                              type="button"
-                              variant="light"
-                              onClick={() => removeFromCartHandler(product.id)}
-                            >
-                              <i className="fas fa-trash"></i>
-                            </Button>
-                          </Col>
-                        </Row>
-                      </ListGroup.Item>
-                    );
-                  })}
-                <Row className="justify-content-end">
-                  <h6
-                    style={{
-                      textAlign: "center",
-                      width: "auto",
-                      margin: "0.5rem",
-                    }}
-                  >
-                    {shippingCost === 0 ? "Free Shipping" : "Shipping: CHF 20"}
-                  </h6>
-                </Row>
-                <Row className="justify-content-end">
-                  <h6
-                    style={{
-                      textAlign: "center",
-                      width: "auto",
-                      margin: "0.5rem",
-                    }}
-                  >
-                    Subtotal: CHF {subTotalPrice}
-                  </h6>
-                </Row>
-              </ListGroup>
+                                Subtotal: CHF {subTotalPrice}
+                              </h6>
+                            </Row>
+                          </ListGroup.Item>
+                        </>
+                      );
+                    })}
+                </ListGroup>
+              </Card>
             );
           })
         )}
