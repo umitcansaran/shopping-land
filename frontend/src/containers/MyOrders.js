@@ -17,7 +17,7 @@ export default function MyOrders() {
   const { user } = useSelector((state) => state.myDetails);
 
   const result = suborders?.filter((suborder) => {
-    return suborder.seller_details.profile.name === user.profile.name;
+    return suborder.seller.profile.name === user.profile.name;
   });
 
   console.log(result);

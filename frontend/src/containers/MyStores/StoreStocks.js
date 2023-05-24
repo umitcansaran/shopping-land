@@ -90,11 +90,11 @@ export default function StoreStocks({ store }) {
                       borderRadius: "5px 5px 5px 5px",
                     }}
                   >
-                    <Col>{stock.product_details.id}</Col>
-                    <Col>{stock.product_details.brand}</Col>
-                    <Col>{stock.product_details.name}</Col>
-                    <Col>{stock.product_details.price}</Col>
-                    <Col>{stock.product_details.category}</Col>
+                    <Col>{stock.product.id}</Col>
+                    <Col>{stock.product.brand}</Col>
+                    <Col>{stock.product.name}</Col>
+                    <Col>{stock.product.price}</Col>
+                    <Col>{stock.product.category}</Col>
                     <Col>{stock.number}</Col>
                   </Row>
                 );

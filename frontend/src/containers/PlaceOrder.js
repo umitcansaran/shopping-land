@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, Row, Col, ListGroup, Image, Card } from "react-bootstrap";
+import { Button, Row, Col, ListGroup, Image, Card, Container } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
@@ -49,13 +49,13 @@ function PlaceOrderScreen() {
   // !! Updating stock number in the backend !!
   //   const updateProductStock = () => {
   //     cart.cartItems.forEach(async (item) => {
-  //       if (item.storeID) {
+  //       if (item.storeId) {
   //       console.log('idddd', item.id)
   //       await dispatch(listProductStocks(item.id));
   //       console.log('stocks', stocks)
   //     }
   //   }
-  //     dispatch(updateStock(item.stockID, { number: item.storeStock - item.quantity}))
+  //     dispatch(updateStock(item.stockId, { number: item.storeStock - item.quantity}))
   //   );
   // };
 
@@ -67,7 +67,7 @@ function PlaceOrderScreen() {
 
   // const updateProductStock = async () => {
   //   for (const item of cartItems) {
-  //     if (!item.storeID) {
+  //     if (!item.storeId) {
   //       console.log(item.name)
   //       dispatch(listProductStocks(item.id));
   //       await loadingStocks
@@ -111,7 +111,7 @@ function PlaceOrderScreen() {
   });
 
   return (
-    <div>
+    <Container fluid className="placeorder-page-container">
       <CheckoutSteps step1 step2 step3 step4 />
       <Row>
         <Col md={8}>
@@ -162,7 +162,7 @@ function PlaceOrderScreen() {
                           className="text-center"
                           style={{ color: "#698bc2" }}
                         >
-                          {seller}
+                                        {seller}
                         </Card.Title>
                       </Card.Body>
                       <ListGroup variant="flush" key={index}>
@@ -202,7 +202,7 @@ function PlaceOrderScreen() {
                                           textAlign: "center",
                                         }}
                                       >
-                                        {product.storeName
+                                        {product.orderType === 'inStore'
                                           ? product.storeName
                                           : "Online"}
                                       </p>
@@ -219,7 +219,7 @@ function PlaceOrderScreen() {
                                         color: "#698bc2",
                                       }}
                                     >
-                                      {product.selectedOnline
+                                      {product.orderType === 'online'
                                         ? shippingCost === 0
                                           ? "Free Shipping"
                                           : "Shipping: CHF 20"
@@ -233,7 +233,7 @@ function PlaceOrderScreen() {
                                         margin: "0.5rem",
                                       }}
                                     >
-                                      Subtotal: CHF {subTotalPrice}
+                                      Subtotal: CHF {subTotalPrice.toFixed(2)}
                                     </h6>
                                   </Row>
                                 </ListGroup.Item>
@@ -259,21 +259,21 @@ function PlaceOrderScreen() {
               <ListGroup.Item>
                 <Row>
                   <Col>Items:</Col>
-                  <Col>CHF {cart.itemsPrice}</Col>
+                  <Col>CHF {cart.itemsPrice.toFixed(2)}</Col>
                 </Row>
               </ListGroup.Item>
 
               <ListGroup.Item>
                 <Row>
                   <Col>Shipping:</Col>
-                  <Col>CHF {totalShippingCost}</Col>
+                  <Col>CHF {totalShippingCost.toFixed(2)}</Col>
                 </Row>
               </ListGroup.Item>
 
               <ListGroup.Item>
                 <Row>
                   <Col>Total:</Col>
-                  <Col>CHF {cart.itemsPrice + totalShippingCost}</Col>
+                  <Col>CHF {(cart.itemsPrice + totalShippingCost).toFixed(2)}</Col>
                 </Row>
               </ListGroup.Item>
 
@@ -282,20 +282,22 @@ function PlaceOrderScreen() {
               </ListGroup.Item>
 
               <ListGroup.Item>
-                <Button
-                  type="button"
-                  className="btn-block"
-                  disabled={cart.cartItems === 0}
-                  onClick={placeOrder}
-                >
-                  Place Order
-                </Button>
+                <Row className="justify-content-center">
+                  <Button
+                    type="button"
+                    className="btn-block"
+                    disabled={cart.cartItems === 0}
+                    onClick={placeOrder}
+                  >
+                    Place Order
+                  </Button>
+                </Row>
               </ListGroup.Item>
             </ListGroup>
           </Card>
         </Col>
       </Row>
-    </div>
+    </Container>
   );
 }
 

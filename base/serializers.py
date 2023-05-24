@@ -7,14 +7,14 @@ from django.contrib.auth.password_validation import validate_password
 
 
 class StockSerializer(ModelSerializer):
-    product_details = serializers.SerializerMethodField(read_only=True)
-    store_name = serializers.SerializerMethodField(read_only=True)
+    product = serializers.SerializerMethodField(read_only=True)
+    storeName = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Stock
         fields = '__all__' 
 
-    def get_product_details(self, obj):
+    def get_product(self, obj):
         return {
             'id': obj.product.id,
             'name': obj.product.name,
@@ -23,7 +23,7 @@ class StockSerializer(ModelSerializer):
             'brand': obj.product.brand
         }
 
-    def get_store_name(self, obj):
+    def get_storeName(self, obj):
         name = obj.store.name
         return name
     
@@ -107,31 +107,30 @@ class MyStoreSerializer(ModelSerializer):
 
 
 class ProductSerializer(ModelSerializer):
-    seller_details = serializers.SerializerMethodField(read_only=True)
+    sellerDetails = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Product
         fields = '__all__' 
 
-    def get_seller_details(self, obj):
+    def get_sellerDetails(self, obj):
         return {
             'id': obj.seller.id,
             'name': obj.seller.username
             }
     
 class MyProductSerializer(ModelSerializer):
-    seller_details = serializers.SerializerMethodField(read_only=True)
+    sellerDetails = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Product
         fields = '__all__' 
 
-    def get_seller_details(self, obj):
+    def get_sellerDetails(self, obj):
         return {
             'id': obj.seller.id,
             'name': obj.seller.username
             }
-  
 
 class SearchStockSerializer(ModelSerializer):
     product = ProductSerializer(many=False)
@@ -204,14 +203,13 @@ class ShippingAddressSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class OrderItemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = OrderItem
-        fields = '__all__'
-
-
 class OrderSerializer(serializers.ModelSerializer):
     subOrder = serializers.SerializerMethodField(read_only=True)
+    customer = serializers.SlugRelatedField(
+        queryset=User.objects.all(), 
+        many=False,
+        slug_field='username' 
+    ) 
     # shippingAddress = serializers.SerializerMethodField(read_only=True)
     # user = serializers.SerializerMethodField(read_only=True)
 
@@ -222,7 +220,7 @@ class OrderSerializer(serializers.ModelSerializer):
     def get_subOrder(self, obj):
         subOrders = obj.suborders
         serializer = SubOrderSerializer(subOrders, many=True)
-        return serializer.data
+        return serializer.data 
 
     # def get_shippingAddress(self, obj):
     #     try:
@@ -236,28 +234,47 @@ class OrderSerializer(serializers.ModelSerializer):
     #     user = obj.user
     #     serializer = UserSerializer(user, many=False)
     #     return serializer.data
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    details = serializers.SerializerMethodField(read_only=True) 
+    store = serializers.SerializerMethodField(read_only=True) 
+
+    class Meta:
+        model = OrderItem
+        fields = '__all__'
+
+    def get_details(self, obj):
+        product = obj.product
+        serializer = ProductSerializer(product, many=False)
+        return serializer.data
+    
+    def get_store(self, obj):
+        store = obj.store
+        serializer = StoreSerializer(store, many=False)
+        return serializer.data
+    
     
 class SubOrderSerializer(serializers.ModelSerializer):
-    seller_details = serializers.SerializerMethodField(read_only=True)
-    customer_details = serializers.SerializerMethodField(read_only=True)
+    seller = serializers.SerializerMethodField(read_only=True)
+    customer = serializers.SerializerMethodField(read_only=True)
     # order = serializers.SerializerMethodField(read_only=True)
-    products_details = serializers.SerializerMethodField(read_only=True)
+    orderItems = serializers.SerializerMethodField(read_only=True) 
 
     class Meta:
         model = SubOrder
         fields = '__all__'
 
-    def get_products_details(self, obj):
+    def get_orderItems(self, obj):
         orderitems = obj.orderitems
         serializer = OrderItemSerializer(orderitems, many=True)
         return serializer.data
 
-    def get_seller_details(self, obj):
+    def get_seller(self, obj):
         seller = obj.seller
         serializer = UserSerializer(seller, many=False)
         return serializer.data
     
-    def get_customer_details(self, obj):
+    def get_customer(self, obj):
         customer = obj.customer
         serializer = UserSerializer(customer, many=False)
         return serializer.data

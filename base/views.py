@@ -15,6 +15,8 @@ from django.contrib.auth.hashers import make_password
 
 from rest_framework import status
 from datetime import datetime
+from decimal import Decimal
+
 
 User = get_user_model()
 
@@ -460,11 +462,12 @@ class LatestSellers(ListAPIView):
 @permission_classes([IsAuthenticated])
 def addOrderItems(request):
     user = request.user
-    data = request.data
+    data = request.data        
 
     orderItems = data['orderItems']
     sellerList = []
     sellerNames = []
+    totalPrice = 0
 
     # Get seller names
     for i in orderItems:
@@ -488,7 +491,7 @@ def addOrderItems(request):
         )
 
         # (2) Create shipping address
-        if data['shippingAddress'] :
+        if data['shippingAddress']:
             shipping = ShippingAddress.objects.create(
                 order=order,
                 address=data['shippingAddress']['address'],
@@ -507,37 +510,51 @@ def addOrderItems(request):
                 customer=user
             )
 
+            # (4) Update stock
             for x in orderItems:
-                if x['seller'] == i:
-                    product = Product.objects.get(id=x['id'])
-                    store = Store.objects.get(id=x['storeID'])
-                    seller = User.objects.get(username=x['seller'])
 
+                if x['seller'] == i: 
+                    product = Product.objects.get(id=x['id'])
+                    if x['orderType'] == 'online':
+                        store = None 
+                    else:
+                        store = Store.objects.get(id=x['storeId'])
+                        seller = User.objects.get(username=x['seller'])
 
                     item = OrderItem.objects.create(
                         product=product,
                         subOrder=subOrder,
                         name=product.name,
                         quantity=x['quantity'],
-                        price=x['price'],
+                        price=Decimal(x['price']),
                         image=product.image.url,
-                        store=store
+                        store=store,
+                        orderType=x['orderType']
                     )
 
-                    # (4) Update stock
-                    # stock = Stock.objects.get(id=i['stockID'])
-                    # stock.number = stock.number - i['quantity']
-                    # stock.save()
+                    if x['orderType'] == 'online':
+                        stocks = Stock.objects.filter(product=product.id).order_by('-number')
+                        for stock in stocks:
+                            print('num', stock.number)
+                            quantityLeft = x['quantity']
+                            if stock.number is not None and stock.number >= x['quantity']:
+                                stock.number -= x['quantity']
+                                stock.save()
+                                break
+                            elif stock.number is not None:
+                                quantityLeft -= stock.number
+                                x['quantity'] = quantityLeft
+                                stock.number = 0
+                                stock.save()
+                    elif x['orderType'] == 'inStore':
+                        stock = Stock.objects.get(id=x['stockId'])
+                        stock.number = stock.number - x['quantity']
+                        stock.save()
 
-                    stocks = Stock.objects.filter(product=product.id)
-                    for y in stocks:
-                        if y.number is not None and y.number >= x['quantity']:
-                            print('quantity', x['quantity'])
-                            print('stock num', y.number)
-                            y.number = y.number - x['quantity']
-                            y.save()
-                            break
-
+                    totalPrice += Decimal(x['price']) * x['quantity']
+                    subOrder.totalPrice = totalPrice
+                    subOrder.save()
+                
 
         serializer = OrderSerializer(order, many=False)
         return Response(serializer.data)
@@ -582,7 +599,8 @@ def getOrderById(request, pk):
 
     try:
         order = Order.objects.get(id=pk)
-        if user.is_staff or order.user == user:
+        print(order)
+        if order.customer == user:
             serializer = OrderSerializer(order, many=False)
             return Response(serializer.data)
         else:
@@ -599,7 +617,6 @@ def getSubOrderById(request, pk):
 
     try:
         subOrder = SubOrder.objects.get(id=pk)
-        print(subOrder)
         if user.is_staff or subOrder.user == user:
             serializer = SubOrderSerializer(subOrder, many=False)
             return Response(serializer.data)

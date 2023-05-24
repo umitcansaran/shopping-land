@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Row, Col, Container } from "react-bootstrap";
+import { Table, Button, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import {
   listMyProducts,
@@ -14,8 +14,6 @@ import Notification from "../../components/Notification";
 import DeletePopup from "../../components/DeletePopup";
 import { PRODUCT_DELETE_RESET } from "../../store/constants/productConstants";
 import MyProductStocks from "./MyProductStocks";
-import { search } from "../../store/actions/searchAction";
-import MobileStockButtons from "./ProductButtons";
 import ProductButtons from "./ProductButtons";
 
 export default function MyProducts() {
@@ -42,6 +40,8 @@ export default function MyProducts() {
   const { success: deleteProductSuccess } = useSelector(
     (state) => state.productDelete
   );
+
+  console.log(myStores)
 
   useEffect(() => {
     if (createProductSuccess) {
@@ -142,7 +142,7 @@ export default function MyProducts() {
   };
 
   return (
-    <>
+    <Container fluid>
       <SearchBox
         searchProps={{ type: "my_products" }}
         value={value}
@@ -150,7 +150,7 @@ export default function MyProducts() {
         placeholder="Search for id, brand or name"
       />
       <AddProductButton />
-      {!myProductsLoading && myProducts.length != 0 && (
+      {!myProductsLoading && myProducts.length !== 0 && (
         <Table hover responsive className="table-sm my-2">
           <thead style={{ backgroundColor: "#f2f5fa" }}>
             <tr style={{ textAlign: "center" }}>
@@ -261,6 +261,6 @@ export default function MyProducts() {
           message="Product Created Successfully!"
         />
       )}
-    </>
+    </Container>
   );
 }

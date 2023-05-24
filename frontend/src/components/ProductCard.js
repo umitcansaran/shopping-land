@@ -51,19 +51,18 @@ export default function ProductCard({ product, index }) {
               className="text-center m-0"
               style={{ fontSize: "1rem", color: "black" }}
             >
-              CHF {Math.trunc(product.price)}
+              CHF{" "}
+              {product.price % 1 !== 0
+                ? product.price
+                : Math.trunc(product.price) + ".-"}
             </Card.Text>
             <Card.Text
               style={{ fontSize: "1rem" }}
               className="text-center mb-1"
             >
               Sold by{" "}
-              <Link
-                to={`/seller/${
-                  product.seller_details && product.seller_details.id
-                }`}
-              >
-                {product.seller_details && product.seller_details.name}
+              <Link to={`/seller/${product.sellerDetails && product.sellerDetails.id}`}>
+                {product.sellerDetails && product.sellerDetails.name}
               </Link>
             </Card.Text>
           </Card.Body>

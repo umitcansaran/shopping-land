@@ -89,16 +89,16 @@ h2 {
 
 .seller-store-button {
   background-color: #648dc328;
-  color:rgb(70, 69, 69);
+  color: rgb(70, 69, 69);
   width: 70%;
   margin-bottom: 0.3rem;
   box-shadow: none;
 }
 
 .seller-store-button:focus,
-.seller-store-button:hover  {
+.seller-store-button:hover {
   background-color: #648dc38a;
-  color:rgb(70, 69, 69);
+  color: rgb(70, 69, 69);
 }
 
 .blue-button:focus,
@@ -180,8 +180,18 @@ h2 {
   max-width: 22rem;
 }
 
-@media (max-width: 767px) {
-  .home-sidebar-container {
+.product-page-container,
+.card-page-container,
+.placeorder-page-container,
+.order-page-container {
+  width: 90%;
+}
+
+@media (max-width: 960px) {
+  .product-page-container,
+  .card-page-container,
+  .placeorder-page-container,
+  .order-page-container {
     width: 100%;
   }
 }
@@ -226,3 +236,11 @@ h2 {
     padding: 0 0.3rem;
   }
 }
+
+@media (max-width: 767px) {
+  .home-sidebar-container {
+    width: 100%;
+  }
+}
+
+

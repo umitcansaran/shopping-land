@@ -33,10 +33,10 @@ function ProductScreen() {
   const [selectedStore, setSelectedStore] = useState({});
   const [storeName, setStoreName] = useState("");
   const [productStock, setProductStock] = useState("");
-  const [stockID, setStockID] = useState("");
-  const [storeID, setStoreID] = useState("");
+  const [stockId, setStockId] = useState("");
+  const [storeId, setStoreId] = useState("");
 
-  const [selectedOnline, setSelectedOnline] = useState(false)
+  const [orderType, setOrderType] = useState('');
 
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
@@ -78,28 +78,43 @@ function ProductScreen() {
 
   const totalStock = stocks.reduce((acc, stock) => acc + stock.number, 0);
 
-  const storeInfo = (e, store, stockNumber, stockID, storeID) => {
+  const inStoreStock = (e, storeName, stockNumber, stockId, storeId) => {
     setQuantity(Number(e.target.value));
-    setStoreName(store);
+    setStoreName(storeName);
     setProductStock(stockNumber);
-    setStockID(stockID)
-    setStoreID(storeID)
+    setStockId(stockId);
+    setStoreId(storeId);
   };
 
-  const onlineStock= (e, stockNumber) => {
+  const onlineStock = (stockNumber) => {
     setQuantity(stockNumber);
     setProductStock(totalStock);
-  }
+  };
 
   const addToCartHandler = () => {
-    if (selectedStore) {
+    if (orderType === 'inStore') {
       navigate("/cart", {
-        state: { quantity, id: product.id, storeName, productStock, stockID, storeID, productInfo: product, selectedStore},
+        state: {
+          id: product.id,
+          quantity,
+          productStock,
+          productInfo: product,
+          orderType,
+          storeName,
+          stockId,
+          storeId
+        },
       });
     }
-    if (selectedOnline) {
-          navigate("/cart", {
-        state: { quantity, id: product.id, productStock, productInfo: product, selectedOnline},
+    if (orderType === 'online') {
+      navigate("/cart", {
+        state: {
+          id: product.id,
+          quantity,
+          productStock,
+          productInfo: product,
+          orderType
+        },
       });
     }
   };
@@ -110,7 +125,7 @@ function ProductScreen() {
   };
 
   return (
-    <Container>
+    <Container fluid className="product-page-container">
       <Button onClick={() => navigate(-1)} className="btn btn-light my-3">
         Go Back
       </Button>
@@ -146,7 +161,7 @@ function ProductScreen() {
                 </ListGroup.Item>
 
                 <ListGroup.Item>
-                  Price: CHF {Math.trunc(product.price)}
+                  Price: CHF {product.price}
                 </ListGroup.Item>
 
                 <ListGroup.Item>
@@ -159,10 +174,10 @@ function ProductScreen() {
                   Sold by{" "}
                   <Link
                     to={`/seller/${
-                      product.seller_details && product.seller_details.id
+                      product.sellerDetails && product.sellerDetails.id
                     }`}
                   >
-                    {product.seller_details && product.seller_details.name}
+                    {product.sellerDetails && product.sellerDetails.name}
                   </Link>
                 </ListGroup.Item>
               </ListGroup>
@@ -175,7 +190,7 @@ function ProductScreen() {
                     <Row>
                       <Col>Price:</Col>
                       <Col>
-                        <strong>CHF {Math.trunc(product.price)}</strong>
+                        <strong>CHF {product.price}</strong>
                       </Col>
                     </Row>
                   </ListGroup.Item>
@@ -183,7 +198,7 @@ function ProductScreen() {
                     <Row>
                       <Col>Status:</Col>
                       <Col>
-                        {stocks && stocks.length > 0 ? (
+                        {totalStock && totalStock > 0 ? (
                           <p
                             style={{
                               color: "#1e478a",
@@ -200,38 +215,43 @@ function ProductScreen() {
                     </Row>
                   </ListGroup.Item>
 
-                  {stocks && stocks.length > 0 && (
+                  {totalStock > 0 && (
                     <StocksCart
                       stocks={stocks}
                       selectedStore={selectedStore}
                       setSelectedStore={setSelectedStore}
                       quantity={quantity}
                       setQuantity={setQuantity}
-                      storeInfo={storeInfo}
+                      inStoreStock={inStoreStock}
                       onlineStock={onlineStock}
-                      selectedOnline={selectedOnline}
-                      setSelectedOnline={setSelectedOnline}
+                      orderType={orderType}
+                      setOrderType={setOrderType}
                       totalStock={totalStock}
                     />
                   )}
 
-                  {/* 
-                  // Add to cart feature is active during development. 
-                  Visitors can log in with the provided credentials and test both the admin panel and the checkout steps.
-                  { user && user.profile.status === 'STORE_OWNER' && (
-                                            <ListGroup.Item>
-                                                <Message variant='danger'>Seller accounts are not able to make purchases.</Message>
-                                            </ListGroup.Item>
-                                            )} */}
+                  {/* {user && user.profile.status === "STORE_OWNER" && (
+                    // Add to cart feature is active during development.
+                    // Visitors can log in with the provided credentials and test both the admin panel and the checkout steps.
+                    <ListGroup.Item>
+                      <Message variant="danger">
+                        Seller accounts are not able to make purchases.
+                      </Message>
+                    </ListGroup.Item>
+                  )} */}
                   <ListGroup.Item>
-                    <Button
-                      onClick={addToCartHandler}
-                      className="btn-block btn-primary"
-                      disabled={(stocks && stocks.length === 0) || (quantity === 0)}
-                      type="button"
-                    >
-                      Add to Cart
-                    </Button>
+                    <Row className="justify-content-center">
+                      <Button
+                        onClick={addToCartHandler}
+                        className="btn-block btn-primary"
+                        disabled={
+                          (stocks && stocks.length === 0) || quantity === 0
+                        }
+                        type="button"
+                      >
+                        Add to Cart
+                      </Button>
+                    </Row>
                   </ListGroup.Item>
                 </ListGroup>
               </Card>

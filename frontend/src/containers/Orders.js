@@ -14,25 +14,11 @@ function OrdersScreen() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { user } = useSelector((state) => state.myDetails);
-
-  const { userInfo } = useSelector((state) => state.userLogin);
-
-  const orderMyList = useSelector((state) => state.purchaseMyList);
-  const { loading: loadingOrders, error: errorOrders, orders } = orderMyList;
+  const { loading: loadingOrders, error: errorOrders, orders } = useSelector((state) => state.purchaseMyList);
 
   useEffect(() => {
-    if (!userInfo) {
-      navigate("/login");
-    } else {
-      if (!user || !user.name || userInfo.id !== user.id) {
-        dispatch(listMyPurchases());
-      } else {
-        setName(user.name);
-        setEmail(user.email);
-      }
-    }
-  }, [dispatch, navigate, userInfo, user]);
+    dispatch(listMyPurchases());
+  }, [dispatch, navigate]);
 
   return (
     <Row className="justify-content-center">
@@ -64,7 +50,7 @@ function OrdersScreen() {
                 <tr key={order.id}>
                   <td>{order.id}</td>
                   <td>{order.createdAt.substring(0, 10)}</td>
-                  <td>${order.totalPrice}</td>
+                  <td>CHF {order.totalPrice}</td>
                   <td>
                     {order.isPaid ? (
                       order.paidAt.substring(0, 10)

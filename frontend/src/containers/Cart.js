@@ -9,6 +9,7 @@ import {
   Form,
   Button,
   Card,
+  Container,
 } from "react-bootstrap";
 import Message from "../components/Message";
 import { addToCart, removeFromCart } from "../store/actions/cartActions";
@@ -19,15 +20,14 @@ function CartScreen() {
   const location = useLocation();
 
   const {
-    quantity,
     id,
-    storeName,
+    quantity,
     productStock,
-    stockID,
-    storeID,
     productInfo,
-    selectedOnline,
-    selectedStore,
+    orderType,
+    storeName,
+    stockId,
+    storeId,
   } = location.state ? location.state : 1;
 
   const { userInfo } = useSelector((state) => state.userLogin);
@@ -36,19 +36,23 @@ function CartScreen() {
   let shippingCost;
   let subTotalPrice;
 
+  const removeFromCartHandler = (id) => {
+    dispatch(removeFromCart(id));
+  };
+
   useEffect(() => {
-    if (id) {
+    window.history.replaceState({}, document.title);
+    if (location.state) {
       dispatch(
         addToCart(
           id,
           quantity,
           storeName,
           productStock,
-          stockID,
-          storeID,
-          productInfo.seller_details.name,
-          selectedOnline,
-          selectedStore
+          stockId,
+          storeId,
+          productInfo.sellerDetails.name,
+          orderType
         )
       );
     }
@@ -58,21 +62,18 @@ function CartScreen() {
     quantity,
     storeName,
     productStock,
-    stockID,
-    storeID,
+    stockId,
+    storeId,
     productInfo,
-    selectedOnline,
+    orderType,
+    location,
   ]);
-
-  const removeFromCartHandler = (id) => {
-    dispatch(removeFromCart(id));
-  };
 
   const checkoutHandler = () => {
     if (!userInfo) {
       navigate("/login");
     }
-    if (selectedOnline) {
+    if (orderType === "online") {
       navigate("/shipping");
     } else {
       navigate("/payment");
@@ -89,6 +90,8 @@ function CartScreen() {
     }, [])
     .map((product) => product.seller);
 
+    console.log(sellers)
+
   // Show total price of products by seller
   let totalPriceBySeller = sellers.map((seller) => {
     return cartItems
@@ -97,169 +100,181 @@ function CartScreen() {
   });
 
   return (
-    <Row className="m-3">
-      <Col md={8}>
-        <h1>Shopping Cart</h1>
-        {cartItems.length === 0 ? (
-          <Message variant="info">
-            Your cart is empty <Link to="/">Go Back</Link>
-          </Message>
-        ) : (
-          sellers.map((seller, index) => {
-            return (
-              <Card style={{ marginBlockStart: "1rem" }}>
-                <Card.Body>
-                  <Card.Title
-                    className="text-center"
-                    style={{ color: "#698bc2" }}
-                  >
-                    {seller}
-                  </Card.Title>
-                </Card.Body>
+    <Container fluid className="card-page-container">
+      <Row className="m-3">
+        <Col md={8}>
+          <h1>Shopping Cart</h1>
+          {cartItems.length === 0 ? (
+            <Message variant="info">
+              Your cart is empty <Link to="/">Go Back</Link>
+            </Message>
+          ) : (
+            sellers.map((seller, index) => {
+              return (
+                <Card style={{ marginBlockStart: "1rem" }}>
+                  <Card.Body>
+                    <Card.Title
+                      className="text-center"
+                      style={{ color: "#698bc2" }}
+                    >
+                      {seller}
+                    </Card.Title>
+                  </Card.Body>
 
-                <ListGroup variant="flush" key={index}>
-                  {cartItems
-                    .filter((cartItem) => cartItem.seller === seller)
-                    .map((product) => {
-                      shippingCost = totalPriceBySeller[index] >= 100 ? 0 : 20;
-                      subTotalPrice = totalPriceBySeller[index] + shippingCost;
-                      // InstorePickup = cartItem.selectedOnline
-                      return (
-                        <>
-                          <ListGroup.Item key={product.id}>
-                            <Row>
-                              <Col md={1}>
-                                <Image
-                                  src={product.image}
-                                  alt={product.name}
-                                  fluid
-                                  rounded
-                                />
-                              </Col>
-                              <Col md={3}>
-                                <Link to={`/product/${product.id}`}>
-                                  {product.name}
-                                </Link>
-                              </Col>
+                  <ListGroup variant="flush" key={index}>
+                    {cartItems
+                      .filter((cartItem) => cartItem.seller === seller)
+                      .map((product) => {
+                        shippingCost =
+                          totalPriceBySeller[index] >= 100 ? 0 : 20;
+                        subTotalPrice =
+                          totalPriceBySeller[index] + shippingCost;
+                        // InstorePickup = cartItem.selectedOnline
+                        return (
+                          <>
+                            <ListGroup.Item key={product.id}>
+                              <Row>
+                                <Col md={1}>
+                                  <Image
+                                    src={product.image}
+                                    alt={product.name}
+                                    fluid
+                                    rounded
+                                  />
+                                </Col>
+                                <Col md={3}>
+                                  <Link to={`/product/${product.id}`}>
+                                    {product.name}
+                                  </Link>
+                                </Col>
 
-                              <Col md={2}>CHF {product.price}</Col>
+                                <Col md={2}>CHF {product.price}</Col>
 
-                              <Col md={3}>
-                                <>
-                                  <p>
-                                    {product.storeName
-                                      ? product.storeName
-                                      : "Online"}
-                                  </p>
-                                  <Form.Control
-                                    as="select"
-                                    value={product.quantity}
-                                    style={{ width: "auto" }}
-                                    onChange={(e) =>
-                                      dispatch(
-                                        addToCart(
-                                          product.id,
-                                          Number(e.target.value),
-                                          product.storeName,
-                                          product.productStock,
-                                          stockID,
-                                          storeID,
-                                          seller
+                                <Col md={3}>
+                                  <>
+                                    <p>
+                                      {product.storeName
+                                        ? product.storeName
+                                        : "Online"}
+                                    </p>
+                                    <Form.Control
+                                      as="select"
+                                      value={product.quantity}
+                                      style={{ width: "auto" }}
+                                      onChange={(e) =>
+                                        dispatch(
+                                          addToCart(
+                                            product.id,
+                                            Number(e.target.value),
+                                            product.storeName,
+                                            product.productStock,
+                                            stockId,
+                                            storeId,
+                                            seller,
+                                            orderType
+                                          )
                                         )
-                                      )
+                                      }
+                                    >
+                                      {[
+                                        ...Array(product.productStock).keys(),
+                                      ].map((x) => (
+                                        <option key={x + 1} value={x + 1}>
+                                          {x + 1}
+                                        </option>
+                                      ))}
+                                    </Form.Control>
+                                  </>
+                                </Col>
+                                <Col md={1}>
+                                  <Button
+                                    type="button"
+                                    variant="light"
+                                    onClick={() =>
+                                      removeFromCartHandler(product.id)
                                     }
                                   >
-                                    {[
-                                      ...Array(product.productStock).keys(),
-                                    ].map((x) => (
-                                      <option key={x + 1} value={x + 1}>
-                                        {x + 1}
-                                      </option>
-                                    ))}
-                                  </Form.Control>
-                                </>
-                              </Col>
-                              <Col md={1}>
-                                <Button
-                                  type="button"
-                                  variant="light"
-                                  onClick={() =>
-                                    removeFromCartHandler(product.id)
-                                  }
+                                    <i className="fas fa-trash"></i>
+                                  </Button>
+                                </Col>
+                              </Row>
+                              <Row className="justify-content-end">
+                                <h6
+                                  style={{
+                                    textAlign: "center",
+                                    width: "auto",
+                                    margin: "0.5rem",
+                                    color: "#698bc2",
+                                  }}
                                 >
-                                  <i className="fas fa-trash"></i>
-                                </Button>
-                              </Col>
-                            </Row>
-                          </ListGroup.Item>
-                          <ListGroup.Item>
-                            <Row className="justify-content-end">
-                              <h6
-                                style={{
-                                  textAlign: "center",
-                                  width: "auto",
-                                  margin: "0.5rem",
-                                  color: "#698bc2",
-                                }}
-                              >
-                                {product.selectedOnline
-                                  ? shippingCost === 0
-                                    ? "Free Shipping"
-                                    : "Shipping: CHF 20"
-                                  : "Pick up in-store"}
-                              </h6>
-                            </Row>
-                            <Row className="justify-content-end">
-                              <h6
-                                style={{
-                                  textAlign: "center",
-                                  width: "auto",
-                                  margin: "0.5rem",
-                                }}
-                              >
-                                Subtotal: CHF {subTotalPrice}
-                              </h6>
-                            </Row>
-                          </ListGroup.Item>
-                        </>
-                      );
-                    })}
-                </ListGroup>
-              </Card>
-            );
-          })
-        )}
-      </Col>
+                                  {product.orderType === "online"
+                                    ? shippingCost === 0
+                                      ? "Free Shipping"
+                                      : "Shipping: CHF 20"
+                                    : "Pick up in-store"}
+                                </h6>
+                              </Row>
+                            </ListGroup.Item>
+                          </>
+                        );
+                      })}
+                    <ListGroup.Item>
+                      <Row className="justify-content-end">
+                        <h6
+                          style={{
+                            textAlign: "center",
+                            width: "auto",
+                            margin: "0.5rem",
+                          }}
+                        >
+                          Subtotal: CHF {subTotalPrice.toFixed(2)}
+                        </h6>
+                      </Row>
+                    </ListGroup.Item>
+                  </ListGroup>
+                </Card>
+              );
+            })
+          )}
+        </Col>
 
-      <Col md={4}>
-        <Card>
-          <ListGroup variant="flush">
+        <Col md={4}>
+          <Card>
+            <ListGroup variant="flush">
+              <ListGroup.Item>
+                <h2>
+                  Total Price (
+                  {cartItems.reduce(
+                    (acc, product) => acc + product.quantity,
+                    0
+                  )}
+                  ) items
+                </h2>
+                CHF{" "}
+                {cartItems
+                  .reduce(
+                    (acc, product) => acc + product.quantity * product.price,
+                    0
+                  )
+                  .toFixed(2)}
+              </ListGroup.Item>
+            </ListGroup>
             <ListGroup.Item>
-              <h2>
-                Total Price (
-                {cartItems.reduce((acc, product) => acc + product.quantity, 0)})
-                items
-              </h2>
-              CHF{" "}
-              {cartItems.reduce(
-                (acc, product) => acc + product.quantity * product.price,
-                0
-              )}
+              <Row className="justify-content-center">
+                <Button
+                  type="button"
+                  className="btn-block"
+                  disabled={cartItems.length === 0}
+                  onClick={checkoutHandler}
+                >
+                  Proceed To Checkout
+                </Button>
+              </Row>
             </ListGroup.Item>
-          </ListGroup>
-          <ListGroup.Item>
-            <Button
-              type="button"
-              className="btn-block"
-              disabled={cartItems.length === 0}
-              onClick={checkoutHandler}
-            >
-              Proceed To Checkout
-            </Button>
-          </ListGroup.Item>
-        </Card>
-      </Col>
-    </Row>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   );
 }
 

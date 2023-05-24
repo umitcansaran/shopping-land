@@ -1,5 +1,5 @@
 import React from "react";
-import { Carousel, Col, Image } from "react-bootstrap";
+import { Carousel, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 function ProductCarousel({ latestProducts = [] }) {
@@ -14,17 +14,28 @@ function ProductCarousel({ latestProducts = [] }) {
           return (
             <Carousel.Item key={product.id}>
               <Link to={`/product/${product.id}`}>
-                <h4 style={{ color: "black", letterSpacing: "0.06rem" }} className="pt-1">
+                <h4
+                  style={{ color: "black", letterSpacing: "0.06rem" }}
+                  className="pt-1"
+                >
                   {product.brand}
                 </h4>
                 <h5 style={{ color: "black", fontSize: "1rem" }}>
                   {product.name}
                 </h5>
                 <div className="main-carousel-img-container">
-                <Image className="main-carousel-img" src={product.image} alt={product.name} fluid/>
+                  <Image
+                    className="main-carousel-img"
+                    src={product.image}
+                    alt={product.name}
+                    fluid
+                  />
                 </div>
                 <h5 className="pt-2" style={{ color: "black" }}>
-                  CHF {Math.trunc(product.price)}
+                  CHF{" "}
+                  {product.price % 1 !== 0
+                    ? product.price
+                    : Math.trunc(product.price) + ".-"}
                 </h5>
               </Link>
             </Carousel.Item>

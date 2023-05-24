@@ -5,19 +5,19 @@ export default function StocksCart({
   stocks,
   selectedStore,
   setSelectedStore,
-  selectedOnline,
-  setSelectedOnline,
+  orderType,
+  setOrderType,
+  inStoreStock,
   onlineStock,
   quantity,
   setQuantity,
-  storeInfo,
   totalStock,
 }) {
   return (
     <>
       <ListGroup.Item>
         <Row>
-          <Col>Pick up in-store:</Col>
+          <Col>Pick Up In-Store:</Col>
         </Row>
         {stocks.map((stock, index) => {
           return (
@@ -35,7 +35,7 @@ export default function StocksCart({
                     onClick={() => {
                       Object.keys(stocks).forEach((key) => {
                         setQuantity(0);
-                        setSelectedOnline(false);
+                        setOrderType("inStore");
                         selectedStore[key] = false;
                         setSelectedStore({
                           ...selectedStore,
@@ -50,7 +50,7 @@ export default function StocksCart({
                         className="d-flex justify-content-start align-items-center"
                         style={{ color: "#233fa6" }}
                       >
-                        {stock.store_name}
+                        {stock.storeName}
                       </Col>
                       <Col>
                         Stock{" "}
@@ -70,9 +70,9 @@ export default function StocksCart({
                       as="select"
                       value={quantity}
                       onChange={(e) =>
-                        storeInfo(
+                        inStoreStock(
                           e,
-                          stock.store_name,
+                          stock.storeName,
                           Number(stock.number),
                           stock.id,
                           stock.store
@@ -110,9 +110,9 @@ export default function StocksCart({
                 textTransform: "unset",
               }}
               onClick={() => {
-                setSelectedStore({});
                 setQuantity(0);
-                setSelectedOnline(true);
+                setOrderType("online");
+                setSelectedStore({});
               }}
               disabled={totalStock === 0}
             >
@@ -135,12 +135,12 @@ export default function StocksCart({
               </Row>
             </Button>
           </Col>
-          {selectedOnline && (
+          {orderType === "online" && (
             <Col md={3} className="d-flex align-items-center">
               <Form.Select
                 as="select"
                 value={quantity}
-                onChange={(e) => onlineStock(e, Number(e.target.value))}
+                onChange={(e) => onlineStock(Number(e.target.value))}
               >
                 <option key={0} value={0}>
                   0

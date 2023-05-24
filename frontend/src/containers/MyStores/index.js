@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Table } from "react-bootstrap";
+import { Button, Container, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { listMyStores, deleteStore } from "../../store/actions/storeActions";
 import AddStoreButton from "./AddStoreButton";
@@ -95,7 +95,7 @@ export default function MyStores() {
   };
 
   return (
-    <>
+    <Container fluid>
       <SearchBox
         searchProps={{ type: "my_stores" }}
         value={value}
@@ -206,6 +206,6 @@ export default function MyStores() {
       {createStoreSuccess && (
         <Notification status="success" message="Store Created Successfully!" />
       )}
-    </>
+    </Container>
   );
 }

@@ -8,7 +8,17 @@ import {
 } from "../constants/cartConstants";
 
 export const addToCart =
-  (id, quantity, storeName, productStock, stockID, storeID, seller, selectedOnline, selectedStore) => async (dispatch, getState) => {
+  (
+    id,
+    quantity,
+    storeName,
+    productStock,
+    stockId,
+    storeId,
+    seller,
+    orderType
+  ) =>
+  async (dispatch, getState) => {
     const { data } = await axios.get(`${baseUrl}/api/product/${id}`);
 
     dispatch({
@@ -23,11 +33,10 @@ export const addToCart =
         quantity,
         storeName,
         productStock,
-        stockID,
-        storeID,
-        seller, 
-        selectedOnline,
-        selectedStore
+        stockId,
+        storeId,
+        seller,
+        orderType
       },
     });
     localStorage.setItem(
@@ -42,7 +51,13 @@ export const removeFromCart = (id) => (dispatch, getState) => {
     payload: id,
   });
 
-  localStorage.removeItem("cartItems");
+  const itemRemoved = getState().cart.cartItems.filter(
+    (item) => item.id !== id
+  );
+
+  itemRemoved.length === 0
+    ? localStorage.removeItem("cartItems")
+    : localStorage.setItem("cartItems", JSON.stringify(itemRemoved));
 };
 
 export const saveShippingAddress = (data) => (dispatch) => {

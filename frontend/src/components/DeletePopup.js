@@ -17,7 +17,7 @@ function DeletePopup({
             </h2>
           )}
           {type === "store" && <h2>Delete <strong>{details.name}</strong> Store?</h2>}
-          {type === "stock" && <h2>Delete <strong>{details.store_name}</strong> Stock?</h2>}
+          {type === "stock" && <h2>Delete <strong>{details.storeName}</strong> Stock?</h2>}
           {type === "account" && <h2>Delete Account?</h2>}
         </Row>
         <Row className="btn-container">

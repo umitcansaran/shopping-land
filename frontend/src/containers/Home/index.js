@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import LatestReviews from "./LatestReviews";
 import LatestSellers from "./LatestSellers";
 import ProductCard from "../../components/ProductCard";
-import ProductCarousel from "../../components/ProductCarousel";
+import ProductCarousel from "./ProductCarousel";
 import HomeSidebar from "./HomeSidebar";
 import HomeCategoriesBar from "./HomeCategoriesBar";
 import { search } from "../../store/actions/searchAction";
@@ -165,13 +165,11 @@ export default function Home() {
           {value.length <= 1 && !searching ? (
             // show all products at first render
             <Row className="justify-content-center">
-              <Row>
                 {data?.pages.map((page, index) => {
                   return page.results.map((product) => (
                     <ProductCard product={product} key={index} />
                   ));
                 })}
-              </Row>
               {data && value.length === 0 && hasNextPage && (
                 <Row className="justify-content-center">
                   <Button
@@ -188,11 +186,9 @@ export default function Home() {
           ) : (
             // show search results
             <Row>
-              <Row>
                 {searchResult?.map((product, index) => (
                   <ProductCard product={product} key={index} />
                 ))}
-              </Row>
             </Row>
           )}
         </Col>

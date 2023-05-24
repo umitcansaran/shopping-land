@@ -25,7 +25,7 @@ function MyProductStocks({
         {myStores &&
           myStores.map((store, index) => {
             const productStock = store.stocks.find(
-              (stock) => stock.product === product.id
+              (stock) => stock.product.id === product.id
             );
             const stockNumber = productStock ? productStock.number : 0;
 
