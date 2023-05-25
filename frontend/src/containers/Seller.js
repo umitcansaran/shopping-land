@@ -8,7 +8,7 @@ import {
   Image,
   Container,
 } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { listProductsByUser } from "../store/actions/productActions";
 import { search } from "../store/actions/searchAction";
@@ -16,14 +16,13 @@ import { listStoresByUser } from "../store/actions/storeActions";
 import { getProfileDetails } from "../store/actions/userActions";
 import { PROFILE_DETAILS_RESET } from "../store/constants/userConstants";
 import ProductCard from "../components/ProductCard";
-import SearchBox from "../components/SearchBox";
-import { PRODUCT_LIST_RESET } from "../store/constants/productConstants";
 
 export default function SellerScreen() {
   const [value, setValue] = useState("");
   const [store, setStore] = useState("");
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const params = useParams();
 
   const { stores } = useSelector((state) => state.storesByUser);
@@ -32,7 +31,6 @@ export default function SellerScreen() {
 
   useEffect(() => {
     dispatch({ type: PROFILE_DETAILS_RESET });
-    // dispatch({ type: PRODUCT_LIST_RESET });
     dispatch(getProfileDetails(params.id));
     dispatch(listStoresByUser(params.id));
     dispatch(listProductsByUser(params.id));
@@ -77,13 +75,6 @@ export default function SellerScreen() {
 
   return (
     <>
-      {/* <SearchBox
-        searchProps={{ type: "products_by_seller", seller_id: profile.id, searchString: value }}
-        value={value}
-        setValue={setValue}
-        placeholder="Search for a product, brand.."
-        width="50%"
-      /> */}
       <Row
         style={{
           backgroundColor: "#495b7a",
@@ -97,10 +88,8 @@ export default function SellerScreen() {
             style={{ height: "2rem" }}
           >
             <Form.Control
-              // type={searchProps.type}
               placeholder={placeholder}
               aria-label="Search"
-              // style={{ width: width }}
               value={value}
               onChange={(e) => storeSearchHandler(e)}
             />
@@ -138,11 +127,18 @@ export default function SellerScreen() {
       </Container>
       <Row className="mt-3 px-2">
         <Col md={2}>
-          <p style={{ textAlign: "center", fontSize: "0.9rem" }}>
-            {store === ""
-              ? "Filter products by store"
-              : `You can search in store`}
-          </p>
+          <Row style={{ justifyContent: "center" }}>
+            <Button onClick={() => navigate(-1)} className="btn btn-light my-3">
+              Go Back
+            </Button>
+          </Row>
+          <strong>
+            <p style={{ textAlign: "center", fontSize: "0.9rem" }}>
+              {store === ""
+                ? "Filter products by store"
+                : `You can search in store`}
+            </p>
+          </strong>
           {store !== "" && (
             <i
               class="fa-solid fa-x"
@@ -156,7 +152,7 @@ export default function SellerScreen() {
               return (
                 <Row style={{ justifyContent: "center" }}>
                   <Button
-                    onClick={() => setStore(sellerStore)}                   
+                    onClick={() => setStore(sellerStore)}
                     className="seller-store-button"
                   >
                     {sellerStore.name}

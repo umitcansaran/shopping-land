@@ -6,7 +6,7 @@ import { LinkContainer } from "react-router-bootstrap";
 function CheckoutSteps({ step1, step2, step3, step4 }) {
 
   const { cartItems} = useSelector((state) => state.cart);
-  const onlinePurchase = cartItems.find(item => item.selectedOnline)
+  const hasOnlinePurchase = cartItems.find(item => item.orderType === 'online')
 
   return (
     <Nav className="justify-content-center mb-4">
@@ -20,7 +20,7 @@ function CheckoutSteps({ step1, step2, step3, step4 }) {
         )}
       </Nav.Item>
 
-      { onlinePurchase && (
+      { hasOnlinePurchase && (
       <Nav.Item>
         {step2 ? (
           <LinkContainer to="/shipping">

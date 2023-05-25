@@ -18,6 +18,7 @@ import axios from "axios";
 import useDebounce from "../../utils/use-debouncer";
 import "./index.css";
 import SearchBox from "../../components/SearchBox";
+import { listUsers } from "../../store/actions/userActions";
 
 export default function Home() {
   const [value, setValue] = useState("");
@@ -33,6 +34,7 @@ export default function Home() {
     if (debouncedSearchTerm) {
       dispatch(search({ type: "all", searchString: debouncedSearchTerm }));
     }
+    dispatch(listUsers());
   }, [dispatch, debouncedSearchTerm]);
 
   const { products: searchResult } = useSelector((state) => state.productList);

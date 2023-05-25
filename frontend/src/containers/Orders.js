@@ -33,7 +33,7 @@ function OrdersScreen() {
         ) : errorOrders ? (
           <Message variant="danger">{errorOrders}</Message>
         ) : orders.length === 0 ? (
-          <h2 className="text-center">No orders were found.</h2>
+          <h2 className="text-center">You have no orders.</h2>
         ) : (
           <Table striped responsive className="table-sm">
             <thead>

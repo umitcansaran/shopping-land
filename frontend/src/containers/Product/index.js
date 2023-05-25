@@ -27,6 +27,7 @@ import {
   PRODUCT_STOCKS_RESET,
 } from "../../store/constants/productConstants";
 import StocksCart from "./StocksCart";
+import { addToCart } from "../../store/actions/cartActions";
 
 function ProductScreen() {
   const [quantity, setQuantity] = useState(0);
@@ -92,32 +93,17 @@ function ProductScreen() {
   };
 
   const addToCartHandler = () => {
-    if (orderType === 'inStore') {
-      navigate("/cart", {
-        state: {
-          id: product.id,
-          quantity,
-          productStock,
-          productInfo: product,
-          orderType,
-          storeName,
-          stockId,
-          storeId
-        },
-      });
-    }
-    if (orderType === 'online') {
-      navigate("/cart", {
-        state: {
-          id: product.id,
-          quantity,
-          productStock,
-          productInfo: product,
-          orderType
-        },
-      });
-    }
-  };
+    dispatch(addToCart(
+      product.id,
+      quantity,
+      storeName,
+      productStock,
+      stockId,
+      storeId,
+      orderType
+    ))
+    navigate('/cart')
+  }
 
   const submitHandler = (e) => {
     e.preventDefault();

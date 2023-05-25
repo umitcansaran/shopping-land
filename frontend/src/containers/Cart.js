@@ -17,67 +17,43 @@ import {
   emptyCart,
   removeFromCart,
 } from "../store/actions/cartActions";
+import { listUsers } from "../store/actions/userActions";
 
 function CartScreen() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const {
-    id,
-    quantity,
-    productStock,
-    productInfo,
-    orderType,
-    storeName,
-    stockId,
-    storeId,
-  } = location.state ? location.state : 1;
-
   const { userInfo } = useSelector((state) => state.userLogin);
   const { cartItems } = useSelector((state) => state.cart);
+  const { users } = useSelector((state) => state.userList);
 
   let shippingCost;
   let subTotalPrice;
+
+  useEffect(() => {
+    if (users?.length === 0) {
+      dispatch(listUsers());
+    }
+  }, [dispatch]);
 
   const removeFromCartHandler = (id) => {
     dispatch(removeFromCart(id));
   };
 
-  useEffect(() => {
-    window.history.replaceState({}, document.title);
-    if (location.state) {
-      dispatch(
-        addToCart(
-          id,
-          quantity,
-          storeName,
-          productStock,
-          stockId,
-          storeId,
-          productInfo.sellerDetails.name,
-          orderType
-        )
-      );
-    }
-  }, [
-    dispatch,
-    id,
-    quantity,
-    storeName,
-    productStock,
-    stockId,
-    storeId,
-    productInfo,
-    orderType,
-    location,
-  ]);
+  const hasOnlinePurchase = cartItems.find(
+    (item) => item.orderType === "online"
+  );
+
+  const totalPrice = cartItems
+    .reduce((acc, product) => acc + product.quantity * product.price, 0)
+    .toFixed(2);
 
   const checkoutHandler = () => {
     if (!userInfo) {
       navigate("/login");
     }
-    if (orderType === "online") {
+    if (hasOnlinePurchase) {
       navigate("/shipping");
     } else {
       navigate("/payment");
@@ -130,14 +106,18 @@ function CartScreen() {
             </Message>
           ) : (
             sellers.map((seller, index) => {
+              const sellerId = users?.find(
+                (user) => user.username === seller
+              )?.id;
+              console.log(sellerId);
               return (
                 <Card style={{ marginBlockStart: "1rem" }}>
-                    <Card.Title
-                      className="text-center pt-3"
-                      style={{ color: "#698bc2" }}
-                    >
-                      {seller}
-                    </Card.Title>
+                  <Card.Title
+                    className="text-center pt-3"
+                    style={{ color: "#698bc2" }}
+                  >
+                    <Link to={`/seller/${sellerId}`}>{seller}</Link>
+                  </Card.Title>
                   <ListGroup variant="flush" key={index}>
                     {cartItems
                       .filter((cartItem) => cartItem.seller === seller)
@@ -165,12 +145,17 @@ function CartScreen() {
                                   </Link>
                                 </Col>
 
-                                <Col md={3}>CHF {product.price}</Col>
+                                <Col md={3}>
+                                  CHF{" "}
+                                  {product.price % 1 !== 0
+                                    ? product.price
+                                    : Math.trunc(product.price) + ".-"}
+                                </Col>
 
                                 <Col md={4}>
                                   <>
                                     <p>
-                                      {product.orderType === 'inStore'
+                                      {product.orderType === "inStore"
                                         ? product.storeName
                                         : "Online"}
                                     </p>
@@ -185,10 +170,9 @@ function CartScreen() {
                                             Number(e.target.value),
                                             product.storeName,
                                             product.productStock,
-                                            stockId,
-                                            storeId,
-                                            seller,
-                                            orderType
+                                            product.stockId,
+                                            product.storeId,
+                                            product.orderType
                                           )
                                         )
                                       }
@@ -245,7 +229,10 @@ function CartScreen() {
                             margin: "0.5rem",
                           }}
                         >
-                          Subtotal: CHF {subTotalPrice.toFixed(2)}
+                          Subtotal: CHF{" "}
+                          {subTotalPrice.toFixed(2) % 1 !== 0
+                            ? subTotalPrice.toFixed(2)
+                            : Math.trunc(subTotalPrice) + ".-"}
                         </h6>
                       </Row>
                     </ListGroup.Item>
@@ -269,12 +256,9 @@ function CartScreen() {
                   ) items
                 </h2>
                 CHF{" "}
-                {cartItems
-                  .reduce(
-                    (acc, product) => acc + product.quantity * product.price,
-                    0
-                  )
-                  .toFixed(2)}
+                {totalPrice % 1 !== 0
+                  ? totalPrice
+                  : Math.trunc(totalPrice) + ".-"}
               </ListGroup.Item>
             </ListGroup>
             <ListGroup.Item>
