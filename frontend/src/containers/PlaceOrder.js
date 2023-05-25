@@ -23,6 +23,8 @@ function PlaceOrderScreen() {
 
   const cart = useSelector((state) => state.cart);
 
+  console.log('cart', cart)
+
   cart.itemsPrice = cart.cartItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
@@ -157,14 +159,12 @@ function PlaceOrderScreen() {
                 sellers.map((seller, index) => {
                   return (
                     <Card style={{ marginBlockStart: "1rem" }}>
-                      <Card.Body>
                         <Card.Title
-                          className="text-center"
+                          className="text-center pt-3"
                           style={{ color: "#698bc2" }}
                         >
                                         {seller}
                         </Card.Title>
-                      </Card.Body>
                       <ListGroup variant="flush" key={index}>
                         {cart.cartItems
                           .filter((cartItem) => cartItem.seller === seller)
@@ -209,7 +209,6 @@ function PlaceOrderScreen() {
                                     </Col>
                                   </Row>
                                 </ListGroup.Item>
-                                <ListGroup.Item>
                                   <Row className="justify-content-end">
                                     <h6
                                       style={{
@@ -226,6 +225,9 @@ function PlaceOrderScreen() {
                                         : "Pick up in store"}
                                     </h6>
                                   </Row>
+                              </>
+                            );
+                          })}
                                   <Row className="justify-content-end">
                                     <h6
                                       style={{
@@ -236,10 +238,6 @@ function PlaceOrderScreen() {
                                       Subtotal: CHF {subTotalPrice.toFixed(2)}
                                     </h6>
                                   </Row>
-                                </ListGroup.Item>
-                              </>
-                            );
-                          })}
                       </ListGroup>
                     </Card>
                   );
@@ -272,7 +270,7 @@ function PlaceOrderScreen() {
 
               <ListGroup.Item>
                 <Row>
-                  <Col>Total:</Col>
+                  <Col>Total Price:</Col>
                   <Col>CHF {(cart.itemsPrice + totalShippingCost).toFixed(2)}</Col>
                 </Row>
               </ListGroup.Item>

@@ -12,7 +12,11 @@ import {
   Container,
 } from "react-bootstrap";
 import Message from "../components/Message";
-import { addToCart, removeFromCart } from "../store/actions/cartActions";
+import {
+  addToCart,
+  emptyCart,
+  removeFromCart,
+} from "../store/actions/cartActions";
 
 function CartScreen() {
   const dispatch = useDispatch();
@@ -90,7 +94,7 @@ function CartScreen() {
     }, [])
     .map((product) => product.seller);
 
-    console.log(sellers)
+  console.log(cartItems);
 
   // Show total price of products by seller
   let totalPriceBySeller = sellers.map((seller) => {
@@ -103,7 +107,23 @@ function CartScreen() {
     <Container fluid className="card-page-container">
       <Row className="m-3">
         <Col md={8}>
-          <h1>Shopping Cart</h1>
+          <Row>
+            <Col md={10}>
+              <h1>Shopping Cart</h1>
+            </Col>
+            {cartItems.length > 1 && (
+              <Col md={2} className="my-auto">
+                <Button
+                  style={{ width: "auto" }}
+                  type="button"
+                  variant="light"
+                  onClick={() => dispatch(emptyCart())}
+                >
+                  <i className="fas fa-trash"></i>
+                </Button>
+              </Col>
+            )}
+          </Row>
           {cartItems.length === 0 ? (
             <Message variant="info">
               Your cart is empty <Link to="/">Go Back</Link>
@@ -112,15 +132,12 @@ function CartScreen() {
             sellers.map((seller, index) => {
               return (
                 <Card style={{ marginBlockStart: "1rem" }}>
-                  <Card.Body>
                     <Card.Title
-                      className="text-center"
+                      className="text-center pt-3"
                       style={{ color: "#698bc2" }}
                     >
                       {seller}
                     </Card.Title>
-                  </Card.Body>
-
                   <ListGroup variant="flush" key={index}>
                     {cartItems
                       .filter((cartItem) => cartItem.seller === seller)
@@ -148,12 +165,12 @@ function CartScreen() {
                                   </Link>
                                 </Col>
 
-                                <Col md={2}>CHF {product.price}</Col>
+                                <Col md={3}>CHF {product.price}</Col>
 
-                                <Col md={3}>
+                                <Col md={4}>
                                   <>
                                     <p>
-                                      {product.storeName
+                                      {product.orderType === 'inStore'
                                         ? product.storeName
                                         : "Online"}
                                     </p>
@@ -188,6 +205,7 @@ function CartScreen() {
                                 </Col>
                                 <Col md={1}>
                                   <Button
+                                    style={{ width: "auto" }}
                                     type="button"
                                     variant="light"
                                     onClick={() =>

@@ -20,6 +20,8 @@ function OrdersScreen() {
     dispatch(listMyPurchases());
   }, [dispatch, navigate]);
 
+  console.log(orders)
+
   return (
     <Row className="justify-content-center">
       <Col md={9}>
@@ -40,6 +42,7 @@ function OrdersScreen() {
                 <th>Date</th>
                 <th>Total</th>
                 <th>Paid</th>
+                <th>Payment Method</th>
                 <th>Delivered</th>
                 <th></th>
               </tr>
@@ -58,7 +61,8 @@ function OrdersScreen() {
                       <i className="fas fa-times" style={{ color: "red" }}></i>
                     )}
                   </td>
-                  <td>
+                  <td>{order.paymentMethod}</td>
+                  <td>  
                     <LinkContainer to={`/order/${order.id}`}>
                       <Button className="btn-sm">Details</Button>
                     </LinkContainer>

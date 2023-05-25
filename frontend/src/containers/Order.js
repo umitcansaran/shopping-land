@@ -44,11 +44,16 @@ function OrderScreen() {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  // if (!loading && !error && order) {
-  //   order.itemsPrice = order.orderItems
-  //     .reduce((acc, item) => acc + item.price * item.quantity, 0)
-  //     .toFixed(2);
-  // }
+  console.log("order", order);
+  let totalItem;
+
+  if (!loading && !error && order) {
+    totalItem = order.subOrder.reduce(
+      (acc, subOrder) =>
+        acc + subOrder.orderItems.reduce((acc, item) => acc + item.quantity, 0),
+      0
+    );
+  }
 
   const addPayPalScript = () => {
     const script = document.createElement("script");
@@ -62,7 +67,6 @@ function OrderScreen() {
   };
 
   let shippingCost;
-  let subTotalPrice;
 
   useEffect(() => {
     if (!userInfo) {
@@ -110,32 +114,36 @@ function OrderScreen() {
         <Message variant="danger">{error}</Message>
       ) : (
         order && (
-          <div>
-            <h2 className="text-center my-3">Order ID: {order.id}</h2>
+          <>
+            <h2 className="text-center my-3 main-order-id">
+              Order ID: {order.id}
+            </h2>
             <Row>
               <Col md={8}>
                 <ListGroup variant="flush">
                   <ListGroup.Item>
-                    <h2>Shipping</h2>
+                    <h2>Customer</h2>
                     <p>
-                      <strong>Name: </strong> {order.customer}
+                      <strong>Name: </strong> {order.customer.name}
                     </p>
-                    {/* <p>
+                    <p>
                       <strong>Email: </strong>
-                      <a href={`mailto:${order.user.email}`}>{order.user.email}</a>
-                    </p> */}
-                    <p>
-                      <strong>Shipping: </strong>
-                      {order.totalShippingPrice}
+                      <a href={`mailto:${order.customer.email}`}>
+                        {order.customer.email}
+                      </a>
                     </p>
-
-                    {/* {order.isDelivered ? (
-                      <Message variant="success">
-                        Delivered on {order.deliveredAt}
-                      </Message>
-                    ) : (
-                      <Message variant="warning">Not Delivered</Message>
-                    )} */}
+                    {order.shippingAddress && (
+                      <>
+                        <h2>Shipping</h2>
+                        <p>
+                          <strong>Address: </strong>
+                          {order.shippingAddress.address},{" "}
+                          {order.shippingAddress.city},{"  "}
+                          {order.shippingAddress.postalCode},{"  "}
+                          {order.shippingAddress.country}
+                        </p>
+                      </>
+                    )}
                   </ListGroup.Item>
 
                   <ListGroup.Item>
@@ -144,40 +152,40 @@ function OrderScreen() {
                       <strong>Method: </strong>
                       {order.paymentMethod}
                     </p>
-                    {order.isPaid ? (
-                      <Message variant="success">
-                        Paid on {order.paidAt}
-                      </Message>
-                    ) : (
-                      <Message variant="warning">Not Paid</Message>
-                    )}
+                    <Col md={3} className="text-center">
+                      {order.isPaid ? (
+                        <Message variant="success">
+                          Paid on {order.paidAt}
+                        </Message>
+                      ) : (
+                        <Message variant="warning">Not Paid</Message>
+                      )}
+                    </Col>
                   </ListGroup.Item>
                   {order.subOrder.length === 0 ? (
                     <Message variant="info">SubOrder is empty</Message>
                   ) : (
                     <ListGroup.Item>
-                      <h2>Order Items</h2>
+                      <h2>Store Order(s):</h2>
                       <ListGroup variant="flush">
                         {order.subOrder.map((subOrder, index) => {
                           return (
                             <Card style={{ marginBlockStart: "1rem" }}>
                               <Card.Body>
-                                <Card.Title
+                                <Row className="text-end">
+                                  <h6>Order ID: {subOrder.id}</h6>
+                                </Row>
+                                <Row
                                   className="text-center"
                                   style={{ color: "#698bc2" }}
                                 >
-                                  {subOrder.seller.profile.name}
-                                </Card.Title>
+                                  <h4>{subOrder.seller.profile.name}</h4>
+                                </Row>
                               </Card.Body>
                               <ListGroup variant="flush" key={index}>
-                              {subOrder.orderItems.map((orderItem) => {
-                                console.log(orderItem)
-                                //   shippingCost =
-                                //   totalPriceBySeller[index] >= 100 ? 0 : 20;
-                                // subTotalPrice =
-                                //   totalPriceBySeller[index] + shippingCost;
-                                return (
-                                  <>
+                                {subOrder.orderItems.map((orderItem) => {
+                                  return (
+                                    <>
                                       <ListGroup.Item key={orderItem.id}>
                                         <Row>
                                           <Col md={1}>
@@ -197,7 +205,8 @@ function OrderScreen() {
                                           </Col>
 
                                           <Col md={2}>
-                                            {orderItem.quantity} x CHF {orderItem.price}
+                                            {orderItem.quantity} x CHF{" "}
+                                            {orderItem.price}
                                           </Col>
 
                                           <Col md={3}>
@@ -222,30 +231,45 @@ function OrderScreen() {
                                             }}
                                           >
                                             {orderItem.orderType === "online"
-                                              ? shippingCost === 0
-                                                ? "Free Shipping"
-                                                : "Shipping: CHF 20"
+                                              ? subOrder.shippingPrice > 0
+                                                ? "Shipping Price: " +
+                                                  subOrder.shippingPrice
+                                                : "Free Shipping"
                                               : "Pick up in-store"}
                                           </h6>
                                         </Row>
                                       </ListGroup.Item>
-                                  </>
-                                );
-                              })}
-                                      <ListGroup.Item>
-                                        <Row className="justify-content-end">
-                                          <h6
-                                            style={{
-                                              textAlign: "center",
-                                              width: "auto",
-                                              margin: "0.5rem",
-                                            }}
-                                            >
-                                            Subtotal: CHF {subOrder.totalPrice}
-                                          </h6>
-                                        </Row>
-                                      </ListGroup.Item>
-                                            </ListGroup>
+                                    </>
+                                  );
+                                })}
+                                <ListGroup.Item>
+                                  <Row className="justify-content-end">
+                                    <h6
+                                      style={{
+                                        textAlign: "center",
+                                        width: "auto",
+                                        margin: "0.5rem",
+                                      }}
+                                    >
+                                      Subtotal: CHF {subOrder.totalPrice}
+                                    </h6>
+                                  </Row>
+                                  <Row className="justify-content-center">
+                                    <Col md={3} className="text-center">
+                                      {subOrder.isShipped ? (
+                                        <Message variant="success">
+                                          Shipped on{" "}
+                                          {subOrder.ShippedAt.substring(0, 10)}
+                                        </Message>
+                                      ) : (
+                                        <Message variant="warning">
+                                          Not Shipped
+                                        </Message>
+                                      )}
+                                    </Col>
+                                  </Row>
+                                </ListGroup.Item>
+                              </ListGroup>
                             </Card>
                           );
                         })}
@@ -254,52 +278,55 @@ function OrderScreen() {
                   )}
                 </ListGroup>
               </Col>
-              {/* {subOrder.isShipped ? (
-                    <Message variant="success">
-                      Shipped on{" "}
-                      {subOrder.ShippedAt.substring(0, 10)}
-                    </Message>
-                  ) : (
-                    <Message variant="warning">
-                      Not Shipped
-                    </Message>
-                  )} */}
 
-              {/* <Col md={4}>
+              <Col md={4}>
                 <Card>
                   <ListGroup variant="flush">
                     <ListGroup.Item>
                       <h2>Order Summary</h2>
                     </ListGroup.Item>
-    
+
                     <ListGroup.Item>
                       <Row>
-                        <Col>Items:</Col>
-                        <Col>${order.itemsPrice}</Col>
+                        <Col>Store(s):</Col>
+                        <Col>{order.subOrder.length}</Col>
                       </Row>
                     </ListGroup.Item>
-    
+
+                    <ListGroup.Item>
+                      <Row>
+                        <Col>Item(s):</Col>
+                        <Col>{totalItem}</Col>
+                      </Row>
+                    </ListGroup.Item>
+
+                    <ListGroup.Item>
+                      <Row>
+                        <Col>Price:</Col>
+                        <Col>CHF {order.totalPrice}</Col>
+                      </Row>
+                    </ListGroup.Item>
+
                     <ListGroup.Item>
                       <Row>
                         <Col>Shipping:</Col>
-                        <Col>${order.shippingPrice}</Col>
+                        <Col>CHF {order.totalShippingPrice}</Col>
                       </Row>
                     </ListGroup.Item>
-    
+
                     <ListGroup.Item>
                       <Row>
-                        <Col>Tax:</Col>
-                        <Col>${order.taxPrice}</Col>
+                        <Col>Total Price:</Col>
+                        <Col>
+                          CHF{" "}
+                          {(
+                            Number(order.totalPrice) +
+                            Number(order.totalShippingPrice)
+                          ).toFixed(2)}
+                        </Col>
                       </Row>
                     </ListGroup.Item>
-    
-                    <ListGroup.Item>
-                      <Row>
-                        <Col>Total:</Col>
-                        <Col>${order.totalPrice}</Col>
-                      </Row>
-                    </ListGroup.Item>
-    
+
                     {!order.isPaid && (
                       <ListGroup.Item>
                         {loadingPay && <Loader />}
@@ -334,7 +361,7 @@ function OrderScreen() {
                       </ListGroup.Item>
                     )}
                   </ListGroup>
-    
+
                   {loadingDeliver && <Loader />}
                   {userInfo &&
                     userInfo.isAdmin &&
@@ -351,9 +378,9 @@ function OrderScreen() {
                       </ListGroup.Item>
                     )}
                 </Card>
-              </Col> */}
+              </Col>
             </Row>
-          </div>
+          </>
         )
       )}
     </Container>

@@ -173,6 +173,10 @@ h2 {
   margin: auto;
 }
 
+.rrrttt {
+  justify-content: center;
+}
+
 .main-product-card {
   width: 100%;
   height: auto;
@@ -185,6 +189,10 @@ h2 {
 .placeorder-page-container,
 .order-page-container {
   width: 90%;
+}
+
+.main-order-id {
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
 @media (max-width: 960px) {

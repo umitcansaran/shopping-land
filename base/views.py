@@ -20,7 +20,7 @@ from decimal import Decimal
 
 User = get_user_model()
 
-from .serializers import StoreSerializer, MyStoreSerializer, UserSerializer, RegistrationSerializer, StockSerializer ,ProductSerializer, ProductSubcategorySerializer, ProductCategorySerializer, ProfileSerializer, ReviewSerializer, SearchStockSerializer, OrderSerializer, SubOrderSerializer
+from .serializers import StoreSerializer, MyStoreSerializer, UserSerializer, RegistrationSerializer, StockSerializer ,ProductSerializer, ProductSubcategorySerializer, ProductCategorySerializer, ProfileSerializer, ReviewSerializer, SearchStockSerializer, OrderSerializer, MyOrderSerializer, SubOrderSerializer
 
 class StoreViewSet(ModelViewSet):
     """
@@ -467,7 +467,6 @@ def addOrderItems(request):
     orderItems = data['orderItems']
     sellerList = []
     sellerNames = []
-    totalPrice = 0
 
     # Get seller names
     for i in orderItems:
@@ -513,7 +512,9 @@ def addOrderItems(request):
             # (4) Update stock
             for x in orderItems:
 
+                totalPrice = 0
                 if x['seller'] == i: 
+
                     product = Product.objects.get(id=x['id'])
                     if x['orderType'] == 'online':
                         store = None 
@@ -535,7 +536,6 @@ def addOrderItems(request):
                     if x['orderType'] == 'online':
                         stocks = Stock.objects.filter(product=product.id).order_by('-number')
                         for stock in stocks:
-                            print('num', stock.number)
                             quantityLeft = x['quantity']
                             if stock.number is not None and stock.number >= x['quantity']:
                                 stock.number -= x['quantity']
@@ -554,7 +554,11 @@ def addOrderItems(request):
                     totalPrice += Decimal(x['price']) * x['quantity']
                     subOrder.totalPrice = totalPrice
                     subOrder.save()
-                
+            if totalPrice > 100:
+                subOrder.shippingPrice = 0
+            else:
+                subOrder.shippingPrice = 20
+            subOrder.save()
 
         serializer = OrderSerializer(order, many=False)
         return Response(serializer.data)
@@ -565,7 +569,7 @@ def addOrderItems(request):
 def getMyPurchases(request):
     user = request.user
     orders = user.order_set.all()
-    serializer = OrderSerializer(orders, many=True)
+    serializer = MyOrderSerializer(orders, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])

@@ -73,6 +73,7 @@ urlpatterns = [
     path('orders/<int:pk>/', views.getOrderById, name='user-order'),
     path('orders/<int:pk>/deliver/', views.updateOrderToDelivered, name='order-delivered'),
     path('suborders/<int:pk>/', views.ListSubOrder.as_view()),
+    path('orders/mypurchases/', views.getMyPurchases, name='mypurchases'),
     # path('suborders/<int:pk>/', views.getSubOrderById, name='user-suborder'),
     path('orders/<int:pk>/pay/', views.updateOrderToPaid, name='pay')
 ]

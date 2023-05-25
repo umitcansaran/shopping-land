@@ -5,6 +5,7 @@ import {
   CART_REMOVE_ITEM,
   CART_SAVE_SHIPPING_ADDRESS,
   CART_SAVE_PAYMENT_METHOD,
+  CART_CLEAR_ITEMS,
 } from "../constants/cartConstants";
 
 export const addToCart =
@@ -36,7 +37,7 @@ export const addToCart =
         stockId,
         storeId,
         seller,
-        orderType
+        orderType,
       },
     });
     localStorage.setItem(
@@ -58,6 +59,14 @@ export const removeFromCart = (id) => (dispatch, getState) => {
   itemRemoved.length === 0
     ? localStorage.removeItem("cartItems")
     : localStorage.setItem("cartItems", JSON.stringify(itemRemoved));
+};
+
+export const emptyCart = () => (dispatch) => {
+  dispatch({
+    type: CART_CLEAR_ITEMS,
+  });
+
+  localStorage.removeItem("cartItems");
 };
 
 export const saveShippingAddress = (data) => (dispatch) => {

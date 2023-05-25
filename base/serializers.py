@@ -205,13 +205,16 @@ class ShippingAddressSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     subOrder = serializers.SerializerMethodField(read_only=True)
-    customer = serializers.SlugRelatedField(
-        queryset=User.objects.all(), 
-        many=False,
-        slug_field='username' 
-    ) 
+    shippingAddress = serializers.SerializerMethodField(read_only=True)
+    # customer = serializers.SlugRelatedField(
+    #     queryset=User.objects.all(), 
+    #     many=False,
+    #     slug_field='username' 
+    # ) 
+
     # shippingAddress = serializers.SerializerMethodField(read_only=True)
     # user = serializers.SerializerMethodField(read_only=True)
+    customer = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Order
@@ -221,6 +224,24 @@ class OrderSerializer(serializers.ModelSerializer):
         subOrders = obj.suborders
         serializer = SubOrderSerializer(subOrders, many=True)
         return serializer.data 
+    
+    def get_shippingAddress(self, obj):
+        shippingAddress = obj.shippingAddress
+        serializer = ShippingAddressSerializer(shippingAddress, many=False)
+        return serializer.data 
+
+    def get_customer(self, obj):
+        return {
+            'id': obj.customer.id,
+            'name': obj.customer.username,
+            'email': obj.customer.email
+            }
+    
+class MyOrderSerializer(serializers.ModelSerializer):
+ 
+    class Meta:
+        model = Order
+        fields = '__all__'
 
     # def get_shippingAddress(self, obj):
     #     try:
