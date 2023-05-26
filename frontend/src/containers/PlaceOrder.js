@@ -23,6 +23,7 @@ function PlaceOrderScreen() {
   const { order, error, success } = orderCreate;
 
   const { cartItems } = useSelector((state) => state.cart);
+
   const hasOnlinePurchase = cartItems.find(
     (item) => item.orderType === "online"
   );
@@ -37,8 +38,21 @@ function PlaceOrderScreen() {
 
   console.log("cart", cart);
 
+  const isNumberDecimal = (num) => {
+    if (num.toFixed(2) % 1 !== 0) {
+      return num.toFixed(2);
+    } else {
+      return Math.trunc(subTotalPrice) + ".-";
+    }
+  };
+
   cart.itemsPrice = cart.cartItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
+    0
+  );
+
+  const totalItems = cart.cartItems.reduce(
+    (acc, item) => acc + item.quantity,
     0
   );
 
@@ -64,7 +78,6 @@ function PlaceOrderScreen() {
   //   const updateProductStock = () => {
   //     cart.cartItems.forEach(async (item) => {
   //       if (item.storeId) {
-  //       console.log('idddd', item.id)
   //       await dispatch(listProductStocks(item.id));
   //       console.log('stocks', stocks)
   //     }
@@ -74,24 +87,19 @@ function PlaceOrderScreen() {
   // };
 
   //   for (const item of cartItems) {
-  //     console.log('idddd', item.id)
   //     await dispatch(listProductStocks(item.id));
-  //     console.log('stocks', stocks)
   // }
 
   // const updateProductStock = async () => {
   //   for (const item of cartItems) {
   //     if (!item.storeId) {
-  //       console.log(item.name)
   //       dispatch(listProductStocks(item.id));
   //       await loadingStocks
-  //       console.log('stocks', stocks)
   //     }
   //   }
   // };
 
   // const allPromises = cartItems.forEach((item) => {
-  //   console.log('stocks', stocks)
   //   return dispatch(listProductStocks(item.id));
   // });
 
@@ -206,9 +214,7 @@ function PlaceOrderScreen() {
 
                                     <Col md={2}>
                                       {product.quantity} x CHF{" "}
-                                      {product.price % 1 !== 0
-                                        ? product.price
-                                        : Math.trunc(product.price) + ".-"}
+                                      {isNumberDecimal(Number(product.price))}
                                     </Col>
 
                                     <Col md={3}>
@@ -235,7 +241,7 @@ function PlaceOrderScreen() {
                                       {product.orderType === "online"
                                         ? shippingCost === 0
                                           ? "Free Shipping"
-                                          : "Shipping: CHF 20"
+                                          : "Shipping: CHF 20.-"
                                         : "Pick up in store"}
                                     </h6>
                                   </Row>
@@ -250,10 +256,7 @@ function PlaceOrderScreen() {
                               margin: "0.5rem",
                             }}
                           >
-                            Subtotal: CHF{" "}
-                            {subTotalPrice.toFixed(2) % 1 !== 0
-                              ? subTotalPrice.toFixed(2)
-                              : Math.trunc(subTotalPrice) + ".-"}
+                            Subtotal: CHF {isNumberDecimal(subTotalPrice)}
                           </h6>
                         </Row>
                       </ListGroup>
@@ -274,15 +277,26 @@ function PlaceOrderScreen() {
 
               <ListGroup.Item>
                 <Row>
-                  <Col>Items:</Col>
-                  <Col>CHF {cart.itemsPrice.toFixed(2)}</Col>
+                  <Col>Item(s):</Col>
+                  <Col>{totalItems}</Col>
+                </Row>
+              </ListGroup.Item>
+
+              <ListGroup.Item>
+                <Row>
+                  <Col>Price:</Col>
+                  <Col>CHF {isNumberDecimal(cart.itemsPrice)}</Col>
                 </Row>
               </ListGroup.Item>
 
               <ListGroup.Item>
                 <Row>
                   <Col>Shipping:</Col>
-                  <Col>CHF {totalShippingCost.toFixed(2)}</Col>
+                  <Col>
+                    {totalShippingCost === 0
+                      ? "Free"
+                      : "CHF " + totalShippingCost + ".-"}
+                  </Col>
                 </Row>
               </ListGroup.Item>
 
@@ -290,7 +304,7 @@ function PlaceOrderScreen() {
                 <Row>
                   <Col>Total Price:</Col>
                   <Col>
-                    CHF {(cart.itemsPrice + totalShippingCost).toFixed(2)}
+                    CHF {isNumberDecimal(cart.itemsPrice + totalShippingCost)}
                   </Col>
                 </Row>
               </ListGroup.Item>

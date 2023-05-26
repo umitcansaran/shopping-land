@@ -37,6 +37,14 @@ function CartScreen() {
     }
   }, [dispatch]);
 
+  const isNumberDecimal = (num) => {
+    if (num.toFixed(2) % 1 !== 0) {
+      return num.toFixed(2);
+    } else {
+      return Math.trunc(subTotalPrice) + ".-";
+    }
+  };
+
   const removeFromCartHandler = (id) => {
     dispatch(removeFromCart(id));
   };
@@ -147,9 +155,7 @@ function CartScreen() {
 
                                 <Col md={3}>
                                   CHF{" "}
-                                  {product.price % 1 !== 0
-                                    ? product.price
-                                    : Math.trunc(product.price) + ".-"}
+                                  {isNumberDecimal(Number(product.price))}
                                 </Col>
 
                                 <Col md={4}>
@@ -212,7 +218,7 @@ function CartScreen() {
                                   {product.orderType === "online"
                                     ? shippingCost === 0
                                       ? "Free Shipping"
-                                      : "Shipping: CHF 20"
+                                      : "Shipping: CHF 20.-"
                                     : "Pick up in-store"}
                                 </h6>
                               </Row>
@@ -230,9 +236,7 @@ function CartScreen() {
                           }}
                         >
                           Subtotal: CHF{" "}
-                          {subTotalPrice.toFixed(2) % 1 !== 0
-                            ? subTotalPrice.toFixed(2)
-                            : Math.trunc(subTotalPrice) + ".-"}
+                          {isNumberDecimal(subTotalPrice)}
                         </h6>
                       </Row>
                     </ListGroup.Item>

@@ -47,10 +47,30 @@ function OrderScreen() {
   console.log("order", order);
   let totalItem;
 
+  const hasOnlinePurchase = order?.storeOrder
+    .map((storeOrder) => {
+      return storeOrder.orderItems.map((orderItem) => {
+        return orderItem.orderType === "online";
+      });
+    })
+    .flat()
+    .includes(true);
+
+  const hasInStorePickup = order?.storeOrder
+    .map((storeOrder) => {
+      return storeOrder.orderItems.filter((orderItem) => {
+        return orderItem.orderType === "inStore";
+      });
+    })
+    .flat();
+
+  console.log("hasInStorePickup", hasInStorePickup);
+
   if (!loading && !error && order) {
-    totalItem = order.subOrder.reduce(
-      (acc, subOrder) =>
-        acc + subOrder.orderItems.reduce((acc, item) => acc + item.quantity, 0),
+    totalItem = order.storeOrder.reduce(
+      (acc, storeOrder) =>
+        acc +
+        storeOrder.orderItems.reduce((acc, item) => acc + item.quantity, 0),
       0
     );
   }
@@ -132,7 +152,7 @@ function OrderScreen() {
                         {order.customer.email}
                       </a>
                     </p>
-                    {order.shippingAddress && (
+                    {hasOnlinePurchase && (
                       <>
                         <h2>Shipping</h2>
                         <p>
@@ -145,6 +165,19 @@ function OrderScreen() {
                       </>
                     )}
                   </ListGroup.Item>
+
+                  {hasInStorePickup && (
+                    <ListGroup.Item>
+                      <h2>Pickup Location(s)</h2>
+                      {hasInStorePickup.map((item) => {
+                        return (
+                          <p>
+                            {item.store.owner_name} - {item.store.name}
+                          </p>
+                        );
+                      })}
+                    </ListGroup.Item>
+                  )}
 
                   <ListGroup.Item>
                     <h2>Payment Method</h2>
@@ -162,28 +195,28 @@ function OrderScreen() {
                       )}
                     </Col>
                   </ListGroup.Item>
-                  {order.subOrder.length === 0 ? (
-                    <Message variant="info">SubOrder is empty</Message>
+                  {order.storeOrder.length === 0 ? (
+                    <Message variant="info">Store Order is empty</Message>
                   ) : (
                     <ListGroup.Item>
                       <h2>Store Order(s):</h2>
                       <ListGroup variant="flush">
-                        {order.subOrder.map((subOrder, index) => {
+                        {order.storeOrder.map((storeOrder, index) => {
                           return (
                             <Card style={{ marginBlockStart: "1rem" }}>
                               <Card.Body>
                                 <Row className="text-end">
-                                  <h6>Order ID: {subOrder.id}</h6>
+                                  <h6>Order ID: {storeOrder.id}</h6>
                                 </Row>
                                 <Row
                                   className="text-center"
                                   style={{ color: "#698bc2" }}
                                 >
-                                  <h4>{subOrder.seller.profile.name}</h4>
+                                  <h4>{storeOrder.seller.profile.name}</h4>
                                 </Row>
                               </Card.Body>
                               <ListGroup variant="flush" key={index}>
-                                {subOrder.orderItems.map((orderItem) => {
+                                {storeOrder.orderItems.map((orderItem) => {
                                   return (
                                     <>
                                       <ListGroup.Item key={orderItem.id}>
@@ -196,12 +229,11 @@ function OrderScreen() {
                                               rounded
                                             />
                                           </Col>
-                                          <Col md={3}>
-                                            <Link
-                                              to={`/product/${orderItem.id}`}
-                                            >
-                                              {orderItem.name}
-                                            </Link>
+                                          <Col
+                                            md={3}
+                                            style={{ color: "#698bc2" }}
+                                          >
+                                            {orderItem.name}
                                           </Col>
 
                                           <Col md={2}>
@@ -231,9 +263,9 @@ function OrderScreen() {
                                             }}
                                           >
                                             {orderItem.orderType === "online"
-                                              ? subOrder.shippingPrice > 0
+                                              ? storeOrder.shippingPrice > 0
                                                 ? "Shipping Price: " +
-                                                  subOrder.shippingPrice
+                                                  storeOrder.shippingPrice
                                                 : "Free Shipping"
                                               : "Pick up in-store"}
                                           </h6>
@@ -251,21 +283,25 @@ function OrderScreen() {
                                         margin: "0.5rem",
                                       }}
                                     >
-                                      Subtotal: CHF {subOrder.totalPrice}
+                                      Subtotal: CHF {storeOrder.totalPrice}
                                     </h6>
                                   </Row>
                                   <Row className="justify-content-center">
                                     <Col md={3} className="text-center">
-                                      {subOrder.isShipped ? (
-                                        <Message variant="success">
-                                          Shipped on{" "}
-                                          {subOrder.ShippedAt.substring(0, 10)}
-                                        </Message>
-                                      ) : (
-                                        <Message variant="warning">
-                                          Not Shipped
-                                        </Message>
-                                      )}
+                                      {hasOnlinePurchase &&
+                                        (storeOrder.isShipped ? (
+                                          <Message variant="success">
+                                            Shipped on{" "}
+                                            {storeOrder.ShippedAt.substring(
+                                              0,
+                                              10
+                                            )}
+                                          </Message>
+                                        ) : (
+                                          <Message variant="warning">
+                                            Not Shipped
+                                          </Message>
+                                        ))}
                                     </Col>
                                   </Row>
                                 </ListGroup.Item>
@@ -289,7 +325,7 @@ function OrderScreen() {
                     <ListGroup.Item>
                       <Row>
                         <Col>Store(s):</Col>
-                        <Col>{order.subOrder.length}</Col>
+                        <Col>{order.storeOrder.length}</Col>
                       </Row>
                     </ListGroup.Item>
 

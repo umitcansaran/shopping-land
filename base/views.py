@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, GenericAPIView
-from .models import Store, Product, Profile, ProductCategory, ProductSubcategory, Stock, Review, Order, SubOrder, OrderItem, ShippingAddress
+from .models import Store, Product, Profile, ProductCategory, ProductSubcategory, Stock, Review, Order, StoreOrder, OrderItem, ShippingAddress
 from base.permissions import IsAnon
 from .permissions import IsOwnerOrReadOnly
 from django.db.models import Q
@@ -20,7 +20,7 @@ from decimal import Decimal
 
 User = get_user_model()
 
-from .serializers import StoreSerializer, MyStoreSerializer, UserSerializer, RegistrationSerializer, StockSerializer ,ProductSerializer, ProductSubcategorySerializer, ProductCategorySerializer, ProfileSerializer, ReviewSerializer, SearchStockSerializer, OrderSerializer, MyOrderSerializer, SubOrderSerializer
+from .serializers import StoreSerializer, MyStoreSerializer, UserSerializer, RegistrationSerializer, StockSerializer ,ProductSerializer, ProductSubcategorySerializer, ProductCategorySerializer, ProfileSerializer, ReviewSerializer, SearchStockSerializer, OrderSerializer, MyOrderSerializer, StoreOrderSerializer
 
 class StoreViewSet(ModelViewSet):
     """
@@ -328,14 +328,14 @@ class ListProductsByUser(ListAPIView):
         queryset = queryset.filter(seller=user)
         return queryset
     
-class ListSubOrder(ListAPIView):
+class ListStoreOrder(ListAPIView):
     """
     List all the products of a seller (int: user_id)
     """
-    serializer_class = SubOrderSerializer
+    serializer_class = StoreOrderSerializer
 
     def get_queryset(self):
-        queryset = SubOrder.objects.all()
+        queryset = StoreOrder.objects.all()
         keyword = self.kwargs.get('pk')
         queryset = queryset.filter(id=keyword)
         return queryset
@@ -467,6 +467,7 @@ def addOrderItems(request):
     orderItems = data['orderItems']
     sellerList = []
     sellerNames = []
+    totalPrice = 0
 
     # Get seller names
     for i in orderItems:
@@ -502,7 +503,7 @@ def addOrderItems(request):
         for i in sellerNames:
             seller = User.objects.get(username=i)
             
-            subOrder = SubOrder.objects.create(
+            storeOrder = StoreOrder.objects.create(
                 # shippingPrice=data['shippingPrice'],
                 seller=seller,
                 order=order,
@@ -512,7 +513,6 @@ def addOrderItems(request):
             # (4) Update stock
             for x in orderItems:
 
-                totalPrice = 0
                 if x['seller'] == i: 
 
                     product = Product.objects.get(id=x['id'])
@@ -524,7 +524,7 @@ def addOrderItems(request):
 
                     item = OrderItem.objects.create(
                         product=product,
-                        subOrder=subOrder,
+                        storeOrder=storeOrder,
                         name=product.name,
                         quantity=x['quantity'],
                         price=Decimal(x['price']),
@@ -552,13 +552,14 @@ def addOrderItems(request):
                         stock.save()
 
                     totalPrice += Decimal(x['price']) * x['quantity']
-                    subOrder.totalPrice = totalPrice
-                    subOrder.save()
+                    print(totalPrice)
+                    storeOrder.totalPrice = totalPrice
+                    storeOrder.save()
             if totalPrice > 100:
-                subOrder.shippingPrice = 0
+                storeOrder.shippingPrice = 0
             else:
-                subOrder.shippingPrice = 20
-            subOrder.save()
+                storeOrder.shippingPrice = 20
+            storeOrder.save()
 
         serializer = OrderSerializer(order, many=False)
         return Response(serializer.data)
@@ -589,9 +590,9 @@ def getOrders(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def getSubOrders(request):
-    suborders = SubOrder.objects.all().order_by('-createdAt')
-    serializer = SubOrderSerializer(suborders, many=True)
+def getStoreOrders(request):
+    storeOrders = StoreOrder.objects.all().order_by('-createdAt')
+    serializer = StoreOrderSerializer(storeOrders, many=True)
     return Response(serializer.data)
 
 
@@ -615,20 +616,20 @@ def getOrderById(request, pk):
     
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def getSubOrderById(request, pk):
+def getStoreOrderById(request, pk):
 
     user = request.user
 
     try:
-        subOrder = SubOrder.objects.get(id=pk)
-        if user.is_staff or subOrder.user == user:
-            serializer = SubOrderSerializer(subOrder, many=False)
+        storeOrder = StoreOrder.objects.get(id=pk)
+        if user.is_staff or storeOrder.user == user:
+            serializer = StoreOrderSerializer(storeOrder, many=False)
             return Response(serializer.data)
         else:
-            Response({'detail': 'Not authorized to view this suborder'},
+            Response({'detail': 'Not authorized to view this store order'},
                      status=status.HTTP_400_BAD_REQUEST)
     except:
-        return Response({'detail': 'Suborder does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'detail': 'Store order does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['PUT'])

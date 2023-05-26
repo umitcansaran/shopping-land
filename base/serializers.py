@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 from django.contrib.auth.models import User
-from .models import Store, Profile, Product, ProductCategory, ProductSubcategory, Stock, Review, Order, SubOrder, OrderItem, ShippingAddress
+from .models import Store, Profile, Product, ProductCategory, ProductSubcategory, Stock, Review, Order, StoreOrder, OrderItem, ShippingAddress
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 
@@ -204,7 +204,7 @@ class ShippingAddressSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    subOrder = serializers.SerializerMethodField(read_only=True)
+    storeOrder = serializers.SerializerMethodField(read_only=True)
     shippingAddress = serializers.SerializerMethodField(read_only=True)
     # customer = serializers.SlugRelatedField(
     #     queryset=User.objects.all(), 
@@ -220,9 +220,9 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = '__all__'
 
-    def get_subOrder(self, obj):
-        subOrders = obj.suborders
-        serializer = SubOrderSerializer(subOrders, many=True)
+    def get_storeOrder(self, obj):
+        storeOrders = obj.storeOrders
+        serializer = StoreOrderSerializer(storeOrders, many=True)
         return serializer.data 
     
     def get_shippingAddress(self, obj):
@@ -275,14 +275,14 @@ class OrderItemSerializer(serializers.ModelSerializer):
         return serializer.data
     
     
-class SubOrderSerializer(serializers.ModelSerializer):
+class StoreOrderSerializer(serializers.ModelSerializer):
     seller = serializers.SerializerMethodField(read_only=True)
     customer = serializers.SerializerMethodField(read_only=True)
     # order = serializers.SerializerMethodField(read_only=True)
     orderItems = serializers.SerializerMethodField(read_only=True) 
 
     class Meta:
-        model = SubOrder
+        model = StoreOrder
         fields = '__all__'
 
     def get_orderItems(self, obj):

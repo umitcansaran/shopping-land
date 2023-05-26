@@ -17,9 +17,9 @@ import {
   ORDER_LIST_MY_RESET,
   ORDER_LIST_REQUEST,
   ORDER_LIST_SUCCESS,
-  SUBORDER_LIST_REQUEST,
-  SUBORDER_LIST_SUCCESS,
-  SUBORDER_LIST_FAIL,
+  STOREORDER_LIST_REQUEST,
+  STOREORDER_LIST_SUCCESS,
+  STOREORDER_LIST_FAIL,
   ORDER_LIST_FAIL,
   ORDER_DELIVER_REQUEST,
   ORDER_DELIVER_SUCCESS,
@@ -201,7 +201,10 @@ export const listMyPurchases = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`${baseUrl}/api/orders/mypurchases/`, config);
+    const { data } = await axios.get(
+      `${baseUrl}/api/orders/mypurchases/`,
+      config
+    );
 
     dispatch({
       type: ORDER_LIST_MY_SUCCESS,
@@ -252,10 +255,10 @@ export const listOrders = () => async (dispatch, getState) => {
   }
 };
 
-export const listSubOrders = () => async (dispatch, getState) => {
+export const listStoreOrders = () => async (dispatch, getState) => {
   try {
     dispatch({
-      type: SUBORDER_LIST_REQUEST,
+      type: STOREORDER_LIST_REQUEST,
     });
 
     const {
@@ -269,15 +272,15 @@ export const listSubOrders = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`${baseUrl}/api/suborders/`, config);
+    const { data } = await axios.get(`${baseUrl}/api/storeorders/`, config);
 
     dispatch({
-      type: SUBORDER_LIST_SUCCESS,
+      type: STOREORDER_LIST_SUCCESS,
       payload: data,
     });
   } catch (error) {
     dispatch({
-      type: SUBORDER_LIST_FAIL,
+      type: STOREORDER_LIST_FAIL,
       payload:
         error.response && error.response.data.detail
           ? error.response.data.detail

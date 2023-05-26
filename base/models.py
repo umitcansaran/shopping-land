@@ -117,7 +117,7 @@ class Order(models.Model):
     def __str__(self):
         return str(self.createdAt)
     
-class SubOrder(models.Model):
+class StoreOrder(models.Model):
     createdAt = models.DateTimeField(auto_now_add=True)
     shippingPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
     isShipped = models.BooleanField(default=False)
@@ -125,8 +125,8 @@ class SubOrder(models.Model):
     totalPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
     
     # Relations:
-    seller = models.ForeignKey(User, related_name='suborders', on_delete=models.SET_NULL, null=True)
-    order = models.ForeignKey(Order, related_name='suborders', on_delete=models.CASCADE, null=True)
+    seller = models.ForeignKey(User, related_name='storeOrders', on_delete=models.SET_NULL, null=True)
+    order = models.ForeignKey(Order, related_name='storeOrders', on_delete=models.CASCADE, null=True)
     customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
@@ -141,7 +141,7 @@ class OrderItem(models.Model):
     orderType = models.CharField(max_length=200, null=True, blank=True)
 
     # Relations:
-    subOrder = models.ForeignKey(SubOrder, related_name='orderitems', on_delete=models.CASCADE, null=True)
+    storeOrder = models.ForeignKey(StoreOrder, related_name='orderitems', on_delete=models.CASCADE, null=True)
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     store = models.ForeignKey(Store, on_delete=models.SET_NULL, null=True)
 
