@@ -5,11 +5,13 @@ from django.contrib.auth import get_user_model
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, GenericAPIView
-from .models import Store, Product, Profile, ProductCategory, ProductSubcategory, Stock, Review, Order, StoreOrder, OrderItem, ShippingAddress
+from .models import Store, Product, Profile, ProductCategory, ProductSubcategory, Stock, Review, Order, SellerOrder, OrderItem, ShippingAddress
 from base.permissions import IsAnon
 from .permissions import IsOwnerOrReadOnly
 from django.db.models import Q
 from rest_framework.pagination import LimitOffsetPagination
+from django.utils import timezone
+
 
 from django.contrib.auth.hashers import make_password
 
@@ -20,7 +22,7 @@ from decimal import Decimal
 
 User = get_user_model()
 
-from .serializers import StoreSerializer, MyStoreSerializer, UserSerializer, RegistrationSerializer, StockSerializer ,ProductSerializer, ProductSubcategorySerializer, ProductCategorySerializer, ProfileSerializer, ReviewSerializer, SearchStockSerializer, OrderSerializer, MyOrderSerializer, StoreOrderSerializer
+from .serializers import StoreSerializer, MyStoreSerializer, UserSerializer, RegistrationSerializer, StockSerializer ,ProductSerializer, ProductSubcategorySerializer, ProductCategorySerializer, ProfileSerializer, ReviewSerializer, SearchStockSerializer, OrderSerializer, MyOrderSerializer, SellerOrderSerializer
 
 class StoreViewSet(ModelViewSet):
     """
@@ -328,14 +330,14 @@ class ListProductsByUser(ListAPIView):
         queryset = queryset.filter(seller=user)
         return queryset
     
-class ListStoreOrder(ListAPIView):
+class ListSellerOrder(ListAPIView):
     """
     List all the products of a seller (int: user_id)
     """
-    serializer_class = StoreOrderSerializer
+    serializer_class = SellerOrderSerializer
 
     def get_queryset(self):
-        queryset = StoreOrder.objects.all()
+        queryset = SellerOrder.objects.all()
         keyword = self.kwargs.get('pk')
         queryset = queryset.filter(id=keyword)
         return queryset
@@ -499,11 +501,19 @@ def addOrderItems(request):
                 postalCode=data['shippingAddress']['postalCode'],
                 country=data['shippingAddress']['country'],
             )
+        else:
+            shipping = ShippingAddress.objects.create(
+                order=order,
+                address='null',
+                city='null',
+                postalCode='null',
+                country='null',
+            )
 
         for i in sellerNames:
             seller = User.objects.get(username=i)
             
-            storeOrder = StoreOrder.objects.create(
+            sellerOrder = SellerOrder.objects.create(
                 # shippingPrice=data['shippingPrice'],
                 seller=seller,
                 order=order,
@@ -524,7 +534,7 @@ def addOrderItems(request):
 
                     item = OrderItem.objects.create(
                         product=product,
-                        storeOrder=storeOrder,
+                        sellerOrder=sellerOrder,
                         name=product.name,
                         quantity=x['quantity'],
                         price=Decimal(x['price']),
@@ -553,13 +563,13 @@ def addOrderItems(request):
 
                     totalPrice += Decimal(x['price']) * x['quantity']
                     print(totalPrice)
-                    storeOrder.totalPrice = totalPrice
-                    storeOrder.save()
+                    sellerOrder.totalPrice = totalPrice
+                    sellerOrder.save()
             if totalPrice > 100:
-                storeOrder.shippingPrice = 0
+                sellerOrder.shippingPrice = 0
             else:
-                storeOrder.shippingPrice = 20
-            storeOrder.save()
+                sellerOrder.shippingPrice = 20
+            sellerOrder.save()
 
         serializer = OrderSerializer(order, many=False)
         return Response(serializer.data)
@@ -583,6 +593,14 @@ def getMyOrders(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
+def getMySellerOrders(request):
+    user = request.user
+    sellerOrders = user.sellerOrders.all()
+    serializer = SellerOrderSerializer(sellerOrders, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def getOrders(request):
     orders = Order.objects.all()
     serializer = OrderSerializer(orders, many=True)
@@ -590,9 +608,9 @@ def getOrders(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def getStoreOrders(request):
-    storeOrders = StoreOrder.objects.all().order_by('-createdAt')
-    serializer = StoreOrderSerializer(storeOrders, many=True)
+def getSellerOrders(request):
+    sellerOrders = SellerOrder.objects.all().order_by('-createdAt')
+    serializer = SellerOrderSerializer(sellerOrders, many=True)
     return Response(serializer.data)
 
 
@@ -616,14 +634,14 @@ def getOrderById(request, pk):
     
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def getStoreOrderById(request, pk):
+def getSellerOrderById(request, pk):
 
     user = request.user
 
     try:
-        storeOrder = StoreOrder.objects.get(id=pk)
-        if user.is_staff or storeOrder.user == user:
-            serializer = StoreOrderSerializer(storeOrder, many=False)
+        sellerOrder = SellerOrder.objects.get(id=pk)
+        if sellerOrder.seller == user:
+            serializer = SellerOrderSerializer(sellerOrder, many=False)
             return Response(serializer.data)
         else:
             Response({'detail': 'Not authorized to view this store order'},
@@ -645,14 +663,15 @@ def updateOrderToPaid(request, pk):
 
 
 @api_view(['PUT'])
-@permission_classes([IsAdminUser])
-def updateOrderToDelivered(request, pk):
-    order = Order.objects.get(id=pk)
+@permission_classes([IsAuthenticated])
+def updateSellerOrderToSent(request, pk):
 
-    order.isDelivered = True
-    order.deliveredAt = datetime.now()
-    order.save()
+    sellerOrder = SellerOrder.objects.get(id=pk)
 
-    return Response('Order was delivered')
+    sellerOrder.isShipped = True
+    sellerOrder.shippedAt = timezone.now()
+    sellerOrder.save()
+
+    return Response('Seller Order is sent')
 
 

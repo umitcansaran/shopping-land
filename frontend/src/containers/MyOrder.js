@@ -1,274 +1,238 @@
-// import React, { useState, useEffect } from "react";
-// import { Button, Row, Col, ListGroup, Image, Card } from "react-bootstrap";
-// import { Link, useNavigate, useParams } from "react-router-dom";
-// import { useDispatch, useSelector } from "react-redux";
-// import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-// import Message from "../components/Message";
-// import Loader from "../components/Loader";
-// import {
-//   getOrderDetails,
-//   payOrder,
-//   deliverOrder,
-// } from "../store/actions/orderActions";
-// import {
-//   ORDER_PAY_RESET,
-//   ORDER_DELIVER_RESET,
-// } from "../store/constants/orderConstants";
+import React, { useState, useEffect } from "react";
+import {
+  Button,
+  Row,
+  Col,
+  ListGroup,
+  Image,
+  Card,
+  Container,
+} from "react-bootstrap";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import Message from "../components/Message";
+import Loader from "../components/Loader";
+import {
+  getOrderDetails,
+  payOrder,
+  getSellerOrderDetails,
+  sendSellerOrder,
+} from "../store/actions/orderActions";
+import {
+  ORDER_PAY_RESET,
+  ORDER_SEND_RESET,
+  SELLER_ORDER_SEND_RESET,
+} from "../store/constants/orderConstants";
+import MyOrderItemCard from "./MyOrderItemCard";
 
-// function MyOrderScreen() {
-//   const dispatch = useDispatch();
-//   const params = useParams();
-//   const navigate = useNavigate;
+function MyOrder() {
+  const dispatch = useDispatch();
+  const params = useParams();
+  const navigate = useNavigate;
 
-//   const orderId = params.id;
+  const sellerOrderId = params.id;
 
-//   const [sdkReady, setSdkReady] = useState(false);
+  const [sdkReady, setSdkReady] = useState(false);
 
-//   const orderDetails = useSelector((state) => state.orderDetails);
-//   const { order, error, loading } = orderDetails;
+  const {
+    sellerOrder,
+    error,
+    loading: loadingSellerOrder,
+  } = useSelector((state) => state.sellerOrderDetails);
 
-//   const orderPay = useSelector((state) => state.orderPay);
-//   const { loading: loadingPay, success: successPay } = orderPay;
+  const orderPay = useSelector((state) => state.orderPay);
+  const { loading: loadingPay, success: successPay } = orderPay;
 
-//   const orderDeliver = useSelector((state) => state.orderDeliver);
-//   const { loading: loadingDeliver, success: successDeliver } = orderDeliver;
+  const sellerOrderSend = useSelector((state) => state.sellerOrderSend);
+  const { loading: loadingSellerOrderSend, success: successSellerOrderSend } =
+    sellerOrderSend;
 
-//   const userLogin = useSelector((state) => state.userLogin);
-//   const { userInfo } = userLogin;
+  // SUCCESSFULLY SENT MESSAGE BACKEND
 
-//   if (!loading && !error && order) {
-//     order.itemsPrice = order.orderItems
-//       .reduce((acc, item) => acc + item.price * item.quantity, 0)
-//       .toFixed(2);
-//   }
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
-//   const addPayPalScript = () => {
-//     const script = document.createElement("script");
-//     script.type = "text/javascript";
-//     script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.REACT_APP_PAYPAL_ID}`;
-//     script.async = true;
-//     script.onload = () => {
-//       setSdkReady(true);
-//     };
-//     document.body.appendChild(script);
-//   };
+  let totalItem;
 
-//   useEffect(() => {
-//     if (!userInfo) {
-//       navigate("/login");
-//     }
-//     if (
-//       !order ||
-//       successPay ||
-//       order.id !== Number(orderId) ||
-//       successDeliver
-//     ) {
-//       dispatch({ type: ORDER_PAY_RESET });
-//       dispatch({ type: ORDER_DELIVER_RESET });
-//       dispatch(getOrderDetails(orderId));
-//     } else if (!order.isPaid) {
-//       if (!window.paypal && process.env.PAYPAL_CLIENT_ID) {
-//         addPayPalScript();
-//       } else {
-//         setSdkReady(true);
-//       }
-//     }
-//   }, [
-//     dispatch,
-//     userInfo,
-//     order,
-//     orderId,
-//     successPay,
-//     successDeliver,
-//     navigate,
-//   ]);
+  const isNumberDecimal = (num) => {
+    if (num.toFixed(2) % 1 !== 0) {
+      return num.toFixed(2);
+    } else {
+      return Math.trunc(num) + ".-";
+    }
+  };
 
-//   const successPaymentHandler = (paymentResult) => {
-//     dispatch(payOrder(orderId, paymentResult));
-//   };
+  const hasOnlinePurchase = sellerOrder?.orderItems
+    .map((orderItem) => orderItem.orderType === "online")
+    .includes(true);
 
-//   const deliverHandler = () => {
-//     dispatch(deliverOrder(order));
-//   };
+  const hasInStorePickup = sellerOrder?.orderItems.filter(
+    (orderItem) => orderItem.orderType === "inStore"
+  );
 
-//   return loading ? (
-//     <Loader />
-//   ) : error ? (
-//     <Message variant="danger">{error}</Message>
-//   ) : (
-//     order && (
-//       <div>
-//         <h2 className="text-center my-3">Order ID: {order.id}</h2>
-//         <Row>
-//           <Col md={8}>
-//             <ListGroup variant="flush">
-//               <ListGroup.Item>
-//                 <h2>Shipping</h2>
-//                 <p>
-//                   <strong>Name: </strong> {order.user.username}
-//                 </p>
-//                 <p>
-//                   <strong>Email: </strong>
-//                   <a href={`mailto:${order.user.email}`}>{order.user.email}</a>
-//                 </p>
-//                 <p>
-//                   <strong>Shipping: </strong>
-//                   {order.shippingAddress.address}, {order.shippingAddress.city}
-//                   {"  "}
-//                   {order.shippingAddress.postalCode},{"  "}
-//                   {order.shippingAddress.country}
-//                 </p>
+  let pickUpLocations = hasInStorePickup
+    .reduce((accumulator, current) => {
+      if (
+        !accumulator.find(
+          (item) =>
+            item.details.seller === current.details.seller &&
+            item.store.name == current.store.name
+        )
+      ) {
+        accumulator.push(current);
+      }
+      return accumulator;
+    }, [])
+    .sort((a, b) => (a.seller > b.seller ? 1 : b.seller > a.seller ? -1 : 0));
 
-//                 {order.isDelivered ? (
-//                   <Message variant="success">
-//                     Delivered on {order.deliveredAt}
-//                   </Message>
-//                 ) : (
-//                   <Message variant="warning">Not Delivered</Message>
-//                 )}
-//               </ListGroup.Item>
+  console.log("pickUpLocations", pickUpLocations);
 
-//               <ListGroup.Item>
-//                 <h2>Payment Method</h2>
-//                 <p>
-//                   <strong>Method: </strong>
-//                   {order.paymentMethod}
-//                 </p>
-//                 {order.isPaid ? (
-//                   <Message variant="success">Paid on {order.paidAt}</Message>
-//                 ) : (
-//                   <Message variant="warning">Not Paid</Message>
-//                 )}
-//               </ListGroup.Item>
+  console.log("hasInStorePickup", hasInStorePickup);
 
-//               <ListGroup.Item>
-//                 <h2>Order Items</h2>
-//                 {order.orderItems.length === 0 ? (
-//                   <Message variant="info">Order is empty</Message>
-//                 ) : (
-//                   <ListGroup variant="flush">
-//                     {order.orderItems.map((item, index) => (
-//                       <ListGroup.Item key={index}>
-//                         <Row>
-//                           <Col md={1}>
-//                             <Image
-//                               src={`${item.image}`}
-//                               alt={item.name}
-//                               fluid
-//                               rounded
-//                             />
-//                           </Col>
+  //   const hasOnlinePurchase = order?.sellerOrder
+  //     .map((sellerOrder) => {
+  //       return sellerOrder.orderItems.map((orderItem) => {
+  //         return orderItem.orderType === "online";
+  //       });
+  //     })
+  //     .flat()
+  //     .includes(true);
 
-//                           <Col>
-//                             <Link to={`/product/${item.product}`}>
-//                               {item.name}
-//                             </Link>
-//                           </Col>
+  //   const hasInStorePickup = order?.sellerOrder
+  //     .map((sellerOrder) => {
+  //       return sellerOrder.orderItems.filter((orderItem) => {
+  //         return orderItem.orderType === "inStore";
+  //       });
+  //     })
+  //     .flat();
 
-//                           <Col md={4}>
-//                             {item.quantity} X ${item.price} = $
-//                             {(item.quantity * item.price).toFixed(2)}
-//                           </Col>
-//                         </Row>
-//                       </ListGroup.Item>
-//                     ))}
-//                   </ListGroup>
-//                 )}
-//               </ListGroup.Item>
-//             </ListGroup>
-//           </Col>
+  //   if (!loading && !error && order) {
+  //     totalItem = order.sellerOrder.reduce(
+  //       (acc, sellerOrder) =>
+  //         acc +
+  //         sellerOrder.orderItems.reduce((acc, item) => acc + item.quantity, 0),
+  //       0
+  //     );
+  //   }
 
-//           <Col md={4}>
-//             <Card>
-//               <ListGroup variant="flush">
-//                 <ListGroup.Item>
-//                   <h2>Order Summary</h2>
-//                 </ListGroup.Item>
+  let shippingCost;
 
-//                 <ListGroup.Item>
-//                   <Row>
-//                     <Col>Items:</Col>
-//                     <Col>${order.itemsPrice}</Col>
-//                   </Row>
-//                 </ListGroup.Item>
+  useEffect(() => {
+    if (!userInfo) {
+      navigate("/login");
+    }
+    if (
+      !sellerOrder ||
+      successPay ||
+      sellerOrder.id !== Number(sellerOrderId) ||
+      successSellerOrderSend
+    ) {
+      dispatch({ type: ORDER_PAY_RESET });
+      dispatch({ type: SELLER_ORDER_SEND_RESET });
+      dispatch(getSellerOrderDetails(sellerOrderId));
+    } else if (!sellerOrder.isPaid) {
+      if (!window.paypal && process.env.PAYPAL_CLIENT_ID) {
+        // addPayPalScript();
+      } else {
+        setSdkReady(true);
+      }
+    }
+  }, [
+    dispatch,
+    userInfo,
+    sellerOrder,
+    sellerOrderId,
+    successPay,
+    successSellerOrderSend,
+    navigate,
+  ]);
 
-//                 <ListGroup.Item>
-//                   <Row>
-//                     <Col>Shipping:</Col>
-//                     <Col>${order.shippingPrice}</Col>
-//                   </Row>
-//                 </ListGroup.Item>
+  const sellerOrderSendHandler = () => {
+    dispatch(sendSellerOrder(sellerOrder.id));
+  };
 
-//                 <ListGroup.Item>
-//                   <Row>
-//                     <Col>Tax:</Col>
-//                     <Col>${order.taxPrice}</Col>
-//                   </Row>
-//                 </ListGroup.Item>
+  console.log(sellerOrder);
 
-//                 <ListGroup.Item>
-//                   <Row>
-//                     <Col>Total:</Col>
-//                     <Col>${order.totalPrice}</Col>
-//                   </Row>
-//                 </ListGroup.Item>
+  return (
+    <Container fluid className="order-page-container">
+      {loadingSellerOrder || loadingSellerOrderSend ? (
+        <Loader />
+      ) : (
+        sellerOrder && (
+          <>
+            <Row>
+              <strong>
+                <p className="text-center my-3 main-order-id">
+                  SELLER ORDER # {sellerOrder?.id}
+                </p>
+              </strong>
+            </Row>
+            <Row>
+              <Col md={8}>
+                <ListGroup variant="flush">
+                  <ListGroup.Item>
+                    <h2>Customer</h2>
+                    <p>
+                      <strong>Name: </strong> {sellerOrder.customer.username}
+                    </p>
+                    <p>
+                      <strong>Email: </strong>
+                      <a href={`mailto:${sellerOrder.customer.email}`}>
+                        {sellerOrder.customer.email}
+                      </a>
+                    </p>
+                    {hasOnlinePurchase && (
+                      <>
+                        <h2>Shipping</h2>
+                        <p>
+                          <strong>Address: </strong>
+                          {sellerOrder.shippingAddress.address},{" "}
+                          {sellerOrder.shippingAddress.city},{"  "}
+                          {sellerOrder.shippingAddress.postalCode},{"  "}
+                          {sellerOrder.shippingAddress.country}
+                        </p>
+                      </>
+                    )}
+                  </ListGroup.Item>
 
-//                 {!order.isPaid && (
-//                   <ListGroup.Item>
-//                     {loadingPay && <Loader />}
-//                     {!sdkReady ? (
-//                       <Loader />
-//                     ) : (
-//                       <PayPalScriptProvider
-//                         options={{
-//                           "client-id": process.env.REACT_APP_PAYPAL_ID,
-//                         }}
-//                       >
-//                         <PayPalButtons
-//                           createOrder={(data, actions) => {
-//                             return actions.order.create({
-//                               purchase_units: [
-//                                 {
-//                                   amount: {
-//                                     value: order.totalPrice,
-//                                   },
-//                                 },
-//                               ],
-//                             });
-//                           }}
-//                           onApprove={(data, actions) => {
-//                             return actions.order
-//                               .capture()
-//                               .then(successPaymentHandler());
-//                           }}
-//                         />
-//                       </PayPalScriptProvider>
-//                     )}
-//                   </ListGroup.Item>
-//                 )}
-//               </ListGroup>
+                  {hasInStorePickup && (
+                    <ListGroup.Item>
+                      <h2>Pickup Location(s)</h2>
+                      {pickUpLocations.map((item) => {
+                        return (
+                          <p>
+                            {item.store.owner_name} - {item.store.name}
+                          </p>
+                        );
+                      })}
+                    </ListGroup.Item>
+                  )}
+                <MyOrderItemCard sellerOrder={sellerOrder} hasOnlinePurchase={hasOnlinePurchase} isNumberDecimal={isNumberDecimal} />
+                  
+                </ListGroup>
+              </Col>
+              <Col md={4}>
+                {loadingSellerOrderSend && <Loader />}
+                {userInfo && sellerOrder.order.isPaid && (
+                  <ListGroup.Item>
+                    <Button
+                      type="button"
+                      className="btn btn-block"
+                      onClick={sellerOrderSendHandler}
+                      disabled={sellerOrder.isShipped}
+                    >
+                      Mark As Sent
+                    </Button>
+                  </ListGroup.Item>
+                )}
+              </Col>
+            </Row>
+          </>
+        )
+      )}
+    </Container>
+  );
+}
 
-//               {loadingDeliver && <Loader />}
-//               {userInfo &&
-//                 userInfo.isAdmin &&
-//                 order.isPaid &&
-//                 !order.isDelivered && (
-//                   <ListGroup.Item>
-//                     <Button
-//                       type="button"
-//                       className="btn btn-block"
-//                       onClick={deliverHandler}
-//                     >
-//                       Mark As Delivered
-//                     </Button>
-//                   </ListGroup.Item>
-//                 )}
-//             </Card>
-//           </Col>
-//         </Row>
-//       </div>
-//     )
-//   );
-// }
-
-// export default OrderScreen;
+export default MyOrder;

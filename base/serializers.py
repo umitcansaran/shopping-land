@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 from django.contrib.auth.models import User
-from .models import Store, Profile, Product, ProductCategory, ProductSubcategory, Stock, Review, Order, StoreOrder, OrderItem, ShippingAddress
+from .models import Store, Profile, Product, ProductCategory, ProductSubcategory, Stock, Review, Order, SellerOrder, OrderItem, ShippingAddress
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 
@@ -204,7 +204,7 @@ class ShippingAddressSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    storeOrder = serializers.SerializerMethodField(read_only=True)
+    sellerOrder = serializers.SerializerMethodField(read_only=True)
     shippingAddress = serializers.SerializerMethodField(read_only=True)
     # customer = serializers.SlugRelatedField(
     #     queryset=User.objects.all(), 
@@ -220,9 +220,9 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = '__all__'
 
-    def get_storeOrder(self, obj):
-        storeOrders = obj.storeOrders
-        serializer = StoreOrderSerializer(storeOrders, many=True)
+    def get_sellerOrder(self, obj):
+        sellerOrders = obj.sellerOrders
+        serializer = SellerOrderSerializer(sellerOrders, many=True)
         return serializer.data 
     
     def get_shippingAddress(self, obj):
@@ -275,20 +275,16 @@ class OrderItemSerializer(serializers.ModelSerializer):
         return serializer.data
     
     
-class StoreOrderSerializer(serializers.ModelSerializer):
+class SellerOrderSerializer(serializers.ModelSerializer):
     seller = serializers.SerializerMethodField(read_only=True)
     customer = serializers.SerializerMethodField(read_only=True)
-    # order = serializers.SerializerMethodField(read_only=True)
+    order = serializers.SerializerMethodField(read_only=True)
     orderItems = serializers.SerializerMethodField(read_only=True) 
+    shippingAddress = serializers.SerializerMethodField(read_only=True) 
 
     class Meta:
-        model = StoreOrder
+        model = SellerOrder
         fields = '__all__'
-
-    def get_orderItems(self, obj):
-        orderitems = obj.orderitems
-        serializer = OrderItemSerializer(orderitems, many=True)
-        return serializer.data
 
     def get_seller(self, obj):
         seller = obj.seller
@@ -300,8 +296,19 @@ class StoreOrderSerializer(serializers.ModelSerializer):
         serializer = UserSerializer(customer, many=False)
         return serializer.data
     
-    # def get_order(self, obj):
-    #     order = obj.order
-    #     serializer = OrderSerializer(order, many=False)
-    #     return serializer.data
+    def get_order(self, obj):
+        return {
+            'isPaid': obj.order.isPaid,
+            'paidAt': obj.order.paidAt,
+        }
+    
+    def get_orderItems(self, obj):
+        orderitems = obj.orderitems
+        serializer = OrderItemSerializer(orderitems, many=True)
+        return serializer.data
+    
+    def get_shippingAddress(self, obj):
+        shippingAddress = obj.order.shippingAddress
+        serializer = ShippingAddressSerializer(shippingAddress, many=False)
+        return serializer.data
     

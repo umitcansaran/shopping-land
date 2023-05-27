@@ -42,7 +42,7 @@ function PlaceOrderScreen() {
     if (num.toFixed(2) % 1 !== 0) {
       return num.toFixed(2);
     } else {
-      return Math.trunc(subTotalPrice) + ".-";
+      return Math.trunc(num) + ".-";
     }
   };
 
@@ -57,7 +57,7 @@ function PlaceOrderScreen() {
   );
 
   let shippingCost;
-  let totalShippingCost = 0;
+  let totalShippingPrice = 0;
   let subTotalPrice;
 
   useEffect(() => {
@@ -103,29 +103,49 @@ function PlaceOrderScreen() {
   //   return dispatch(listProductStocks(item.id));
   // });
 
+  console.log(cart)
+
   const placeOrder = () => {
     dispatch(
       createOrder({
         orderItems: cart.cartItems,
         paymentMethod: cart.paymentMethod,
-        totalShippingPrice: totalShippingCost,
+        totalShippingPrice: totalShippingPrice,
         totalPrice: cart.itemsPrice,
-        shippingAddress: cart.shippingAddress,
+        shippingAddress: cart.shippingAddress
       })
     );
   };
 
-  // Get unique seller names
-  let sellers = cart.cartItems
+  // Remove duplicates and get unique seller name(s)
+  let sellers = cartItems
     .reduce((accumulator, current) => {
       if (!accumulator.find((item) => item.seller === current.seller)) {
         accumulator.push(current);
       }
       return accumulator;
     }, [])
-    .map((product) => product.seller);
+    .map((item) => item.seller)
+    .sort();
 
-  // Show total price of products by seller
+  // Remove duplicates and get unique pickup location(s)
+  let pickUpLocations = cartItems
+    .filter((item) => item.orderType === "inStore")
+    .reduce((accumulator, current) => {
+      if (
+        !accumulator.find(
+          (item) =>
+            item.seller === current.seller &&
+            item.storeName == current.storeName
+        )
+      ) {
+        accumulator.push(current);
+      }
+      return accumulator;
+    }, [])
+    .sort((a, b) => (a.seller > b.seller ? 1 : b.seller > a.seller ? -1 : 0));
+
+  // Show total price by seller(s) order(s)
   let totalPriceBySeller = sellers.map((seller) => {
     return cart.cartItems
       .filter((product) => product.seller === seller)
@@ -151,14 +171,20 @@ function PlaceOrderScreen() {
             {hasInStorePickup && (
               <ListGroup.Item>
                 <h2>Pickup Location(s)</h2>
-                {cartItems.map((item) => {
-                  if (item.orderType === "inStore") {
-                    return (
-                      <p>
-                        {item.seller} - {item.storeName}
-                      </p>
-                    );
-                  }
+                {console.log(pickUpLocations)}
+                {pickUpLocations.map((location) => {
+                  return (
+                    <p>
+                        <span style={{ color: "#698bc2" }}>
+                        {location.seller} - {location.storeName}:
+                      {" "}
+                          </span>
+                      {cartItems
+                        .filter((item) => item.storeId === location.storeId)
+                        .reduce((acc, item) => acc + item.quantity, 0)}{" "}
+                      product(s)
+                    </p>
+                  );
                 })}
               </ListGroup.Item>
             )}
@@ -178,7 +204,7 @@ function PlaceOrderScreen() {
               ) : (
                 sellers.map((seller, index) => {
                   return (
-                    <Card style={{ marginBlockStart: "1rem" }}>
+                    <Card >
                       <Card.Title
                         className="text-center pt-3"
                         style={{ color: "#698bc2" }}
@@ -193,7 +219,7 @@ function PlaceOrderScreen() {
                               totalPriceBySeller[index] >= 100 ? 0 : 20;
                             subTotalPrice =
                               totalPriceBySeller[index] + shippingCost;
-                            totalShippingCost += shippingCost;
+                            totalShippingPrice += shippingCost;
                             return (
                               <>
                                 <ListGroup.Item key={product.id}>
@@ -277,34 +303,45 @@ function PlaceOrderScreen() {
 
               <ListGroup.Item>
                 <Row>
+                  <Col>Seller(s):</Col>
+                  <Col>{sellers.length}</Col>
+                </Row>
+              </ListGroup.Item>
+
+              <ListGroup.Item>
+                <Row>
                   <Col>Item(s):</Col>
                   <Col>{totalItems}</Col>
                 </Row>
               </ListGroup.Item>
 
-              <ListGroup.Item>
-                <Row>
-                  <Col>Price:</Col>
-                  <Col>CHF {isNumberDecimal(cart.itemsPrice)}</Col>
-                </Row>
-              </ListGroup.Item>
+              {hasOnlinePurchase && (
+                <>
+                  <ListGroup.Item>
+                    <Row>
+                      <Col>Price:</Col>
+                      <Col>CHF {isNumberDecimal(cart.itemsPrice)}</Col>
+                    </Row>
+                  </ListGroup.Item>
 
-              <ListGroup.Item>
-                <Row>
-                  <Col>Shipping:</Col>
-                  <Col>
-                    {totalShippingCost === 0
-                      ? "Free"
-                      : "CHF " + totalShippingCost + ".-"}
-                  </Col>
-                </Row>
-              </ListGroup.Item>
+                  <ListGroup.Item>
+                    <Row>
+                      <Col>Shipping:</Col>
+                      <Col>
+                        {totalShippingPrice === 0
+                          ? "Free"
+                          : "CHF " + totalShippingPrice + ".-"}
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
+                </>
+              )}
 
               <ListGroup.Item>
                 <Row>
                   <Col>Total Price:</Col>
                   <Col>
-                    CHF {isNumberDecimal(cart.itemsPrice + totalShippingCost)}
+                    CHF {isNumberDecimal(cart.itemsPrice + totalShippingPrice)}
                   </Col>
                 </Row>
               </ListGroup.Item>

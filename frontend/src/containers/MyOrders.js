@@ -1,90 +1,77 @@
-// import React, { useEffect } from "react";
-// import { listSubOrders } from "../store/actions/orderActions";
-// import { useDispatch, useSelector } from "react-redux";
-// import { myDetails } from "../store/actions/userActions";
-// import { Button, Col, Row, Table } from "react-bootstrap";
-// import Loader from "../components/Loader";
-// import Message from "../components/Message";
-// import { LinkContainer } from "react-router-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Button, Row, Col, Table } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+import { listMyPurchases, listMySellerOrders } from "../store/actions/orderActions";
+import { useNavigate } from "react-router-dom";
 
-// export default function MyOrders() {
-//   const dispatch = useDispatch();
-//   const {
-//     suborders,
-//     loading: loadingSuborders,
-//     error: errorSuborders,
-//   } = useSelector((state) => state.subOrderList);
-//   const { user } = useSelector((state) => state.myDetails);
+function MyOrders() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
 
-//   const result = suborders?.filter((suborder) => {
-//     return suborder.seller.profile.name === user.profile.name;
-//   });
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-//   console.log(result);
+  const { loading: loadingOrders, error: errorOrders, sellerOrders } = useSelector((state) => state.sellerOrderMyList);
 
-//   useEffect(() => {
-//     dispatch(listSubOrders());
-//     dispatch(myDetails());
-//   }, [dispatch]);
+  useEffect(() => {
+    dispatch(listMySellerOrders());
+  }, [dispatch, navigate]);
 
-//   return (
-//     <Row className="justify-content-center">
-//       <Col md={9}>
-//         <h2 className="text-center my-3" style={{ color: "#1e478a" }}>
-//           My Orders
-//         </h2>
-//         {loadingSuborders ? (
-//           <Loader />
-//         ) : errorSuborders ? (
-//           <Message variant="danger">{errorSuborders}</Message>
-//         ) : suborders.length === 0 ? (
-//           <h2 className="text-center">No suborders were found.</h2>
-//         ) : (
-//           <Table striped responsive className="table-sm">
-//             <thead>
-//               <tr>
-//                 <th>ID</th>
-//                 <th>Date</th>
-//                 <th>Total</th>
-//                 <th>Buyer</th>
-//                 <th>Paid</th>
-//                 <th>Delivered</th>
-//                 <th></th>
-//               </tr>
-//             </thead>
+  console.log(sellerOrders)
 
-//             <tbody>
-//               {result.map((suborder) => (
-//                 <tr key={suborder.id}>
-//                   <td>{suborder.id}</td>
-//                   <td>{suborder.createdAt.substring(0, 10)}</td>
-//                   <td>CHF {suborder.totalPrice}</td>
-//                   <td>{suborder.customer_details.profile.name}</td>
-//                   <td>
-//                     {suborder.isPaid ? (
-//                       suborder.paidAt.substring(0, 10)
-//                     ) : (
-//                       <i className="fas fa-times" style={{ color: "red" }}></i>
-//                     )}
-//                   </td>
-//                   <td>
-//                     {suborder.isDelivered ? (
-//                       suborder.deliveredAt.substring(0, 10)
-//                     ) : (
-//                       <i className="fas fa-times" style={{ color: "red" }}></i>
-//                     )}
-//                   </td>
-//                   <td>
-//                     <LinkContainer to={`/suborder/${suborder.id}`}>
-//                       <Button className="btn-sm">Details</Button>
-//                     </LinkContainer>
-//                   </td>
-//                 </tr>
-//               ))}
-//             </tbody>
-//           </Table>
-//         )}
-//       </Col>
-//     </Row>
-//   );
-// }
+  return (
+    <Row className="justify-content-center">
+      <Col md={9}>
+        {loadingOrders ? (
+          <Loader />
+        ) : errorOrders ? (
+          <Message variant="danger">{errorOrders}</Message>
+        ) : sellerOrders.length === 0 ? (
+          <h2 className="text-center">You have no orders.</h2>
+        ) : (
+          <Table striped responsive className="table-sm">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Total</th>
+                <th>Paid</th>
+                <th>Sent</th>
+                <th></th> 
+              </tr>
+            </thead>
+
+            <tbody>
+              {sellerOrders.map((sellerOrder) => (
+                <tr key={sellerOrder.id}>
+                  <td>{sellerOrder.id}</td>
+                  <td>{sellerOrder.createdAt.substring(0, 10)}</td>
+                  <td>{sellerOrder.customer.profile.name}</td>
+                  <td>CHF {sellerOrder.totalPrice}</td>
+                  <td>
+                    {sellerOrder.isPaid ? (
+                      sellerOrder.paidAt.substring(0, 10)
+                    ) : (
+                      <i className="fas fa-times" style={{ color: "red" }}></i>
+                    )}
+                  </td>
+                  <td>   
+                    <LinkContainer to={`/seller-order/${sellerOrder.id}`}>
+                      <Button className="btn-sm">Details</Button>
+                    </LinkContainer>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        )}
+      </Col>
+    </Row>
+  );
+}
+
+export default MyOrders;

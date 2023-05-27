@@ -130,7 +130,7 @@ const Header = () => {
                       <NavDropdown.Item>Products</NavDropdown.Item>
                     </LinkContainer>
                     <LinkContainer to="/myorders">
-                      <NavDropdown.Item>Orders</NavDropdown.Item>
+                      <NavDropdown.Item>Store Orders</NavDropdown.Item>
                     </LinkContainer>
                     <NavDropdown.Item onClick={logoutHandler}>
                       Logout

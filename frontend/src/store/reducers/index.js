@@ -26,11 +26,13 @@ import {
 import {
   orderCreateReducer,
   orderDetailsReducer,
+  sellerOrderDetailsReducer,
   orderPayReducer,
   purchaseMyListReducer,
+  sellerOrderMyListReducer,
   orderListReducer,
-  storeOrderListReducer,
-  orderDeliverReducer,
+  sellerOrderListReducer,
+  sellerOrderSendReducer,
 } from './orderReducers'
 
 import {
@@ -85,11 +87,13 @@ export const reducers = combineReducers({
 
   orderCreate: orderCreateReducer,
   orderDetails: orderDetailsReducer,
+  sellerOrderDetails: sellerOrderDetailsReducer,
   orderPay: orderPayReducer,
   purchaseMyList: purchaseMyListReducer,
+  sellerOrderMyList: sellerOrderMyListReducer,
   orderList: orderListReducer,
-  storeOrderList: storeOrderListReducer,
-  orderDeliver: orderDeliverReducer,
+  sellerOrderList: sellerOrderListReducer,
+  sellerOrderSend: sellerOrderSendReducer,
 
   productList: productListReducer,
   productMyList: productMyListReducer,

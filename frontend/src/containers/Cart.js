@@ -29,6 +29,7 @@ function CartScreen() {
   const { users } = useSelector((state) => state.userList);
 
   let shippingCost;
+  let totalShippingCost = 0
   let subTotalPrice;
 
   useEffect(() => {
@@ -41,7 +42,7 @@ function CartScreen() {
     if (num.toFixed(2) % 1 !== 0) {
       return num.toFixed(2);
     } else {
-      return Math.trunc(subTotalPrice) + ".-";
+      return Math.trunc(num) + ".-";
     }
   };
 
@@ -77,8 +78,6 @@ function CartScreen() {
       return accumulator;
     }, [])
     .map((product) => product.seller);
-
-  console.log(cartItems);
 
   // Show total price of products by seller
   let totalPriceBySeller = sellers.map((seller) => {
@@ -117,7 +116,6 @@ function CartScreen() {
               const sellerId = users?.find(
                 (user) => user.username === seller
               )?.id;
-              console.log(sellerId);
               return (
                 <Card style={{ marginBlockStart: "1rem" }}>
                   <Card.Title
@@ -132,9 +130,9 @@ function CartScreen() {
                       .map((product) => {
                         shippingCost =
                           totalPriceBySeller[index] >= 100 ? 0 : 20;
+                        totalShippingCost += shippingCost
                         subTotalPrice =
                           totalPriceBySeller[index] + shippingCost;
-                        // InstorePickup = cartItem.selectedOnline
                         return (
                           <>
                             <ListGroup.Item key={product.id}>
@@ -260,9 +258,7 @@ function CartScreen() {
                   ) items
                 </h2>
                 CHF{" "}
-                {totalPrice % 1 !== 0
-                  ? totalPrice
-                  : Math.trunc(totalPrice) + ".-"}
+                {isNumberDecimal(Number(totalPrice) + totalShippingCost)}
               </ListGroup.Item>
             </ListGroup>
             <ListGroup.Item>

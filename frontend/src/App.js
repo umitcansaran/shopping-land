@@ -22,6 +22,7 @@ import Orders from "./containers/Orders";
 import Shipping from "./containers/Shipping";
 import Payment from "./containers/Payment";
 import MyOrders from "./containers/MyOrders";
+import MyOrder from "./containers/MyOrder";
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
           <Route path="/order/:id" element={<Order />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/myorders" element={<MyOrders />} />
+          <Route path="/seller-order/:id" element={<MyOrder />} />
           <Route path="/shipping" element={<Shipping />} />
           <Route path="/payment" element={<Payment />} />
         </Routes>

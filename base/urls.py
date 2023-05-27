@@ -54,7 +54,7 @@ urlpatterns = [
     path('stocks/', views.StockViewSet.as_view({'get': 'list'})),
     path('stock/new/', views.StockViewSet.as_view({'post': 'create'})),
     path('stock/<int:pk>/', views.updateStock, name="stock-update"),
-    path('stocks/<int:pk>/', views.StockViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})),
+    path('stock/<int:pk>/', views.StockViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})),
     path('store/stocks/<int:store_id>/', views.ListStoreStocks.as_view()),
 
     # CATEGORIES
@@ -66,15 +66,17 @@ urlpatterns = [
 
     # ORDER
     path('orders/', views.getOrders, name='orders'),
-    path('storeorders/', views.getStoreOrders, name='storeorders'),
-    path('orders/add/', views.addOrderItems, name='orders-add'),
+    path('seller-orders/', views.getSellerOrders, name='seller-orders'),
+    path('order/add/', views.addOrderItems, name='orders-add'),
     path('orders/mypurchases/', views.getMyPurchases, name='mypurchases'),
+    path('seller-orders/myorders/', views.getMySellerOrders, name='myorders'),
     path('orders/myorders/', views.getMyOrders, name='myorders'),
-    path('orders/<int:pk>/', views.getOrderById, name='user-order'),
-    path('orders/<int:pk>/deliver/', views.updateOrderToDelivered, name='order-delivered'),
-    path('storeorders/<int:pk>/', views.ListStoreOrder.as_view()),
-    path('orders/mypurchases/', views.getMyPurchases, name='mypurchases'),
-    # path('storeorders/<int:pk>/', views.getStoreOrderById, name='user-storeorder'),
+    path('order/<int:pk>/', views.getOrderById, name='user-order'),
+    path('seller-order/<int:pk>/', views.getSellerOrderById, name='user-order'),
+    path('seller-order/<int:pk>/send/', views.updateSellerOrderToSent, name='seller-order-sent'),
+    # path('seller-order/<int:pk>/', views.ListSellerOrder.as_view()),
+    # path('orders/mypurchases/', views.getMyPurchases, name='mypurchases'),
+    # path('seller-order/<int:pk>/', views.getSellerOrderById, name='user-seller-order'),
     path('orders/<int:pk>/pay/', views.updateOrderToPaid, name='pay')
 ]
 

@@ -43,7 +43,7 @@ function OrdersScreen() {
                 <th>Total</th>
                 <th>Paid</th>
                 <th>Payment Method</th>
-                <th>Delivered</th>
+                <th>Sent</th>
                 <th></th> 
               </tr>
             </thead>

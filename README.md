@@ -29,7 +29,7 @@ Quickly sign in with the provided credentials to check it out
 * Full featured shopping cart
 * Product reviews and ratings
 * Latest products carousel
-* Mark orders as paid or delivered option
+* Mark orders as paid or sent option
 * Checkout process (shipping, payment method, etc)
 * PayPal / credit card integration
 
