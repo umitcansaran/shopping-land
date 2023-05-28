@@ -139,6 +139,10 @@ class OrderItem(models.Model):
     price = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
     image = models.CharField(max_length=200, null=True, blank=True)
     orderType = models.CharField(max_length=200, null=True, blank=True)
+    isShipped = models.BooleanField(default=False)
+    shippedAt = models.DateTimeField(auto_now_add=False, null=True, blank=True) 
+    isRetrieved = models.BooleanField(default=False)
+    retrievedAt = models.DateTimeField(auto_now_add=False, null=True, blank=True) 
 
     # Relations:
     sellerOrder = models.ForeignKey(SellerOrder, related_name='orderitems', on_delete=models.CASCADE, null=True)
