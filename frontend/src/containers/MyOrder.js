@@ -71,8 +71,7 @@ function MyOrder() {
     (orderItem) => orderItem.orderType === "inStore"
   );
 
-  let pickUpLocations = hasInStorePickup
-    .reduce((accumulator, current) => {
+  let pickUpLocations = hasInStorePickup?.reduce((accumulator, current) => {
       if (
         !accumulator.find(
           (item) =>
