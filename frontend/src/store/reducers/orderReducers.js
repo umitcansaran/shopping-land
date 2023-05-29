@@ -30,6 +30,10 @@ import {
   SELLER_ORDER_SEND_SUCCESS,
   SELLER_ORDER_SEND_FAIL,
   SELLER_ORDER_SEND_RESET,
+  SELLER_ORDER_RETRIEVE_REQUEST,
+  SELLER_ORDER_RETRIEVE_SUCCESS,
+  SELLER_ORDER_RETRIEVE_FAIL,
+  SELLER_ORDER_RETRIEVE_RESET,
   SELLER_ORDER_LIST_REQUEST,
   SELLER_ORDER_LIST_SUCCESS,
   SELLER_ORDER_LIST_FAIL,
@@ -182,6 +186,34 @@ export const sellerOrderSendReducer = (state = {}, action) => {
       return state;
   }
 };
+
+export const sellerOrderRetrieveReducer = (state = {}, action) => {
+  switch (action.type) {
+    case SELLER_ORDER_RETRIEVE_REQUEST:
+      return {
+        loading: true,
+      };
+
+    case SELLER_ORDER_RETRIEVE_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+      };
+
+    case SELLER_ORDER_RETRIEVE_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+
+    case SELLER_ORDER_RETRIEVE_RESET:
+      return {};
+
+    default:
+      return state;
+  }
+};
+
 
 export const purchaseMyListReducer = (state = { orders: [] }, action) => {
   switch (action.type) {

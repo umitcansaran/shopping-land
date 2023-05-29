@@ -532,6 +532,7 @@ def addOrderItems(request):
                         store = Store.objects.get(id=x['storeId'])
                         seller = User.objects.get(username=x['seller'])
 
+                    # Create an OnlineOrderItem without store !!!
                     item = OrderItem.objects.create(
                         product=product,
                         sellerOrder=sellerOrder,
@@ -666,12 +667,24 @@ def updateOrderToPaid(request, pk):
 @permission_classes([IsAuthenticated])
 def updateSellerOrderToSent(request, pk):
 
-    sellerOrder = SellerOrder.objects.get(id=pk)
+    orderItem = OrderItem.objects.get(id=pk)
 
-    sellerOrder.isShipped = True
-    sellerOrder.shippedAt = timezone.now()
-    sellerOrder.save()
+    orderItem.isShipped = True
+    orderItem.shippedAt = timezone.now()
+    orderItem.save()
 
-    return Response('Seller Order is sent')
+    return Response('Item is sent')
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateSellerOrderToRetrieved(request, pk):
+
+    orderItem = OrderItem.objects.get(id=pk)
+
+    orderItem.isRetrieved = True
+    orderItem.retrievedAt = timezone.now()
+    orderItem.save()
+
+    return Response('Item is retrieved')
 
 

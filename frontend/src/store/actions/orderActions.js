@@ -31,6 +31,10 @@ import {
   SELLER_ORDER_SEND_SUCCESS,
   SELLER_ORDER_SEND_FAIL,
   SELLER_ORDER_SEND_RESET,
+  SELLER_ORDER_RETRIEVE_REQUEST,
+  SELLER_ORDER_RETRIEVE_SUCCESS,
+  SELLER_ORDER_RETRIEVE_FAIL,
+  SELLER_ORDER_RETRIEVE_RESET,
 } from "../constants/orderConstants";
 
 import { CART_CLEAR_ITEMS } from "../constants/cartConstants";
@@ -187,7 +191,6 @@ export const payOrder = (id, paymentResult) => async (dispatch, getState) => {
 };
 
 export const sendSellerOrder = (id) => async (dispatch, getState) => {
-  console.log(id)
   try {
     dispatch({
       type: SELLER_ORDER_SEND_REQUEST,
@@ -219,6 +222,44 @@ export const sendSellerOrder = (id) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: SELLER_ORDER_SEND_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+
+export const retrieveSellerOrder = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: SELLER_ORDER_RETRIEVE_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.access}`,
+      },
+    };
+
+    const { data } = await axios.put(
+      `${baseUrl}/api/seller-order/${id}/retrieve/`,
+      {},
+      config
+    );
+
+    dispatch({
+      type: SELLER_ORDER_RETRIEVE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: SELLER_ORDER_RETRIEVE_FAIL,
       payload:
         error.response && error.response.data.detail
           ? error.response.data.detail

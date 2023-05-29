@@ -33,6 +33,7 @@ import {
   orderListReducer,
   sellerOrderListReducer,
   sellerOrderSendReducer,
+  sellerOrderRetrieveReducer
 } from './orderReducers'
 
 import {
@@ -94,6 +95,7 @@ export const reducers = combineReducers({
   orderList: orderListReducer,
   sellerOrderList: sellerOrderListReducer,
   sellerOrderSend: sellerOrderSendReducer,
+  sellerOrderRetrieve: sellerOrderRetrieveReducer,
 
   productList: productListReducer,
   productMyList: productMyListReducer,

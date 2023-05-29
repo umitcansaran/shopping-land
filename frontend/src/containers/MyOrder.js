@@ -7,6 +7,7 @@ import {
   Image,
   Card,
   Container,
+  ListGroupItem,
 } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,6 +19,7 @@ import {
   payOrder,
   getSellerOrderDetails,
   sendSellerOrder,
+  retrieveSellerOrder,
 } from "../store/actions/orderActions";
 import {
   ORDER_PAY_RESET,
@@ -71,7 +73,8 @@ function MyOrder() {
     (orderItem) => orderItem.orderType === "inStore"
   );
 
-  let pickUpLocations = hasInStorePickup?.reduce((accumulator, current) => {
+  let pickUpLocations = hasInStorePickup
+    ?.reduce((accumulator, current) => {
       if (
         !accumulator.find(
           (item) =>
@@ -147,11 +150,24 @@ function MyOrder() {
     navigate,
   ]);
 
-  const sellerOrderSendHandler = () => {
-    dispatch(sendSellerOrder(sellerOrder.id));
+  const onlineOrderItems = sellerOrder?.orderItems.filter(
+    (item) => item.orderType === "online"
+  );
+
+  console.log('onlineOrderItems', onlineOrderItems)
+
+  const isItemShipped = onlineOrderItems?.find(item => item.isShipped === true)
+  console.log('isItemShipped', isItemShipped)
+
+  const shippingHandler = () => {
+    onlineOrderItems.forEach((item) => {
+      return dispatch(sendSellerOrder(item.id));
+    });
   };
 
-  console.log(sellerOrder);
+  const pickUpHandler = (id) => {
+    dispatch(retrieveSellerOrder(id));
+  };
 
   return (
     <Container fluid className="order-page-container">
@@ -207,24 +223,72 @@ function MyOrder() {
                       })}
                     </ListGroup.Item>
                   )}
-                <MyOrderItemCard sellerOrder={sellerOrder} hasOnlinePurchase={hasOnlinePurchase} isNumberDecimal={isNumberDecimal} />
-                  
-                </ListGroup>
-              </Col>
-              <Col md={4}>
-                {loadingSellerOrderSend && <Loader />}
-                {userInfo && sellerOrder.order.isPaid && (
                   <ListGroup.Item>
-                    <Button
-                      type="button"
-                      className="btn btn-block"
-                      onClick={sellerOrderSendHandler}
-                      disabled={sellerOrder.isShipped}
-                    >
-                      Mark As Sent
-                    </Button>
+                    <Col md={3} className="text-center">
+                      {sellerOrder.isPaid ? (
+                        <Message variant="success">
+                          Paid on {sellerOrder.paidAt.substring(0, 10)}
+                        </Message>
+                      ) : (
+                        <Message variant="warning">Not Paid</Message>
+                      )}
+                    </Col>
                   </ListGroup.Item>
-                )}
+
+                  <h2>Item(s) to be shipped</h2>
+                  <ListGroup.Item>
+                    <Card style={{ marginBlockStart: "1rem" }}>
+                      {sellerOrder.orderItems.map((item) => {
+                        if (item.orderType === "online") {
+                          return (
+                            <MyOrderItemCard
+                              item={item}
+                              shippingHandler={shippingHandler}
+                              hasOnlinePurchase={hasOnlinePurchase}
+                              isNumberDecimal={isNumberDecimal}
+                            />
+                          );
+                        }
+                      })}
+                      <Row className="justify-content-center">
+                        <Col md={3} className="text-center">
+                          {onlineOrderItems.length > 0 && 
+                            (isItemShipped ? (
+                              <Message variant="success">
+                                Sent on {isItemShipped.shippedAt.substring(0, 10)}
+                              </Message>
+                            ) : (
+                              <Button
+                                type="button"
+                                className="btn btn-block"
+                                onClick={() => shippingHandler()}
+                              >
+                                Mark As Sent
+                              </Button>
+                            ))}
+                        </Col>
+                      </Row>
+                    </Card>
+                  </ListGroup.Item>
+
+                  <ListGroup.Item>
+                    <Card style={{ marginBlockStart: "1rem" }}>
+                      <h2>Item(s) to be retrieved</h2>
+                      {sellerOrder.orderItems.map((item) => {
+                        if (item.orderType === "inStore") {
+                          return (
+                            <MyOrderItemCard
+                              item={item}
+                              pickUpHandler={pickUpHandler}
+                              hasOnlinePurchase={hasOnlinePurchase}
+                              isNumberDecimal={isNumberDecimal}
+                            />
+                          );
+                        }
+                      })}
+                    </Card>
+                  </ListGroup.Item>
+                </ListGroup>
               </Col>
             </Row>
           </>
