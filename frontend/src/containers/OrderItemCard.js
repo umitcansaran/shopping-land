@@ -49,7 +49,7 @@ export default function OrderItemCard({ orderItem, sellerOrder }) {
                 )
               ) : orderItem.isRetrieved ? (
                 <Message variant="success">
-                  Retrieved on {orderItem.shippedAt.substring(0, 10)}
+                  Retrieved on {orderItem.retrievedAt.substring(0, 10)}
                 </Message>
               ) : (
                 <Message variant="warning">Not Retrieved</Message>
