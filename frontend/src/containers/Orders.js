@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Row, Col, Table } from "react-bootstrap";
+import { Button, Row, Col, Table, Container } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
@@ -14,20 +14,21 @@ function OrdersScreen() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { loading: loadingOrders, error: errorOrders, orders } = useSelector((state) => state.purchaseMyList);
+  const {
+    loading: loadingOrders,
+    error: errorOrders,
+    orders,
+  } = useSelector((state) => state.purchaseMyList);
 
   useEffect(() => {
     dispatch(listMyPurchases());
   }, [dispatch, navigate]);
 
-  console.log(orders)
+  console.log(orders);
 
   return (
-    <Row className="justify-content-center">
-      <Col md={9}>
-        <h2 className="text-center my-3" style={{ color: "#1e478a" }}>
-          My Orders
-        </h2>
+    <Container fluid>
+      <Col>
         {loadingOrders ? (
           <Loader />
         ) : errorOrders ? (
@@ -36,21 +37,21 @@ function OrdersScreen() {
           <h2 className="text-center">You have no orders.</h2>
         ) : (
           <Table striped responsive className="table-sm">
-            <thead>
-              <tr>
+            <thead style={{ backgroundColor: "#f2f5fa" }}>
+              <tr style={{ textAlign: "center" }}>
                 <th>ID</th>
                 <th>Date</th>
                 <th>Total</th>
                 <th>Paid</th>
                 <th>Payment Method</th>
                 <th>Sent</th>
-                <th></th> 
+                <th></th>
               </tr>
             </thead>
 
             <tbody>
               {orders.map((order) => (
-                <tr key={order.id}>
+                <tr key={order.id} style={{ textAlign: "center" }}>
                   <td>{order.id}</td>
                   <td>{order.createdAt.substring(0, 10)}</td>
                   <td>CHF {order.totalPrice}</td>
@@ -62,7 +63,7 @@ function OrdersScreen() {
                     )}
                   </td>
                   <td>{order.paymentMethod}</td>
-                  <td>  
+                  <td>
                     <LinkContainer to={`/order/${order.id}`}>
                       <Button className="btn-sm">Details</Button>
                     </LinkContainer>
@@ -73,7 +74,7 @@ function OrdersScreen() {
           </Table>
         )}
       </Col>
-    </Row>
+    </Container>
   );
 }
 

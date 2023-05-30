@@ -1,15 +1,13 @@
 import React from "react";
 import { Button, Card, Col, Image, ListGroup, Row } from "react-bootstrap";
 import Message from "../components/Message";
+import isNumberDecimal from "../utils/isNumberDecimal";
 
-export default function MyOrderItemCard({
-  item,
-  pickUpHandler,
-  isNumberDecimal,
-}) {
+export default function MyOrderItemCard({ item, pickUpHandler, sellerOrder }) {
   return (
     <>
       <ListGroup.Item key={item.id} style={{ paddingTop: "2rem" }}>
+        <Row className="justify-content-end">Order Item # {item.id}</Row>
         <Row>
           <Col md={1}>
             <Image src={item.image} alt={item.name} fluid rounded />
@@ -32,22 +30,28 @@ export default function MyOrderItemCard({
             </p>
           </Col>
         </Row>
-        <Row className="justify-content-end">
-          <h6
-            style={{
-              textAlign: "center",
-              width: "auto",
-              margin: "0.5rem",
-              color: "#698bc2",
-            }}
-          >
-            {item.orderType === "online"
-              ? item.shippingPrice > 0
-                ? "Shipping Price: " + item.shippingPrice
-                : "Free Shipping"
-              : "Pick up in-store"}
-          </h6>
-        </Row>
+
+        {item.orderType === "inStore" && (
+          <Row className="justify-content-center">
+            <Col md={3} className="text-center">
+              {item.orderType === "inStore" &&
+                (item.isRetrieved ? (
+                  <Message variant="success">
+                    Retrieved on {item.retrievedAt.substring(0, 10)}
+                  </Message>
+                ) : (
+                  <Button
+                    type="button"
+                    className="btn-block blue-button"
+                    onClick={() => pickUpHandler(item.id)}
+                    disabled={!sellerOrder.order.isPaid}
+                  >
+                    Mark As Retrieved
+                  </Button>
+                ))}
+            </Col>
+          </Row>
+        )}
       </ListGroup.Item>
     </>
   );

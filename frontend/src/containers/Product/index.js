@@ -113,9 +113,7 @@ function ProductScreen() {
       );
     }
     if (orderType === "online") {
-      dispatch(
-        addToCart(product.id, quantity, orderType, productStock)
-      );
+      dispatch(addToCart(product.id, quantity, orderType, productStock));
     }
     navigate("/cart");
   };
@@ -228,16 +226,15 @@ function ProductScreen() {
                       totalStock={totalStock}
                     />
                   )}
-
-                  {/* {user && user.profile.status === "STORE_OWNER" && (
-                    // Add to cart feature is active during development.
-                    // Visitors can log in with the provided credentials and test both the admin panel and the checkout steps.
+                  {product.seller === user.id && (
                     <ListGroup.Item>
                       <Message variant="danger">
-                        Seller accounts are not able to make purchases.
+                        Seller accounts can't buy products from their own
+                        stores.
                       </Message>
                     </ListGroup.Item>
-                  )} */}
+                  )}
+
                   <ListGroup.Item>
                     <Row className="justify-content-center">
                       <Button

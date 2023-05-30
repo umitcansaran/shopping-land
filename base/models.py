@@ -130,7 +130,7 @@ class SellerOrder(models.Model):
     customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return str(self.createdAt)
+        return f'ID: {self.id}'
 
 
 class OnlineOrderItem(models.Model):

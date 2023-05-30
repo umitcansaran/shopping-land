@@ -5,8 +5,7 @@ import { search } from "../../store/actions/searchAction";
 import { listStoreStocks } from "../../store/actions/storeActions";
 import { STORE_STOCKS_RESET } from "../../store/constants/storeConstants";
 import Loader from "../../components/Loader";
-import useDebounce from "../../utils/use-debouncer";
-
+import useDebounce from "../../utils/useDebounce";
 export default function StoreStocks({ store }) {
   const [value, setValue] = useState("");
   const [storeId, setStoreId] = useState("");

@@ -587,7 +587,7 @@ def addOrderItems(request):
 @permission_classes([IsAuthenticated])
 def getMyPurchases(request):
     user = request.user
-    orders = user.order_set.all()
+    orders = user.order_set.all().order_by('-createdAt')
     serializer = MyOrderSerializer(orders, many=True)
     return Response(serializer.data)
 
@@ -603,7 +603,7 @@ def getMyOrders(request):
 @permission_classes([IsAuthenticated])
 def getMySellerOrders(request):
     user = request.user
-    sellerOrders = user.sellerOrders.all()
+    sellerOrders = user.sellerOrders.all().order_by('-createdAt')
     serializer = SellerOrderSerializer(sellerOrders, many=True)
     return Response(serializer.data)
 

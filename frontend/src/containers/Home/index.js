@@ -15,10 +15,10 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import axios from "axios";
-import useDebounce from "../../utils/use-debouncer";
+import useDebounce from "../../utils/useDebounce";
 import "./index.css";
 import SearchBox from "../../components/SearchBox";
-import { listUsers } from "../../store/actions/userActions";
+import { listUsers } from "../../store/actions/userActions"; 
 
 export default function Home() {
   const [value, setValue] = useState("");

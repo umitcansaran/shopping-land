@@ -11,22 +11,19 @@ import {
 } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import {
-  getOrderDetails,
-  payOrder,
   getSellerOrderDetails,
   sendSellerOrder,
   retrieveSellerOrder,
 } from "../store/actions/orderActions";
 import {
-  ORDER_PAY_RESET,
-  ORDER_SEND_RESET,
+  SELLER_ORDER_RETRIEVE_RESET,
   SELLER_ORDER_SEND_RESET,
 } from "../store/constants/orderConstants";
 import MyOrderItemCard from "./MyOrderItemCard";
+import isNumberDecimal from "../utils/isNumberDecimal";
 
 function MyOrder() {
   const dispatch = useDispatch();
@@ -35,37 +32,26 @@ function MyOrder() {
 
   const sellerOrderId = params.id;
 
-  const [sdkReady, setSdkReady] = useState(false);
-
   const {
     sellerOrder,
-    error,
+    error: errorSellingOrder,
     loading: loadingSellerOrder,
   } = useSelector((state) => state.sellerOrderDetails);
-
-  console.log(sellerOrder);
-
-  const orderPay = useSelector((state) => state.orderPay);
-  const { loading: loadingPay, success: successPay } = orderPay;
 
   const sellerOrderSend = useSelector((state) => state.sellerOrderSend);
   const { loading: loadingSellerOrderSend, success: successSellerOrderSend } =
     sellerOrderSend;
 
-  // SUCCESSFULLY SENT MESSAGE BACKEND
+  const sellerItemRetrieve = useSelector((state) => state.sellerOrderRetrieve);
+  const {
+    loading: loadingSellerOrderRetrieve,
+    success: successSellerOrderRetrieve,
+  } = sellerItemRetrieve;
+
+  console.log(sellerOrder)
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
-
-  let totalItem;
-
-  const isNumberDecimal = (num) => {
-    if (num.toFixed(2) % 1 !== 0) {
-      return num.toFixed(2);
-    } else {
-      return Math.trunc(num) + ".-";
-    }
-  };
 
   const hasOnlinePurchase =
     sellerOrder?.onlineOrderItems.length > 0 ? true : false;
@@ -88,31 +74,19 @@ function MyOrder() {
     }, [])
     .sort((a, b) => (a.seller > b.seller ? 1 : b.seller > a.seller ? -1 : 0));
 
-  //   const hasOnlinePurchase = order?.sellerOrder
-  //     .map((sellerOrder) => {
-  //       return sellerOrder.orderItems.map((orderItem) => {
-  //         return orderItem.orderType === "online";
-  //       });
-  //     })
-  //     .flat()
-  //     .includes(true);
-
-  //   const hasInStorePickup = order?.sellerOrder
-  //     .map((sellerOrder) => {
-  //       return sellerOrder.orderItems.filter((orderItem) => {
-  //         return orderItem.orderType === "inStore";
-  //       });
-  //     })
-  //     .flat();
-
-  //   if (!loading && !error && order) {
-  //     totalItem = order.sellerOrder.reduce(
-  //       (acc, sellerOrder) =>
-  //         acc +
-  //         sellerOrder.orderItems.reduce((acc, item) => acc + item.quantity, 0),
-  //       0
-  //     );
-  //   }
+    let totalInStoreOrderItems;
+    let totalOnlineOrderItems;
+    let totalItems;
+  
+    if (!loadingSellerOrder && !errorSellingOrder && sellerOrder) {
+      totalInStoreOrderItems = sellerOrder.inStoreOrderItems.reduce(
+        (acc, item) => acc + item.quantity,        0
+      );
+      totalOnlineOrderItems = sellerOrder.onlineOrderItems.reduce(
+        (acc, item) => acc + item.quantity,        0
+      );
+      totalItems = totalInStoreOrderItems + totalOnlineOrderItems;
+    }
 
   let shippingCost;
 
@@ -122,28 +96,22 @@ function MyOrder() {
     }
     if (
       !sellerOrder ||
-      successPay ||
       sellerOrder.id !== Number(sellerOrderId) ||
-      successSellerOrderSend
+      successSellerOrderSend ||
+      successSellerOrderRetrieve
     ) {
-      dispatch({ type: ORDER_PAY_RESET });
       dispatch({ type: SELLER_ORDER_SEND_RESET });
+      dispatch({ type: SELLER_ORDER_RETRIEVE_RESET });
       dispatch(getSellerOrderDetails(sellerOrderId));
-    } else if (!sellerOrder.isPaid) {
-      if (!window.paypal && process.env.PAYPAL_CLIENT_ID) {
-        // addPayPalScript();
-      } else {
-        setSdkReady(true);
-      }
     }
   }, [
     dispatch,
     userInfo,
     sellerOrder,
     sellerOrderId,
-    successPay,
     successSellerOrderSend,
-    navigate
+    successSellerOrderRetrieve,
+    navigate,
   ]);
 
   const shippingHandler = () => {
@@ -152,7 +120,6 @@ function MyOrder() {
 
   const pickUpHandler = (id) => {
     dispatch(retrieveSellerOrder(id));
-    // window.location.reload(true)
   };
 
   return (
@@ -197,23 +164,11 @@ function MyOrder() {
                     )}
                   </ListGroup.Item>
 
-                  {hasInStorePickup && (
-                    <ListGroup.Item>
-                      <h2>Pickup Location(s)</h2>
-                      {pickUpLocations.map((item) => {
-                        return (
-                          <p>
-                            {item.store.owner_name} - {item.store.name}
-                          </p>
-                        );
-                      })}
-                    </ListGroup.Item>
-                  )}
                   <ListGroup.Item>
                     <Col md={3} className="text-center">
-                      {sellerOrder.isPaid ? (
+                      {sellerOrder.order.isPaid ? (
                         <Message variant="success">
-                          Paid on {sellerOrder.paidAt.substring(0, 10)}
+                          Paid on {sellerOrder.order.paidAt.substring(0, 10)}
                         </Message>
                       ) : (
                         <Message variant="warning">Not Paid</Message>
@@ -221,10 +176,12 @@ function MyOrder() {
                     </Col>
                   </ListGroup.Item>
 
+                  <ListGroup.Item>
                   {hasOnlinePurchase && (
-                    <ListGroup.Item>
                       <Card style={{ marginBlockStart: "1rem" }}>
-                        <h2>Item(s) to be shipped</h2>
+                            <Row className="text-center mt-2">
+                                <h6>Shipping Item(s)</h6>
+                            </Row>
                         {sellerOrder.onlineOrderItems.map((item) => {
                           return (
                             <MyOrderItemCard
@@ -242,9 +199,9 @@ function MyOrder() {
                             ) : (
                               <Button
                                 type="button"
-                                className="btn btn-block"
+                                className="btn-block blue-button my-2" 
                                 onClick={() => shippingHandler()}
-                                disabled={!sellerOrder.isPaid}
+                                disabled={!sellerOrder.order.isPaid}
                               >
                                 Mark As Sent
                               </Button>
@@ -252,50 +209,98 @@ function MyOrder() {
                           </Col>
                         </Row>
                       </Card>
-                    </ListGroup.Item>
+                    
                   )}
 
                   {hasInStorePickup && (
-                    <ListGroup.Item>
+                    
                       <Card style={{ marginBlockStart: "1rem" }}>
-                        <h2>Item(s) to be retrieved</h2>
+                         <Row className="text-center mt-2">
+                                <h6>In-Store Pick Up Item(s)</h6>
+                            </Row>
+                        
                         {sellerOrder.inStoreOrderItems.map((item) => {
                           return (
                             <>
                               <MyOrderItemCard
                                 item={item}
                                 pickUpHandler={pickUpHandler}
-                                isNumberDecimal={isNumberDecimal}
+                                sellerOrder={sellerOrder}
                               />
-                              <ListGroup.Item>
-                                <Row className="justify-content-center">
-                                  <Col md={3} className="text-center">
-                                    {item.orderType === "inStore" &&
-                                      (item.isRetrieved ? (
-                                        <Message variant="success">
-                                          Retrieved on{" "}
-                                          {item.retrievedAt.substring(0, 10)}
-                                        </Message>
-                                      ) : (
-                                        <Button
-                                          type="button"
-                                          className="btn btn-block"
-                                          onClick={() => pickUpHandler(item.id)}
-                                        >
-                                          Mark As Retrieved
-                                        </Button>
-                                      ))}
-                                  </Col>
-                                </Row>
-                              </ListGroup.Item>
+
                             </>
                           );
                         })}
                       </Card>
-                    </ListGroup.Item>
                   )}
+                  </ListGroup.Item>
                 </ListGroup>
               </Col>
+              <Col md={4}>
+          <Card>
+            <ListGroup variant="flush">
+              <ListGroup.Item>
+                <h2>Order Summary</h2>
+              </ListGroup.Item>
+
+              <ListGroup.Item>
+                <Row>
+                  <Col>Item(s):</Col>
+                  <Col>{totalItems}</Col>
+                </Row>
+              </ListGroup.Item>
+
+              {/* {hasOnlinePurchase && (
+                <>
+                  <ListGroup.Item>
+                    <Row>
+                      <Col>Price:</Col>
+                      <Col>CHF {isNumberDecimal(cart.itemsPrice)}</Col>
+                    </Row>
+                  </ListGroup.Item>
+
+                  <ListGroup.Item>
+                    <Row>
+                      <Col>Shipping:</Col>
+                      <Col>
+                        {totalShippingPrice === 0
+                          ? "Free"
+                          : "CHF " + totalShippingPrice + ".-"}
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
+                </>
+              )} */}
+
+              <ListGroup.Item>
+                <Row>
+                  <Col>Total Price:</Col>
+                  <Col>
+                    CHF {isNumberDecimal(Number(sellerOrder.totalPrice))}
+                  </Col>
+                </Row>
+              </ListGroup.Item>
+
+              {hasInStorePickup && (
+                    <ListGroup.Item>
+                      <h2>Pickup Location(s)</h2>
+                      {pickUpLocations.map((item) => {
+                        return (
+                          <p>
+                            {item.store.name}
+                          </p>
+                        );
+                      })}
+                    </ListGroup.Item>
+                  )}
+
+              {/* <ListGroup.Item>
+                {error && <Message variant="danger">{error}</Message>}
+              </ListGroup.Item> */}
+
+            </ListGroup>
+          </Card>
+        </Col>
             </Row>
           </>
         )

@@ -80,6 +80,6 @@ urlpatterns = [
     # path('seller-order/<int:pk>/', views.ListSellerOrder.as_view()),
     # path('orders/mypurchases/', views.getMyPurchases, name='mypurchases'),
     # path('seller-order/<int:pk>/', views.getSellerOrderById, name='user-seller-order'),
-    path('orders/<int:pk>/pay/', views.updateOrderToPaid, name='pay')
+    path('order/<int:pk>/pay/', views.updateOrderToPaid, name='pay')
 ]
 

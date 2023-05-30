@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Row, Form, Col } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { search } from "../store/actions/searchAction";
-import useDebounce from "../utils/use-debouncer";
+import useDebounce from "../utils/useDebounce";
 
 export default function SearchBox({
   searchProps,

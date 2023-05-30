@@ -213,8 +213,6 @@ export const sendSellerOrder = (id) => async (dispatch, getState) => {
       config
     );
 
-    console.log(data)
-
     dispatch({
       type: SELLER_ORDER_SEND_SUCCESS,
       payload: data,

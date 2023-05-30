@@ -18,6 +18,8 @@ import {
   ORDER_PAY_RESET,
   ORDER_SEND_RESET,
 } from "../store/constants/orderConstants";
+import OrderItemCard from "./OrderItemCard";
+import isNumberDecimal from "../utils/isNumberDecimal";
 
 function OrderScreen() {
   const dispatch = useDispatch();
@@ -41,15 +43,11 @@ function OrderScreen() {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  console.log("order", order);
-
   const hasOnlineOrderItem = order?.sellerOrder.find((sellerOrder) => {
     return sellerOrder.onlineOrderItems.length > 0;
   });
 
-  console.log("hasOnlineOrderItem", hasOnlineOrderItem);
-
-  let hasInStorePickup = order?.sellerOrder
+  const hasInStorePickup = order?.sellerOrder
     .map((sellerOrder) => {
       return sellerOrder.inStoreOrderItems.reduce((accumulator, current) => {
         if (
@@ -72,8 +70,6 @@ function OrderScreen() {
         ? -1
         : 0
     );
-
-  console.log("pickUpLocations", hasInStorePickup);
 
   let totalInStoreOrderItems;
   let totalOnlineOrderItems;
@@ -145,15 +141,8 @@ function OrderScreen() {
   ]);
 
   const successPaymentHandler = (paymentResult) => {
+    console.log("paymentResult", paymentResult);
     dispatch(payOrder(orderId, paymentResult));
-  };
-
-  const isNumberDecimal = (num) => {
-    if (num.toFixed(2) % 1 !== 0) {
-      return num.toFixed(2);
-    } else {
-      return Math.trunc(num) + ".-";
-    }
   };
 
   return (
@@ -168,12 +157,12 @@ function OrderScreen() {
             <Row>
               <strong>
                 <p className="text-center my-3 main-order-id">
-                  ORDER # {order.id}
+                  CUSTOMER ORDER # {order.id}
                 </p>
               </strong>
             </Row>
             <Row>
-              <Col md={8}>
+              <Col lg={8}>
                 <ListGroup variant="flush">
                   <ListGroup.Item>
                     <h2>Customer</h2>
@@ -236,163 +225,100 @@ function OrderScreen() {
                       <h2>Seller Order(s):</h2>
                       {order.sellerOrder.map((sellerOrder, index) => {
                         return (
-                          <Card>
+                          <Card style={{ marginBlockStart: "1rem" }}>
                             <Card.Body>
                               <Row className="text-end">
-                                <h6>Order ID: {sellerOrder.id}</h6>
+                                <h6>Seller Order # {sellerOrder.id}</h6>
                               </Row>
                               <Row
                                 className="text-center"
                                 style={{ color: "#698bc2" }}
                               >
-                                <h4>{sellerOrder.seller.username}</h4>
+                                <h5>{sellerOrder.seller.username}</h5>
                               </Row>
                             </Card.Body>
-                            {sellerOrder.inStoreOrderItems.map((orderItem) => {
-                              return (
-                                <>
-                                  <ListGroup.Item key={orderItem.id}>
-                                    <Row>
-                                      <Col md={1}>
-                                        <Image
-                                          src={orderItem.image}
-                                          alt={orderItem.name}
-                                          fluid
-                                          rounded
-                                        />
-                                      </Col>
-                                      <Col md={3} style={{ color: "#698bc2" }}>
-                                        {orderItem.name}
-                                      </Col>
-
-                                      <Col md={2}>
-                                        {orderItem.quantity} x CHF{" "}
-                                        {isNumberDecimal(
-                                          Number(orderItem.price)
-                                        )}
-                                      </Col>
-
-                                      <Col md={3}>
-                                        <p
-                                          style={{
-                                            textAlign: "center",
-                                          }}
-                                        >
-                                          {orderItem.orderType === "inStore"
-                                            ? orderItem.store.name
-                                            : "Online"}
-                                        </p>
-                                      </Col>
-                                    </Row>
-                                    <Row className="justify-content-end">
-                                      <h6
-                                        style={{
-                                          textAlign: "center",
-                                          width: "auto",
-                                          margin: "0.5rem",
-                                          color: "#698bc2",
-                                        }}
-                                      >
-                                        {orderItem.orderType === "online"
-                                          ? sellerOrder.shippingPrice > 0
-                                            ? "Shipping Price: " +
-                                              sellerOrder.shippingPrice
-                                            : "Free Shipping"
-                                          : "Pick up in-store"}
-                                      </h6>
-                                    </Row>
-                                  </ListGroup.Item>
-                                </>
-                              );
-                            })}
-                            {sellerOrder.onlineOrderItems.map((orderItem) => {
-                              return (
-                                <>
-                                  <ListGroup.Item key={orderItem.id}>
-                                    <Row>
-                                      <Col md={1}>
-                                        <Image
-                                          src={orderItem.image}
-                                          alt={orderItem.name}
-                                          fluid
-                                          rounded
-                                        />
-                                      </Col>
-                                      <Col md={3} style={{ color: "#698bc2" }}>
-                                        {orderItem.name}
-                                      </Col>
-
-                                      <Col md={2}>
-                                        {orderItem.quantity} x CHF{" "}
-                                        {isNumberDecimal(
-                                          Number(orderItem.price)
-                                        )}
-                                      </Col>
-
-                                      <Col md={3}>
-                                        <p
-                                          style={{
-                                            textAlign: "center",
-                                          }}
-                                        >
-                                          {orderItem.orderType === "inStore"
-                                            ? orderItem.store.name
-                                            : "Online"}
-                                        </p>
-                                      </Col>
-                                    </Row>
-                                    <Row className="justify-content-end">
-                                      <h6
-                                        style={{
-                                          textAlign: "center",
-                                          width: "auto",
-                                          margin: "0.5rem",
-                                          color: "#698bc2",
-                                        }}
-                                      >
-                                        {orderItem.orderType === "online"
-                                          ? sellerOrder.shippingPrice > 0
-                                            ? "Shipping Price: " +
-                                              sellerOrder.shippingPrice
-                                            : "Free Shipping"
-                                          : "Pick up in-store"}
-                                      </h6>
-                                    </Row>
-                                  </ListGroup.Item>
-                                </>
-                              );
-                            })}
-                            <ListGroup.Item>
-                              <Row className="justify-content-end">
-                                <h6
+                            {sellerOrder.inStoreOrderItems.length > 0 && (
+                              <>
+                                <Row className="text-center">
+                                  <h6>In-Store Pick Up Item(s)</h6>
+                                </Row>
+                                <Card
                                   style={{
-                                    textAlign: "center",
-                                    width: "auto",
-                                    margin: "0.5rem",
+                                    margin: "0.2rem",
+                                    marginBottom: "1rem",
                                   }}
                                 >
-                                  Subtotal: CHF{" "}
-                                  {isNumberDecimal(
-                                    Number(sellerOrder.totalPrice)
+                                  {sellerOrder.inStoreOrderItems.map(
+                                    (orderItem) => {
+                                      return (
+                                        <>
+                                          <OrderItemCard
+                                            orderItem={orderItem}
+                                            sellerOrder={sellerOrder}
+                                          />
+                                        </>
+                                      );
+                                    }
                                   )}
-                                </h6>
-                              </Row>
-                              <Row className="justify-content-center">
-                                <Col md={3} className="text-center">
-                                  {/* {hasOnlinePurchase &&
-                                    (sellerOrder.isSent ? (
+                                </Card>
+                              </>
+                            )}
+                            {sellerOrder.onlineOrderItems.length > 0 && (
+                              <>
+                                <Row className="text-center">
+                                  <h6>Shipping Item(s)</h6>
+                                </Row>
+                                <Card
+                                  style={{
+                                    margin: "0.2rem",
+                                    marginBottom: "1rem",
+                                  }}
+                                >
+                                  {sellerOrder.onlineOrderItems.map(
+                                    (orderItem) => {
+                                      return (
+                                        <>
+                                          <OrderItemCard
+                                            orderItem={orderItem}
+                                            sellerOrder={sellerOrder}
+                                          />
+                                        </>
+                                      );
+                                    }
+                                  )}
+                                  <Row
+                                    lg={4}
+                                    className="text-center justify-content-center"
+                                    style={{ marginTop: "0.5rem" }}
+                                  >
+                                    {sellerOrder.isShipped ? (
                                       <Message variant="success">
-                                        Sent on{" "}
-                                        {sellerOrder.isSent.substring(0, 10)}
+                                        Shipped on{" "}
+                                        {sellerOrder.shippedAt.substring(0, 10)}
                                       </Message>
                                     ) : (
                                       <Message variant="warning">
-                                        Not Sent
+                                        Not Shipped
                                       </Message>
-                                    ))} */}
-                                </Col>
-                              </Row>
-                            </ListGroup.Item>
+                                    )}
+                                  </Row>
+                                </Card>
+                              </>
+                            )}
+                            <Row className="justify-content-end">
+                              <h6
+                                style={{
+                                  textAlign: "center",
+                                  width: "auto",
+                                  margin: "0.5rem",
+                                }}
+                              >
+                                Subtotal: CHF{" "}
+                                {isNumberDecimal(
+                                  Number(sellerOrder.totalPrice)
+                                )}
+                              </h6>
+                            </Row>
                           </Card>
                         );
                       })}
@@ -401,7 +327,7 @@ function OrderScreen() {
                 </ListGroup>
               </Col>
 
-              <Col md={4}>
+              <Col lg={4}>
                 <Card>
                   <ListGroup variant="flush">
                     <ListGroup.Item>
@@ -483,6 +409,8 @@ function OrderScreen() {
                                 });
                               }}
                               onApprove={(data, actions) => {
+                                console.log("data", data);
+                                console.log("actions", actions);
                                 return actions.order
                                   .capture()
                                   .then(successPaymentHandler());

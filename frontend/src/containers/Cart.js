@@ -18,6 +18,7 @@ import {
   removeFromCart,
 } from "../store/actions/cartActions";
 import { listUsers } from "../store/actions/userActions";
+import isNumberDecimal from "../utils/isNumberDecimal";
 
 function CartScreen() {
   const dispatch = useDispatch();
@@ -37,14 +38,6 @@ function CartScreen() {
       dispatch(listUsers());
     }
   }, [dispatch]);
-
-  const isNumberDecimal = (num) => {
-    if (num.toFixed(2) % 1 !== 0) {
-      return num.toFixed(2);
-    } else {
-      return Math.trunc(num) + ".-";
-    }
-  };
 
   const removeFromCartHandler = (id) => {
     dispatch(removeFromCart(id));
