@@ -3,14 +3,14 @@ import { Badge, Button, Col, Form, ListGroup, Row } from "react-bootstrap";
 
 export default function StocksCart({
   stocks,
+  quantity,
+  setQuantity,
   selectedStore,
   setSelectedStore,
   orderType,
   setOrderType,
-  inStoreStock,
-  onlineStock,
-  quantity,
-  setQuantity,
+  inStoreOrderItemStock,
+  onlineOrderItemStock,
   totalStock,
 }) {
   return (
@@ -70,7 +70,7 @@ export default function StocksCart({
                       as="select"
                       value={quantity}
                       onChange={(e) =>
-                        inStoreStock(
+                        inStoreOrderItemStock(
                           e,
                           stock.storeName,
                           Number(stock.number),
@@ -140,7 +140,7 @@ export default function StocksCart({
               <Form.Select
                 as="select"
                 value={quantity}
-                onChange={(e) => onlineStock(Number(e.target.value))}
+                onChange={(e) => onlineOrderItemStock(Number(e.target.value))}
               >
                 <option key={0} value={0}>
                   0

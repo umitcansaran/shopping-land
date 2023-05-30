@@ -12,16 +12,14 @@ export const addToCart =
   (
     id,
     quantity,
-    storeName,
+    orderType,
     productStock,
     stockId,
-    storeId,
-    orderType
+    storeName,
+    storeId
   ) =>
   async (dispatch, getState) => {
     const { data } = await axios.get(`${baseUrl}/api/product/${id}`);
-
-    console.log('DATA', data)
 
     dispatch({
       type: CART_ADD_ITEM,

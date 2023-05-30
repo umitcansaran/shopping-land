@@ -172,11 +172,11 @@ function CartScreen() {
                                           addToCart(
                                             product.id,
                                             Number(e.target.value),
-                                            product.storeName,
+                                            product.orderType,
                                             product.productStock,
                                             product.stockId,
-                                            product.storeId,
-                                            product.orderType
+                                            product.storeName,
+                                            product.storeId
                                           )
                                         )
                                       }

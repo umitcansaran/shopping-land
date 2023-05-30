@@ -4,11 +4,9 @@ import Message from "../components/Message";
 
 export default function MyOrderItemCard({
   item,
-  shippingHandler,
   pickUpHandler,
   isNumberDecimal,
 }) {
-  
   return (
     <>
       <ListGroup.Item key={item.id} style={{ paddingTop: "2rem" }}>
@@ -49,26 +47,6 @@ export default function MyOrderItemCard({
                 : "Free Shipping"
               : "Pick up in-store"}
           </h6>
-        </Row>
-      </ListGroup.Item>
-      <ListGroup.Item>
-        <Row className="justify-content-center">
-          <Col md={3} className="text-center">
-            {item.orderType === "inStore" &&
-              (item.isRetrieved ? (
-                <Message variant="success">
-                  Retrieved on {item.retrievedAt.substring(0, 10)}
-                </Message>
-              ) : (
-                <Button
-                  type="button"
-                  className="btn btn-block"
-                  onClick={() => pickUpHandler(item.id)}
-                >
-                  Mark As Retrieved
-                </Button>
-              ))}
-          </Col>
         </Row>
       </ListGroup.Item>
     </>

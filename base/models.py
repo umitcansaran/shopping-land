@@ -120,9 +120,9 @@ class Order(models.Model):
 class SellerOrder(models.Model):
     createdAt = models.DateTimeField(auto_now_add=True)
     shippingPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
-    totalPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
     isShipped = models.BooleanField(default=False)
     shippedAt = models.DateTimeField(auto_now_add=False, null=True, blank=True) 
+    totalPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
     
     # Relations:
     seller = models.ForeignKey(User, related_name='sellerOrders', on_delete=models.SET_NULL, null=True)
@@ -133,19 +133,31 @@ class SellerOrder(models.Model):
         return str(self.createdAt)
 
 
-class OrderItem(models.Model):
+class OnlineOrderItem(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True)
     quantity = models.IntegerField(null=True, blank=True, default=0)
     price = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
     image = models.CharField(max_length=200, null=True, blank=True)
     orderType = models.CharField(max_length=200, null=True, blank=True)
-    isShipped = models.BooleanField(default=False)
-    shippedAt = models.DateTimeField(auto_now_add=False, null=True, blank=True) 
+
+    # Relations:
+    sellerOrder = models.ForeignKey(SellerOrder, related_name='onlineOrderItems', on_delete=models.CASCADE, null=True)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return str(self.name)
+
+class InStoreOrderItem(models.Model):
+    name = models.CharField(max_length=200, null=True, blank=True)
+    quantity = models.IntegerField(null=True, blank=True, default=0)
+    price = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+    image = models.CharField(max_length=200, null=True, blank=True)
+    orderType = models.CharField(max_length=200, null=True, blank=True)
     isRetrieved = models.BooleanField(default=False)
     retrievedAt = models.DateTimeField(auto_now_add=False, null=True, blank=True) 
 
     # Relations:
-    sellerOrder = models.ForeignKey(SellerOrder, related_name='orderitems', on_delete=models.CASCADE, null=True)
+    sellerOrder = models.ForeignKey(SellerOrder, related_name='inStoreOrderItems', on_delete=models.CASCADE, null=True)
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     store = models.ForeignKey(Store, on_delete=models.SET_NULL, null=True)
 

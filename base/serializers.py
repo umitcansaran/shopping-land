@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 from django.contrib.auth.models import User
-from .models import Store, Profile, Product, ProductCategory, ProductSubcategory, Stock, Review, Order, SellerOrder, OrderItem, ShippingAddress
+from .models import Store, Profile, Product, ProductCategory, ProductSubcategory, Stock, Review, Order, SellerOrder, OnlineOrderItem, InStoreOrderItem, ShippingAddress
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 
@@ -256,12 +256,24 @@ class MyOrderSerializer(serializers.ModelSerializer):
     #     serializer = UserSerializer(user, many=False)
     #     return serializer.data
 
-class OrderItemSerializer(serializers.ModelSerializer):
+class OnlineOrderItemSerializer(serializers.ModelSerializer):
+    details = serializers.SerializerMethodField(read_only=True) 
+
+    class Meta:
+        model = OnlineOrderItem
+        fields = '__all__'
+
+    def get_details(self, obj):
+        product = obj.product
+        serializer = ProductSerializer(product, many=False)
+        return serializer.data
+    
+class InStoreOrderItemSerializer(serializers.ModelSerializer):
     details = serializers.SerializerMethodField(read_only=True) 
     store = serializers.SerializerMethodField(read_only=True) 
 
     class Meta:
-        model = OrderItem
+        model = InStoreOrderItem
         fields = '__all__'
 
     def get_details(self, obj):
@@ -279,7 +291,8 @@ class SellerOrderSerializer(serializers.ModelSerializer):
     seller = serializers.SerializerMethodField(read_only=True)
     customer = serializers.SerializerMethodField(read_only=True)
     order = serializers.SerializerMethodField(read_only=True)
-    orderItems = serializers.SerializerMethodField(read_only=True) 
+    onlineOrderItems = serializers.SerializerMethodField(read_only=True) 
+    inStoreOrderItems = serializers.SerializerMethodField(read_only=True) 
     shippingAddress = serializers.SerializerMethodField(read_only=True) 
 
     class Meta:
@@ -302,9 +315,14 @@ class SellerOrderSerializer(serializers.ModelSerializer):
             'paidAt': obj.order.paidAt,
         }
     
-    def get_orderItems(self, obj):
-        orderitems = obj.orderitems
-        serializer = OrderItemSerializer(orderitems, many=True)
+    def get_onlineOrderItems(self, obj):
+        onlineOrderItems = obj.onlineOrderItems
+        serializer = OnlineOrderItemSerializer(onlineOrderItems, many=True)
+        return serializer.data
+    
+    def get_inStoreOrderItems(self, obj):
+        inStoreOrderItems = obj.inStoreOrderItems
+        serializer = InStoreOrderItemSerializer(inStoreOrderItems, many=True)
         return serializer.data
     
     def get_shippingAddress(self, obj):

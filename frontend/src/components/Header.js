@@ -21,10 +21,10 @@ const Header = () => {
   const { user } = useSelector((state) => state.myDetails);
   const { cartItems } = useSelector((state) => state.cart);
 
-  const cartItemsQuantities = Object.values(cartItems).reduce(
-    (accumulator, cartItem) => accumulator + cartItem.quantity,
-    0
-  );
+  // const cartItemsQuantities = Object.values(cartItems).reduce(
+  //   (accumulator, cartItem) => accumulator + cartItem.quantity,
+  //   0
+  // );
 
   useEffect(() => {
     dispatch(myDetails());
@@ -159,11 +159,11 @@ const Header = () => {
                 style={{ color: "#1e478a",  marginRight:'0.3rem' }}
               ></i>
               Cart
-              {cartItemsQuantities > 0 && (
+              {/* {cartItemsQuantities > 0 && (
                 <Badge bg="primary" pill style={{ borderRadius: "0" }}>
                   {cartItemsQuantities}
                 </Badge>
-              )}
+              )} */}
             </Nav.Link>
           </Nav>
         </Navbar.Collapse>

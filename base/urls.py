@@ -74,7 +74,7 @@ urlpatterns = [
     path('order/<int:pk>/', views.getOrderById, name='user-order'),
     path('seller-order/<int:pk>/', views.getSellerOrderById, name='user-order'),
     path('seller-order/<int:pk>/send/', views.updateSellerOrderToSent, name='seller-order-sent'),
-    path('seller-order/<int:pk>/retrieve/', views.updateSellerOrderToRetrieved, name='seller-order-retrieved'),
+    path('order-item/<int:pk>/retrieve/', views.updateOrderItemToRetrieved, name='order-item-retrieved'),
 
     
     # path('seller-order/<int:pk>/', views.ListSellerOrder.as_view()),

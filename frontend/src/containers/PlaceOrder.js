@@ -171,7 +171,6 @@ function PlaceOrderScreen() {
             {hasInStorePickup && (
               <ListGroup.Item>
                 <h2>Pickup Location(s)</h2>
-                {console.log(pickUpLocations)}
                 {pickUpLocations.map((location) => {
                   return (
                     <p>

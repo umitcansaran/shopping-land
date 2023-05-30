@@ -248,7 +248,7 @@ export const retrieveSellerOrder = (id) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.put(
-      `${baseUrl}/api/seller-order/${id}/retrieve/`,
+      `${baseUrl}/api/order-item/${id}/retrieve/`,
       {},
       config
     );

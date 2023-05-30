@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, GenericAPIView
-from .models import Store, Product, Profile, ProductCategory, ProductSubcategory, Stock, Review, Order, SellerOrder, OrderItem, ShippingAddress
+from .models import Store, Product, Profile, ProductCategory, ProductSubcategory, Stock, Review, Order, SellerOrder, OnlineOrderItem, InStoreOrderItem, ShippingAddress
 from base.permissions import IsAnon
 from .permissions import IsOwnerOrReadOnly
 from django.db.models import Q
@@ -459,7 +459,6 @@ class LatestSellers(ListAPIView):
     queryset = Profile.objects.filter(status='STORE_OWNER').order_by('-id')[:5]
     serializer_class = ProfileSerializer
 
-
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def addOrderItems(request):
@@ -469,7 +468,6 @@ def addOrderItems(request):
     orderItems = data['orderItems']
     sellerList = []
     sellerNames = []
-    totalPrice = 0
 
     # Get seller names
     for i in orderItems:
@@ -511,6 +509,7 @@ def addOrderItems(request):
             )
 
         for i in sellerNames:
+            totalPrice = 0 
             seller = User.objects.get(username=i)
             
             sellerOrder = SellerOrder.objects.create(
@@ -524,27 +523,20 @@ def addOrderItems(request):
             for x in orderItems:
 
                 if x['seller'] == i: 
-
                     product = Product.objects.get(id=x['id'])
-                    if x['orderType'] == 'online':
-                        store = None 
-                    else:
-                        store = Store.objects.get(id=x['storeId'])
-                        seller = User.objects.get(username=x['seller'])
-
-                    # Create an OnlineOrderItem without store !!!
-                    item = OrderItem.objects.create(
-                        product=product,
-                        sellerOrder=sellerOrder,
-                        name=product.name,
-                        quantity=x['quantity'],
-                        price=Decimal(x['price']),
-                        image=product.image.url,
-                        store=store,
-                        orderType=x['orderType']
-                    )
 
                     if x['orderType'] == 'online':
+
+                        item = OnlineOrderItem.objects.create(
+                            product=product,
+                            sellerOrder=sellerOrder,
+                            name=product.name,
+                            quantity=x['quantity'],
+                            price=Decimal(x['price']),
+                            image=product.image.url,
+                            orderType=x['orderType']
+                        )
+
                         stocks = Stock.objects.filter(product=product.id).order_by('-number')
                         for stock in stocks:
                             quantityLeft = x['quantity']
@@ -557,7 +549,22 @@ def addOrderItems(request):
                                 x['quantity'] = quantityLeft
                                 stock.number = 0
                                 stock.save()
+
                     elif x['orderType'] == 'inStore':
+
+                        store = Store.objects.get(id=x['storeId'])
+
+                        item = InStoreOrderItem.objects.create(
+                            product=product,
+                            sellerOrder=sellerOrder,
+                            name=product.name,
+                            quantity=x['quantity'],
+                            price=Decimal(x['price']),
+                            image=product.image.url,
+                            store=store,
+                            orderType=x['orderType']
+                        )
+
                         stock = Stock.objects.get(id=x['stockId'])
                         stock.number = stock.number - x['quantity']
                         stock.save()
@@ -667,19 +674,19 @@ def updateOrderToPaid(request, pk):
 @permission_classes([IsAuthenticated])
 def updateSellerOrderToSent(request, pk):
 
-    orderItem = OrderItem.objects.get(id=pk)
+    sellerOrder = SellerOrder.objects.get(id=pk)
 
-    orderItem.isShipped = True
-    orderItem.shippedAt = timezone.now()
-    orderItem.save()
+    sellerOrder.isShipped = True
+    sellerOrder.shippedAt = timezone.now()
+    sellerOrder.save()
 
-    return Response('Item is sent')
+    return Response('Order is sent')
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
-def updateSellerOrderToRetrieved(request, pk):
+def updateOrderItemToRetrieved(request, pk):
 
-    orderItem = OrderItem.objects.get(id=pk)
+    orderItem = InStoreOrderItem.objects.get(id=pk)
 
     orderItem.isRetrieved = True
     orderItem.retrievedAt = timezone.now()

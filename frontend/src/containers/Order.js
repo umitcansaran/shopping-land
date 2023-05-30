@@ -42,36 +42,63 @@ function OrderScreen() {
   const { userInfo } = userLogin;
 
   console.log("order", order);
-  let totalItem;
 
-  const hasOnlinePurchase = order?.sellerOrder
+  const hasOnlineOrderItem = order?.sellerOrder.find((sellerOrder) => {
+    return sellerOrder.onlineOrderItems.length > 0;
+  });
+
+  console.log("hasOnlineOrderItem", hasOnlineOrderItem);
+
+  let hasInStorePickup = order?.sellerOrder
     .map((sellerOrder) => {
-      return sellerOrder.orderItems.map((orderItem) => {
-        return orderItem.orderType === "online";
-      });
+      return sellerOrder.inStoreOrderItems.reduce((accumulator, current) => {
+        if (
+          !accumulator.find(
+            (item) =>
+              item.store.owner_name === current.store.owner_name &&
+              item.store.name == current.store.name
+          )
+        ) {
+          accumulator.push(current);
+        }
+        return accumulator;
+      }, []);
     })
     .flat()
-    .includes(true);
+    .sort((a, b) =>
+      a.store.owner_name > b.store.owner_name
+        ? 1
+        : b.store.owner_name > a.store.owner_name
+        ? -1
+        : 0
+    );
 
-  const hasInStorePickup = order?.sellerOrder
-    .map((sellerOrder) => {
-      return sellerOrder.orderItems.filter((orderItem) => {
-        return orderItem.orderType === "inStore";
-      });
-    })
-    .flat();
+  console.log("pickUpLocations", hasInStorePickup);
 
-  console.log("hasOnlinePurchase", hasOnlinePurchase);
-
-  console.log("hasInStorePickup", hasInStorePickup);
+  let totalInStoreOrderItems;
+  let totalOnlineOrderItems;
+  let totalItem;
 
   if (!loading && !error && order) {
-    totalItem = order.sellerOrder.reduce(
+    totalInStoreOrderItems = order.sellerOrder.reduce(
       (acc, sellerOrder) =>
         acc +
-        sellerOrder.orderItems.reduce((acc, item) => acc + item.quantity, 0),
+        sellerOrder.inStoreOrderItems.reduce(
+          (acc, item) => acc + item.quantity,
+          0
+        ),
       0
     );
+    totalOnlineOrderItems = order.sellerOrder.reduce(
+      (acc, sellerOrder) =>
+        acc +
+        sellerOrder.onlineOrderItems.reduce(
+          (acc, item) => acc + item.quantity,
+          0
+        ),
+      0
+    );
+    totalItem = totalInStoreOrderItems + totalOnlineOrderItems;
   }
 
   const addPayPalScript = () => {
@@ -159,7 +186,7 @@ function OrderScreen() {
                         {order.customer.email}
                       </a>
                     </p>
-                    {hasOnlinePurchase && (
+                    {hasOnlineOrderItem && (
                       <>
                         <h2>Shipping</h2>
                         <p>
@@ -173,7 +200,7 @@ function OrderScreen() {
                     )}
                   </ListGroup.Item>
 
-                  {hasInStorePickup && (
+                  {hasInStorePickup.length > 0 && (
                     <ListGroup.Item>
                       <h2>Pickup Location(s)</h2>
                       {hasInStorePickup.map((item) => {
@@ -195,7 +222,7 @@ function OrderScreen() {
                     <Col md={3} className="text-center">
                       {order.isPaid ? (
                         <Message variant="success">
-                          Paid on {order.paidAt}
+                          Paid on {order.paidAt.substring(0, 10)}
                         </Message>
                       ) : (
                         <Message variant="warning">Not Paid</Message>
@@ -218,10 +245,67 @@ function OrderScreen() {
                                 className="text-center"
                                 style={{ color: "#698bc2" }}
                               >
-                                <h4>{sellerOrder.seller.profile.name}</h4>
+                                <h4>{sellerOrder.seller.username}</h4>
                               </Row>
                             </Card.Body>
-                            {sellerOrder.orderItems.map((orderItem) => {
+                            {sellerOrder.inStoreOrderItems.map((orderItem) => {
+                              return (
+                                <>
+                                  <ListGroup.Item key={orderItem.id}>
+                                    <Row>
+                                      <Col md={1}>
+                                        <Image
+                                          src={orderItem.image}
+                                          alt={orderItem.name}
+                                          fluid
+                                          rounded
+                                        />
+                                      </Col>
+                                      <Col md={3} style={{ color: "#698bc2" }}>
+                                        {orderItem.name}
+                                      </Col>
+
+                                      <Col md={2}>
+                                        {orderItem.quantity} x CHF{" "}
+                                        {isNumberDecimal(
+                                          Number(orderItem.price)
+                                        )}
+                                      </Col>
+
+                                      <Col md={3}>
+                                        <p
+                                          style={{
+                                            textAlign: "center",
+                                          }}
+                                        >
+                                          {orderItem.orderType === "inStore"
+                                            ? orderItem.store.name
+                                            : "Online"}
+                                        </p>
+                                      </Col>
+                                    </Row>
+                                    <Row className="justify-content-end">
+                                      <h6
+                                        style={{
+                                          textAlign: "center",
+                                          width: "auto",
+                                          margin: "0.5rem",
+                                          color: "#698bc2",
+                                        }}
+                                      >
+                                        {orderItem.orderType === "online"
+                                          ? sellerOrder.shippingPrice > 0
+                                            ? "Shipping Price: " +
+                                              sellerOrder.shippingPrice
+                                            : "Free Shipping"
+                                          : "Pick up in-store"}
+                                      </h6>
+                                    </Row>
+                                  </ListGroup.Item>
+                                </>
+                              );
+                            })}
+                            {sellerOrder.onlineOrderItems.map((orderItem) => {
                               return (
                                 <>
                                   <ListGroup.Item key={orderItem.id}>
@@ -295,7 +379,7 @@ function OrderScreen() {
                               </Row>
                               <Row className="justify-content-center">
                                 <Col md={3} className="text-center">
-                                  {hasOnlinePurchase &&
+                                  {/* {hasOnlinePurchase &&
                                     (sellerOrder.isSent ? (
                                       <Message variant="success">
                                         Sent on{" "}
@@ -305,7 +389,7 @@ function OrderScreen() {
                                       <Message variant="warning">
                                         Not Sent
                                       </Message>
-                                    ))}
+                                    ))} */}
                                 </Col>
                               </Row>
                             </ListGroup.Item>
@@ -338,7 +422,7 @@ function OrderScreen() {
                       </Row>
                     </ListGroup.Item>
 
-                    {hasOnlinePurchase && (
+                    {/* {hasOnlinePurchase && (
                       <>
                         <ListGroup.Item>
                           <Row>
@@ -360,7 +444,7 @@ function OrderScreen() {
                           </Row>
                         </ListGroup.Item>
                       </>
-                    )}
+                    )} */}
 
                     <ListGroup.Item>
                       <Row>

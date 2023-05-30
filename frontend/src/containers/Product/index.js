@@ -37,7 +37,7 @@ function ProductScreen() {
   const [stockId, setStockId] = useState("");
   const [storeId, setStoreId] = useState("");
 
-  const [orderType, setOrderType] = useState('');
+  const [orderType, setOrderType] = useState("");
 
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
@@ -79,7 +79,13 @@ function ProductScreen() {
 
   const totalStock = stocks.reduce((acc, stock) => acc + stock.number, 0);
 
-  const inStoreStock = (e, storeName, stockNumber, stockId, storeId) => {
+  const inStoreOrderItemStock = (
+    e,
+    storeName,
+    stockNumber,
+    stockId,
+    storeId
+  ) => {
     setQuantity(Number(e.target.value));
     setStoreName(storeName);
     setProductStock(stockNumber);
@@ -87,23 +93,32 @@ function ProductScreen() {
     setStoreId(storeId);
   };
 
-  const onlineStock = (stockNumber) => {
+  const onlineOrderItemStock = (stockNumber) => {
     setQuantity(stockNumber);
     setProductStock(totalStock);
   };
 
   const addToCartHandler = () => {
-    dispatch(addToCart(
-      product.id,
-      quantity,
-      storeName,
-      productStock,
-      stockId,
-      storeId,
-      orderType
-    ))
-    navigate('/cart')
-  }
+    if (orderType === "inStore") {
+      dispatch(
+        addToCart(
+          product.id,
+          quantity,
+          orderType,
+          productStock,
+          stockId,
+          storeName,
+          storeId
+        )
+      );
+    }
+    if (orderType === "online") {
+      dispatch(
+        addToCart(product.id, quantity, orderType, productStock)
+      );
+    }
+    navigate("/cart");
+  };
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -146,9 +161,7 @@ function ProductScreen() {
                   />
                 </ListGroup.Item>
 
-                <ListGroup.Item>
-                  Price: CHF {product.price}
-                </ListGroup.Item>
+                <ListGroup.Item>Price: CHF {product.price}</ListGroup.Item>
 
                 <ListGroup.Item>
                   Description: {product.description}
@@ -204,14 +217,14 @@ function ProductScreen() {
                   {totalStock > 0 && (
                     <StocksCart
                       stocks={stocks}
-                      selectedStore={selectedStore}
-                      setSelectedStore={setSelectedStore}
                       quantity={quantity}
                       setQuantity={setQuantity}
-                      inStoreStock={inStoreStock}
-                      onlineStock={onlineStock}
+                      selectedStore={selectedStore}
+                      setSelectedStore={setSelectedStore}
                       orderType={orderType}
                       setOrderType={setOrderType}
+                      inStoreOrderItemStock={inStoreOrderItemStock}
+                      onlineOrderItemStock={onlineOrderItemStock}
                       totalStock={totalStock}
                     />
                   )}
