@@ -165,7 +165,7 @@ export default function Home() {
         <Col className="mx-1">
           {value.length <= 1 && !searching ? (
             // show all products at first render
-            <Row className="justify-content-center">
+            <Row>
               {data?.pages.map((page, index) => {
                 return page.results.map((product) => (
                   <ProductCard product={product} key={index} />

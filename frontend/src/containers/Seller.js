@@ -96,35 +96,33 @@ export default function SellerScreen() {
           </Form>
         </Col>
       </Row>
-      <Container>
-        <Row
-          className="mt-3 justify-content-center pb-2"
-          style={{ borderBottom: "solid 1px lightgrey" }}
-        >
-          <Col className="text-center align-items-center" md={5}>
-            <Image
-              src={profile.image}
-              style={{ width: "auto", height: "6rem" }}
-            />
-          </Col>
-          <Col md={7}>
-            <ListGroup variant="flush" style={{ fontSize: "0.8rem" }}>
-              <ListGroup.Item>
-                <strong>Industry: </strong>
-                {profile.industry}
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <strong>Headquarter: </strong>
-                {profile.headquarter}
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <strong>Description: </strong>
-                {profile.description}
-              </ListGroup.Item>
-            </ListGroup>
-          </Col>
-        </Row>
-      </Container>
+      <Row
+        className="mt-3 align-items-center pb-2"
+        style={{ borderBottom: "solid 1px lightgrey" }}
+      >
+        <Col className="text-center justify-content-center" md={2}>
+          <Image
+            src={profile.image}
+            style={{ width: "auto", maxWidth: "15rem", maxHeight: "5rem" }}
+          />
+        </Col>
+        <Col md={9}>
+          <ListGroup variant="flush" style={{ fontSize: "0.8rem" }}>
+            <ListGroup.Item>
+              <strong>Industry: </strong>
+              {profile.industry}
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <strong>Headquarter: </strong>
+              {profile.headquarter}
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <strong>Description: </strong>
+              {profile.description}
+            </ListGroup.Item>
+          </ListGroup>
+        </Col>
+      </Row>
       <Row className="mt-3 px-2">
         <Col md={2}>
           <strong>
@@ -134,14 +132,7 @@ export default function SellerScreen() {
                 : `You can search in store`}
             </p>
           </strong>
-          {store !== "" && (
-            <i
-              class="fa-solid fa-x"
-              onClick={() => (
-                setStore(""), dispatch(listProductsByUser(params.id))
-              )}
-            ></i>
-          )}
+
           {stores &&
             stores.map((sellerStore) => {
               return (
@@ -155,6 +146,22 @@ export default function SellerScreen() {
                 </Row>
               );
             })}
+                      {store !== "" && (
+                            <Row style={{ justifyContent: "center" }}>
+
+            <Button
+              variant="secondary"
+              onClick={() => (
+                setStore(""), dispatch(listProductsByUser(params.id))
+              )}
+              className="m-2"
+              style={{ width: '5rem', backgroundColor: 'white' }}
+            >
+              Back 
+            </Button>
+            </Row>
+
+          )}
         </Col>
         <Col className="mx-1">
           <Row

@@ -115,7 +115,7 @@ const Header = () => {
                       <Image
                         src={user && user.profile.image}
                         alt="retailer-profile"
-                        style={{ height: "1.6rem" }}
+                        style={{ maxHeight: "1.6rem", maxWidth: '4rem' }}
                       />
                     }
                     id="adminmenu"

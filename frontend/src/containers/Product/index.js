@@ -28,6 +28,7 @@ import {
 } from "../../store/constants/productConstants";
 import StocksCart from "./StocksCart";
 import { addToCart } from "../../store/actions/cartActions";
+import isNumberDecimal from "../../utils/isNumberDecimal";
 
 function ProductScreen() {
   const [quantity, setQuantity] = useState(0);
@@ -134,12 +135,13 @@ function ProductScreen() {
         <Message variant="danger">{error}</Message>
       ) : (
         <div>
-          <Row>
+          <Row > 
             <Col md={4}>
               <Image
                 className="rounded mx-auto d-block"
                 src={product.image}
                 alt={product.name}
+                style={{ maxHeight: "35rem", padding: "4rem" }}
                 fluid
               />
             </Col>
@@ -187,7 +189,9 @@ function ProductScreen() {
                     <Row>
                       <Col>Price:</Col>
                       <Col>
-                        <strong>CHF {product.price}</strong>
+                        <strong>
+                          CHF {isNumberDecimal(Number(product.price))}
+                        </strong>
                       </Col>
                     </Row>
                   </ListGroup.Item>
@@ -226,7 +230,7 @@ function ProductScreen() {
                       totalStock={totalStock}
                     />
                   )}
-                  {product.seller === user.id && (
+                  {product.seller === user?.id && (
                     <ListGroup.Item>
                       <Message variant="danger">
                         Seller accounts can't buy products from their own
@@ -254,7 +258,7 @@ function ProductScreen() {
             </Col>
           </Row>
 
-          <Row>
+          <Row className="pt-4">
             <Col md={6}>
               <h4>Reviews</h4>
               {reviews && reviews.length === 0 && (
