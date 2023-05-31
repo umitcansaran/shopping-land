@@ -22,7 +22,7 @@ from decimal import Decimal
 
 User = get_user_model()
 
-from .serializers import StoreSerializer, MyStoreSerializer, UserSerializer, RegistrationSerializer, StockSerializer ,ProductSerializer, ProductSubcategorySerializer, ProductCategorySerializer, ProfileSerializer, ReviewSerializer, SearchStockSerializer, OrderSerializer, MyOrderSerializer, SellerOrderSerializer
+from .serializers import StoreSerializer, MyStoreSerializer, UserSerializer, RegistrationSerializer, StockSerializer ,ProductSerializer, ProductSubcategorySerializer, ProductCategorySerializer, ProfileSerializer, ReviewSerializer, SearchStockSerializer, OrderSerializer, MySellerOrdersSerializer, MyOrderSerializer, SellerOrderSerializer
 
 class StoreViewSet(ModelViewSet):
     """
@@ -367,6 +367,22 @@ class StockViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save()
 
+@api_view(['POST'])
+@permission_classes([IsOwnerOrReadOnly])
+def createStock(request):
+
+    data = request.data
+    product = Product.objects.get(id=data['product'])
+    store = Store.objects.get(id=data['store'])
+
+    stock = Stock.objects.create(
+        store=store,
+        product=product,
+        number=data['number']
+    )
+
+    serializer = StockSerializer(stock, many=False)
+    return Response(serializer.data)
 
 @api_view(['PUT'])
 @permission_classes([IsOwnerOrReadOnly])
@@ -538,13 +554,16 @@ def addOrderItems(request):
                         )
 
                         stocks = Stock.objects.filter(product=product.id).order_by('-number')
+                        print('stocks', stocks)
                         for stock in stocks:
+                            print('stock', stock)
                             quantityLeft = x['quantity']
                             if stock.number is not None and stock.number >= x['quantity']:
                                 stock.number -= x['quantity']
                                 stock.save()
                                 break
                             elif stock.number is not None:
+                                print('stock', stock)
                                 quantityLeft -= stock.number
                                 x['quantity'] = quantityLeft
                                 stock.number = 0
@@ -570,7 +589,6 @@ def addOrderItems(request):
                         stock.save()
 
                     totalPrice += Decimal(x['price']) * x['quantity']
-                    print(totalPrice)
                     sellerOrder.totalPrice = totalPrice
                     sellerOrder.save()
             if totalPrice > 100:
@@ -604,7 +622,7 @@ def getMyOrders(request):
 def getMySellerOrders(request):
     user = request.user
     sellerOrders = user.sellerOrders.all().order_by('-createdAt')
-    serializer = SellerOrderSerializer(sellerOrders, many=True)
+    serializer = MySellerOrdersSerializer(sellerOrders, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
@@ -630,7 +648,7 @@ def getOrderById(request, pk):
 
     try:
         order = Order.objects.get(id=pk)
-        print(order)
+
         if order.customer == user:
             serializer = OrderSerializer(order, many=False)
             return Response(serializer.data)

@@ -27,8 +27,6 @@ function MyOrders() {
     dispatch(listMySellerOrders());
   }, [dispatch, navigate]);
 
-  console.log(sellerOrders);
-
   return (
     <Container fluid>
       <Col>
@@ -56,7 +54,7 @@ function MyOrders() {
                 <tr key={sellerOrder.id} style={{ textAlign: "center" }}>
                   <td>{sellerOrder.id}</td>
                   <td>{sellerOrder.createdAt.substring(0, 10)}</td>
-                  <td>{sellerOrder.customer.profile.name}</td>
+                  <td>{sellerOrder.customer.username}</td>
                   <td>CHF {sellerOrder.totalPrice}</td>
                   <td>
                     {sellerOrder.order.isPaid ? (

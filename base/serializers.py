@@ -330,3 +330,16 @@ class SellerOrderSerializer(serializers.ModelSerializer):
         serializer = ShippingAddressSerializer(shippingAddress, many=False)
         return serializer.data
     
+class MySellerOrdersSerializer(serializers.ModelSerializer):
+    customer = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = SellerOrder
+        fields = '__all__'
+    
+    def get_customer(self, obj):
+        return {
+            'name': obj.customer.username
+        }
+    
+    

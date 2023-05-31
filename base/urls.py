@@ -52,7 +52,8 @@ urlpatterns = [
 
     # STOCK
     path('stocks/', views.StockViewSet.as_view({'get': 'list'})),
-    path('stock/new/', views.StockViewSet.as_view({'post': 'create'})),
+    # path('stock/new/', views.StockViewSet.as_view({'post': 'create'})),
+    path('stock/new/', views.createStock, name="stock-create"),
     path('stock/<int:pk>/', views.updateStock, name="stock-update"),
     path('stock/<int:pk>/', views.StockViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})),
     path('store/stocks/<int:store_id>/', views.ListStoreStocks.as_view()),

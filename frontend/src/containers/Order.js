@@ -108,8 +108,6 @@ function OrderScreen() {
     document.body.appendChild(script);
   };
 
-  let shippingCost;
-
   useEffect(() => {
     if (!userInfo) {
       navigate("/login");
