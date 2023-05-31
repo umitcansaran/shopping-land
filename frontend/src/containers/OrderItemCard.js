@@ -6,7 +6,7 @@ import Message from "../components/Message";
 export default function OrderItemCard({ orderItem, sellerOrder }) {
   return (
     <>
-        <Row>
+        <Row className="my-3">
           <Col md={1} className="mx-1">
             <Image src={orderItem.image} alt={orderItem.name} fluid rounded />
           </Col>

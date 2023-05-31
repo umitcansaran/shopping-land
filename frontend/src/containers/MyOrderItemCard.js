@@ -7,7 +7,7 @@ export default function MyOrderItemCard({ item, pickUpHandler, sellerOrder }) {
   return (
     <>
       <ListGroup.Item key={item.id} style={{ paddingTop: "2rem" }}>
-        <Row className="justify-content-end">Order Item # {item.id}</Row>
+        <Row className="justify-content-end">Product # {item.id}</Row>
         <Row>
           <Col md={1}>
             <Image src={item.image} alt={item.name} fluid rounded />

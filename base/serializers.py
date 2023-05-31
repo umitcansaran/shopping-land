@@ -311,6 +311,7 @@ class SellerOrderSerializer(serializers.ModelSerializer):
     
     def get_order(self, obj):
         return {
+            'id': obj.order.id,
             'isPaid': obj.order.isPaid,
             'paidAt': obj.order.paidAt,
         }
@@ -331,15 +332,9 @@ class SellerOrderSerializer(serializers.ModelSerializer):
         return serializer.data
     
 class MySellerOrdersSerializer(serializers.ModelSerializer):
-    customer = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = SellerOrder
         fields = '__all__'
-    
-    def get_customer(self, obj):
-        return {
-            'name': obj.customer.username
-        }
     
     

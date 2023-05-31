@@ -34,9 +34,11 @@ function MyOrder() {
 
   const {
     sellerOrder,
-    error: errorSellingOrder,
+    error: errorSellerOrder,
     loading: loadingSellerOrder,
   } = useSelector((state) => state.sellerOrderDetails);
+
+  console.log(sellerOrder);
 
   const sellerOrderSend = useSelector((state) => state.sellerOrderSend);
   const { loading: loadingSellerOrderSend, success: successSellerOrderSend } =
@@ -47,8 +49,6 @@ function MyOrder() {
     loading: loadingSellerOrderRetrieve,
     success: successSellerOrderRetrieve,
   } = sellerItemRetrieve;
-
-  console.log(sellerOrder)
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -74,21 +74,21 @@ function MyOrder() {
     }, [])
     .sort((a, b) => (a.seller > b.seller ? 1 : b.seller > a.seller ? -1 : 0));
 
-    let totalInStoreOrderItems;
-    let totalOnlineOrderItems;
-    let totalItems;
-  
-    if (!loadingSellerOrder && !errorSellingOrder && sellerOrder) {
-      totalInStoreOrderItems = sellerOrder.inStoreOrderItems.reduce(
-        (acc, item) => acc + item.quantity,        0
-      );
-      totalOnlineOrderItems = sellerOrder.onlineOrderItems.reduce(
-        (acc, item) => acc + item.quantity,        0
-      );
-      totalItems = totalInStoreOrderItems + totalOnlineOrderItems;
-    }
+  let totalInStoreOrderItems;
+  let totalOnlineOrderItems;
+  let totalItems;
 
-  let shippingCost;
+  if (!loadingSellerOrder && !errorSellerOrder && sellerOrder) {
+    totalInStoreOrderItems = sellerOrder.inStoreOrderItems.reduce(
+      (acc, item) => acc + item.quantity,
+      0
+    );
+    totalOnlineOrderItems = sellerOrder.onlineOrderItems.reduce(
+      (acc, item) => acc + item.quantity,
+      0
+    );
+    totalItems = totalInStoreOrderItems + totalOnlineOrderItems;
+  }
 
   useEffect(() => {
     if (!userInfo) {
@@ -177,11 +177,11 @@ function MyOrder() {
                   </ListGroup.Item>
 
                   <ListGroup.Item>
-                  {hasOnlinePurchase && (
+                    {hasOnlinePurchase && (
                       <Card style={{ marginBlockStart: "1rem" }}>
-                            <Row className="text-center mt-2">
-                                <h6>Shipping Item(s)</h6>
-                            </Row>
+                        <Row className="text-center mt-2">
+                          <h6>Shipping Item(s)</h6>
+                        </Row>
                         {sellerOrder.onlineOrderItems.map((item) => {
                           return (
                             <MyOrderItemCard
@@ -199,7 +199,7 @@ function MyOrder() {
                             ) : (
                               <Button
                                 type="button"
-                                className="btn-block blue-button my-2" 
+                                className="btn-block blue-button my-2"
                                 onClick={() => shippingHandler()}
                                 disabled={!sellerOrder.order.isPaid}
                               >
@@ -209,16 +209,14 @@ function MyOrder() {
                           </Col>
                         </Row>
                       </Card>
-                    
-                  )}
+                    )}
 
-                  {hasInStorePickup && (
-                    
+                    {hasInStorePickup && (
                       <Card style={{ marginBlockStart: "1rem" }}>
-                         <Row className="text-center mt-2">
-                                <h6>In-Store Pick Up Item(s)</h6>
-                            </Row>
-                        
+                        <Row className="text-center mt-2">
+                          <h6>In-Store Pick Up Item(s)</h6>
+                        </Row>
+
                         {sellerOrder.inStoreOrderItems.map((item) => {
                           return (
                             <>
@@ -227,80 +225,83 @@ function MyOrder() {
                                 pickUpHandler={pickUpHandler}
                                 sellerOrder={sellerOrder}
                               />
-
                             </>
                           );
                         })}
                       </Card>
-                  )}
+                    )}
                   </ListGroup.Item>
                 </ListGroup>
               </Col>
               <Col md={4}>
-          <Card>
-            <ListGroup variant="flush">
-              <ListGroup.Item>
-                <h2>Order Summary</h2>
-              </ListGroup.Item>
-
-              <ListGroup.Item>
-                <Row>
-                  <Col>Item(s):</Col>
-                  <Col>{totalItems}</Col>
-                </Row>
-              </ListGroup.Item>
-
-              {/* {hasOnlinePurchase && (
-                <>
-                  <ListGroup.Item>
-                    <Row>
-                      <Col>Price:</Col>
-                      <Col>CHF {isNumberDecimal(cart.itemsPrice)}</Col>
-                    </Row>
-                  </ListGroup.Item>
-
-                  <ListGroup.Item>
-                    <Row>
-                      <Col>Shipping:</Col>
-                      <Col>
-                        {totalShippingPrice === 0
-                          ? "Free"
-                          : "CHF " + totalShippingPrice + ".-"}
-                      </Col>
-                    </Row>
-                  </ListGroup.Item>
-                </>
-              )} */}
-
-              <ListGroup.Item>
-                <Row>
-                  <Col>Total Price:</Col>
-                  <Col>
-                    CHF {isNumberDecimal(Number(sellerOrder.totalPrice))}
-                  </Col>
-                </Row>
-              </ListGroup.Item>
-
-              {hasInStorePickup && (
+                <Card>
+                  <ListGroup variant="flush">
                     <ListGroup.Item>
-                      <h2>Pickup Location(s)</h2>
-                      {pickUpLocations.map((item) => {
-                        return (
-                          <p>
-                            {item.store.name}
-                          </p>
-                        );
-                      })}
+                      <h2>Order Summary</h2>
                     </ListGroup.Item>
-                  )}
 
-              {/* <ListGroup.Item>
-                {error && <Message variant="danger">{error}</Message>}
-              </ListGroup.Item> */}
+                    <ListGroup.Item>
+                      <Row>
+                        <Col>Item(s):</Col>
+                        <Col>{totalItems}</Col>
+                      </Row>
+                    </ListGroup.Item>
 
-            </ListGroup>
-          </Card>
-        </Col>
+                    <ListGroup.Item>
+                      <Row>
+                        <Col>Total Price:</Col>
+                        <Col>
+                          CHF {isNumberDecimal(Number(sellerOrder.totalPrice))}
+                        </Col>
+                      </Row>
+                    </ListGroup.Item>
+
+                    {hasInStorePickup && (
+                      <ListGroup.Item>
+                        <h2>Pickup Location(s)</h2>
+                        {pickUpLocations.map((item) => {
+                          return <p>{item.store.name}</p>;
+                        })}
+                      </ListGroup.Item>
+                    )}
+
+                    <ListGroup.Item>
+                      <h2>Parent Order</h2>
+                    </ListGroup.Item>
+
+                    <ListGroup.Item>
+                      <Row>
+                        <Col>
+                          <p>Customer Order #</p>
+                        </Col>
+                        <Col>
+                          <p>{sellerOrder.order.id}</p>
+                        </Col>
+                      </Row>
+                    </ListGroup.Item>
+
+                    <ListGroup.Item>
+                      <Row>
+                        <Col>
+                          <p>Date:</p>
+                        </Col>
+                        <Col>
+                          <p>
+                            {sellerOrder.createdAt.substring(0, 10)}{" "}
+                            {sellerOrder.createdAt.substring(11, 16)}
+                          </p>
+                        </Col>
+                      </Row>
+                    </ListGroup.Item>
+
+                    <ListGroup.Item>
+                      {errorSellerOrder && (
+                        <Message variant="danger">{errorSellerOrder}</Message>
+                      )}
+                    </ListGroup.Item>
+                  </ListGroup>
+                </Card>
+              </Col>
             </Row>
           </>
         )

@@ -18,7 +18,7 @@ import axios from "axios";
 import useDebounce from "../../utils/useDebounce";
 import "./index.css";
 import SearchBox from "../../components/SearchBox";
-import { listUsers } from "../../store/actions/userActions"; 
+import { listUsers } from "../../store/actions/userActions";
 
 export default function Home() {
   const [value, setValue] = useState("");
@@ -91,14 +91,13 @@ export default function Home() {
       }
     );
 
-  // Prefetching '/sellers' route data in advance.
+  // Prefetching and caching '/sellers' and '/map' routes data in advance.
   queryClient.prefetchQuery({
     queryKey: ["sellers"],
     queryFn: () => axios.get("/api/profiles/sellers/").then((res) => res.data),
     cacheTime: 5 * 60 * 1000,
   });
 
-  // Prefetching '/map' route data in advance.
   queryClient.prefetchQuery({
     queryKey: ["profiles"],
     queryFn: () => axios.get("/api/profiles/").then((res) => res.data),
@@ -167,11 +166,11 @@ export default function Home() {
           {value.length <= 1 && !searching ? (
             // show all products at first render
             <Row className="justify-content-center">
-                {data?.pages.map((page, index) => {
-                  return page.results.map((product) => (
-                    <ProductCard product={product} key={index} />
-                  ));
-                })}
+              {data?.pages.map((page, index) => {
+                return page.results.map((product) => (
+                  <ProductCard product={product} key={index} />
+                ));
+              })}
               {data && value.length === 0 && hasNextPage && (
                 <Row className="justify-content-center">
                   <Button
@@ -188,9 +187,9 @@ export default function Home() {
           ) : (
             // show search results
             <Row>
-                {searchResult?.map((product, index) => (
-                  <ProductCard product={product} key={index} />
-                ))}
+              {searchResult?.map((product, index) => (
+                <ProductCard product={product} key={index} />
+              ))}
             </Row>
           )}
         </Col>

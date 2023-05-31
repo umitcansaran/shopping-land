@@ -220,7 +220,6 @@ function OrderScreen() {
                     <Message variant="info">Store Order is empty</Message>
                   ) : (
                     <ListGroup.Item>
-                      <h2>Seller Order(s):</h2>
                       {order.sellerOrder.map((sellerOrder, index) => {
                         return (
                           <Card style={{ marginBlockStart: "1rem" }}>
@@ -379,6 +378,16 @@ function OrderScreen() {
                             Number(order.totalPrice) +
                               Number(order.totalShippingPrice)
                           )}
+                        </Col>
+                      </Row>
+                    </ListGroup.Item>
+
+                    <ListGroup.Item>
+                      <Row>
+                        <Col>Date:</Col>
+                        <Col>
+                          {order.createdAt.substring(0, 10)}{" "}
+                          {order.createdAt.substring(11, 16)}
                         </Col>
                       </Row>
                     </ListGroup.Item>

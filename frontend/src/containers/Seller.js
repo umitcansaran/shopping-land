@@ -127,11 +127,6 @@ export default function SellerScreen() {
       </Container>
       <Row className="mt-3 px-2">
         <Col md={2}>
-          <Row style={{ justifyContent: "center" }}>
-            <Button onClick={() => navigate(-1)} className="btn btn-light my-3">
-              Go Back
-            </Button>
-          </Row>
           <strong>
             <p style={{ textAlign: "center", fontSize: "0.9rem" }}>
               {store === ""

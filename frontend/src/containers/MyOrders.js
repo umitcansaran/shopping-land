@@ -42,7 +42,6 @@ function MyOrders() {
               <tr style={{ textAlign: "center" }}>
                 <th>ID</th>
                 <th>Date</th>
-                <th>Customer</th>
                 <th>Total</th>
                 <th>Paid</th>
                 <th></th>
@@ -54,7 +53,6 @@ function MyOrders() {
                 <tr key={sellerOrder.id} style={{ textAlign: "center" }}>
                   <td>{sellerOrder.id}</td>
                   <td>{sellerOrder.createdAt.substring(0, 10)}</td>
-                  <td>{sellerOrder.customer.username}</td>
                   <td>CHF {sellerOrder.totalPrice}</td>
                   <td>
                     {sellerOrder.order.isPaid ? (
