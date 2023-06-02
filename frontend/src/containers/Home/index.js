@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Button, Col, Container, Form } from "react-bootstrap";
+import { Row, Button, Col, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import LatestReviews from "./LatestReviews";
 import LatestSellers from "./LatestSellers";
@@ -77,7 +77,7 @@ export default function Home() {
     return data;
   };
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery(
       ["products"],
       ({ pageParam }) => fetchProducts(pageParam),
@@ -145,18 +145,26 @@ export default function Home() {
           Back
         </Button>
       )}
-      <Row className="d-md-flex d-sm-none d-none home-carousel-container">
+      <Row className="d-md-flex d-sm-none d-none">
         {!searching && value.length < 2 && (
           // do not render these components if searching or screen size is mobile
           <>
+          <Col md={4}>
             <LatestReviews latestReviews={latestReviewsQuery.data} />
+          </Col>
+          <Col md={4}>
+          
             <ProductCarousel latestProducts={latestProductsQuery.data} />
+          </Col>
+          <Col md={4}> 
+          
             <LatestSellers latestSellers={latestSellersQuery.data} />
+          </Col>
           </>
         )}
       </Row>
       <Row>
-        <div className=" home-sidebar-container">
+        <div className="home-sidebar-container">
           <HomeSidebar
             categories={categoriesQuery.data}
             categoryFilterHandler={categoryFilterHandler}
@@ -165,31 +173,35 @@ export default function Home() {
         <Col className="mx-1">
           {value.length <= 1 && !searching ? (
             // show all products at first render
-            <Row>
-              {data?.pages.map((page, index) => {
-                return page.results.map((product) => (
-                  <ProductCard product={product} key={index} />
-                ));
-              })}
-              {data && value.length === 0 && hasNextPage && (
-                <Row className="justify-content-center">
-                  <Button
-                    className="home-button blue-button"
-                    onClick={() => fetchNextPage()}
-                  >
-                    {isFetchingNextPage
-                      ? "Loading more..."
-                      : hasNextPage && "Load More"}
-                  </Button>
-                </Row>
-              )}
+            <Row className="product-card-container">
+              <Row className="product-card-row">
+                {data?.pages.map((page, index) => {
+                  return page.results.map((product) => (
+                    <ProductCard product={product} key={index} />
+                  ));
+                })}
+                {data && value.length === 0 && hasNextPage && (
+                  <Row className="justify-content-center">
+                    <Button
+                      className="home-button blue-button"
+                      onClick={() => fetchNextPage()}
+                    >
+                      {isFetchingNextPage
+                        ? "Loading more..."
+                        : hasNextPage && "Load More"}
+                    </Button>
+                  </Row>
+                )}
+              </Row>
             </Row>
           ) : (
             // show search results
-            <Row>
-              {searchResult?.map((product, index) => (
-                <ProductCard product={product} key={index} />
-              ))}
+            <Row className="product-card-container">
+              <Row className="product-card-row">
+                {searchResult?.map((product, index) => (
+                  <ProductCard product={product} key={index} />
+                ))}
+              </Row>
             </Row>
           )}
         </Col>

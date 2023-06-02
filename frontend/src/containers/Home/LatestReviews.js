@@ -4,13 +4,11 @@ import Rating from "../../components/Rating";
 import { Link } from "react-router-dom";
 
 export default function LatestReviews({ latestReviews = [] }) {
-  const charLimit =
-    window.innerWidth < 1300 ? 30 : window.innerWidth < 1600 ? 40 : 70;
 
   return (
-    <div className="reviews-carousel">
+    <Row>
       <h5 className="text-center">Latest Reviews</h5>
-      <Carousel>
+      <Carousel className="reviews-carousel">
         {latestReviews.map((review, index) => {
           return (
             review && (
@@ -35,12 +33,10 @@ export default function LatestReviews({ latestReviews = [] }) {
                     <strong>
                       <h6 className="mb-3">{review.product.name}</h6>
                     </strong>
-                    <Row>
+                    <Row style={{ overflow:'hidden', height:'3rem', marginBottom:'1.5rem' }}> 
                       <p>
                         <i className="fas fa-quote-left pe-2"></i>
-                        {review.comment.length > charLimit
-                          ? review.comment.substring(0, charLimit) + "..."
-                          : review.comment}
+                        {review.comment}
                       </p>
                     </Row>
                   </Link>
@@ -51,6 +47,6 @@ export default function LatestReviews({ latestReviews = [] }) {
           );
         })}
       </Carousel>
-    </div>
+    </Row>
   );
 }

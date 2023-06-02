@@ -1,19 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { Button, Row, Col, Table, Container } from "react-bootstrap";
+import React, { useEffect } from "react";
+import { Button, Col, Table, Container } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import Loader from "../components/Loader";
-import Message from "../components/Message";
-import {
-  listMyPurchases,
-  listMySellerOrders,
-} from "../store/actions/orderActions";
 import { useNavigate } from "react-router-dom";
+import Loader from "../../components/Loader";
+import Message from "../../components/Message";
+import { listMySellerOrders } from "../../store/actions/orderActions";
 
-function MyOrders() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-
+export default function SellerOrders() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -75,5 +69,3 @@ function MyOrders() {
     </Container>
   );
 }
-
-export default MyOrders;

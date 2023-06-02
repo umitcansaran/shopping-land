@@ -1,27 +1,19 @@
 import React, { useState, useEffect } from "react";
-import {
-  Button,
-  Row,
-  Col,
-  ListGroup,
-  Image,
-  Card,
-  Container,
-} from "react-bootstrap";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Row, Col, ListGroup, Card, Container } from "react-bootstrap";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import Message from "../components/Message";
-import Loader from "../components/Loader";
-import { getOrderDetails, payOrder } from "../store/actions/orderActions";
+import Message from "../../components/Message";
+import Loader from "../../components/Loader";
 import {
   ORDER_PAY_RESET,
   ORDER_SEND_RESET,
-} from "../store/constants/orderConstants";
+} from "../../store/constants/orderConstants";
 import OrderItemCard from "./OrderItemCard";
-import isNumberDecimal from "../utils/isNumberDecimal";
+import isNumberDecimal from "../../utils/isNumberDecimal";
+import { getOrderDetails, payOrder } from "../../store/actions/orderActions";
 
-function OrderScreen() {
+export default function CustomerOrder() {
   const dispatch = useDispatch();
   const params = useParams();
   const navigate = useNavigate;
@@ -437,5 +429,3 @@ function OrderScreen() {
     </Container>
   );
 }
-
-export default OrderScreen;

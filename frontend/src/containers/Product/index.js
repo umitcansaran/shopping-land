@@ -126,22 +126,23 @@ function ProductScreen() {
 
   return (
     <Container fluid className="product-page-container">
-      <Button onClick={() => navigate(-1)} className="btn btn-light my-3">
-        Go Back
-      </Button>
       {loadingProduct || loadingStocks ? (
         <Loader />
       ) : error ? (
         <Message variant="danger">{error}</Message>
       ) : (
-        <div>
-          <Row > 
+        <Col className="mt-3">
+          <Row>
             <Col md={4}>
               <Image
                 className="rounded mx-auto d-block"
                 src={product.image}
                 alt={product.name}
-                style={{ maxHeight: "35rem", padding: "4rem" }}
+                style={{
+                  maxHeight: "25rem",
+                  maxWidth: "25rem",
+                  padding: "2rem",
+                }}
                 fluid
               />
             </Col>
@@ -161,13 +162,13 @@ function ProductScreen() {
                   />
                 </ListGroup.Item>
 
-                <ListGroup.Item>Price: CHF {product.price}</ListGroup.Item>
+                {/* <ListGroup.Item>Price: CHF {product.price}</ListGroup.Item> */}
 
                 <ListGroup.Item>
                   Description: {product.description}
                 </ListGroup.Item>
 
-                <ListGroup.Item>Product ID: {product.id}</ListGroup.Item>
+                <ListGroup.Item>Product # {product.id}</ListGroup.Item>
 
                 <ListGroup.Item>
                   Sold by{" "}
@@ -336,7 +337,7 @@ function ProductScreen() {
               </ListGroup>
             </Col>
           </Row>
-        </div>
+        </Col>
       )}
     </Container>
   );

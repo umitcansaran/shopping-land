@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Button, Row, Col, Image, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { search } from "../store/actions/searchAction";
-import { listProfiles } from "../store/actions/userActions";
+import { search } from "../../store/actions/searchAction";
+import { listProfiles } from "../../store/actions/userActions";
 import { Link } from "react-router-dom";
-import Loader from "../components/Loader";
+import Loader from "../../components/Loader";
 import useSWR from "swr";
 import axios from "axios";
-import { SELLER_PROFILES_RESET } from "../store/constants/userConstants";
+import { SELLER_PROFILES_RESET } from "../../store/constants/userConstants";
 import { useQuery } from "@tanstack/react-query";
 
 export default function SellersScreen() {
@@ -93,7 +93,7 @@ export default function SellersScreen() {
                             style={{
                               maxWidth: "60%",
                               maxHeight: "4rem",
-                              margin: "3rem"
+                              margin: "3rem",
                             }}
                           />
                         </Link>

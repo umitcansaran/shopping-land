@@ -2,15 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Button, Row, Col, Table, Container } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import Loader from "../components/Loader";
-import Message from "../components/Message";
-import { listMyPurchases } from "../store/actions/orderActions";
 import { useNavigate } from "react-router-dom";
+import Loader from "../../components/Loader";
+import Message from "../../components/Message";
+import { listMyPurchases } from "../../store/actions/orderActions";
 
-function OrdersScreen() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-
+export default function CustomerOrders() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -63,7 +60,7 @@ function OrdersScreen() {
                   </td>
                   <td>{order.paymentMethod}</td>
                   <td>
-                    <LinkContainer to={`/order/${order.id}`}>
+                    <LinkContainer to={`/customer-order/${order.id}`}>
                       <Button className="btn-sm">Details</Button>
                     </LinkContainer>
                   </td>
@@ -76,5 +73,3 @@ function OrdersScreen() {
     </Container>
   );
 }
-
-export default OrdersScreen;

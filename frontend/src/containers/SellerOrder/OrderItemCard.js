@@ -1,7 +1,7 @@
 import React from "react";
-import { Button, Card, Col, Image, ListGroup, Row } from "react-bootstrap";
-import Message from "../components/Message";
-import isNumberDecimal from "../utils/isNumberDecimal";
+import { Button, Col, Image, ListGroup, Row } from "react-bootstrap";
+import isNumberDecimal from "../../utils/isNumberDecimal";
+import Message from "../../components/Message";
 
 export default function MyOrderItemCard({ item, pickUpHandler, sellerOrder }) {
   return (

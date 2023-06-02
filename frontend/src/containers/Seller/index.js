@@ -10,12 +10,13 @@ import {
 } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { listProductsByUser } from "../store/actions/productActions";
-import { search } from "../store/actions/searchAction";
-import { listStoresByUser } from "../store/actions/storeActions";
-import { getProfileDetails } from "../store/actions/userActions";
-import { PROFILE_DETAILS_RESET } from "../store/constants/userConstants";
-import ProductCard from "../components/ProductCard";
+import { listProductsByUser } from "../../store/actions/productActions";
+import { search } from "../../store/actions/searchAction";
+import { listStoresByUser } from "../../store/actions/storeActions";
+import { getProfileDetails } from "../../store/actions/userActions";
+import { PROFILE_DETAILS_RESET } from "../../store/constants/userConstants";
+import ProductCard from "../../components/ProductCard";
+import "./index.css";
 
 export default function SellerScreen() {
   const [value, setValue] = useState("");
@@ -124,7 +125,7 @@ export default function SellerScreen() {
         </Col>
       </Row>
       <Row className="mt-3 px-2">
-        <Col md={2}>
+        <Col md={2} className="seller-sidebar">
           <strong>
             <p style={{ textAlign: "center", fontSize: "0.9rem" }}>
               {store === ""
@@ -146,27 +147,25 @@ export default function SellerScreen() {
                 </Row>
               );
             })}
-                      {store !== "" && (
-                            <Row style={{ justifyContent: "center" }}>
-
-            <Button
-              variant="secondary"
-              onClick={() => (
-                setStore(""), dispatch(listProductsByUser(params.id))
-              )}
-              className="m-2"
-              style={{ width: '5rem', backgroundColor: 'white' }}
-            >
-              Back 
-            </Button>
+          {store !== "" && (
+            <Row style={{ justifyContent: "center" }}>
+              <Button
+                variant="secondary"
+                onClick={() => (
+                  setStore(""), dispatch(listProductsByUser(params.id))
+                )}
+                className="m-2"
+                style={{ width: "5rem", backgroundColor: "white" }}
+              >
+                Back
+              </Button>
             </Row>
-
           )}
         </Col>
         <Col className="mx-1">
           <Row
             style={{ textAlign: "center" }}
-            className="justify-content-center"
+            className="product-card-container"
           >
             {products &&
               products.length === 0 &&
@@ -179,7 +178,7 @@ export default function SellerScreen() {
               ) : (
                 <h5>Currently no product to show!</h5>
               ))}
-            <Row className="product-container">
+            <Row className="product-card-row">
               {products &&
                 products.map((product, index) => {
                   return <ProductCard product={product} key={index} />;

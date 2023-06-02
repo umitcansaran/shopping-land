@@ -14,15 +14,15 @@ import AddProduct from "./containers/AddProduct";
 import Product from "./containers/Product";
 import Map from "./containers/Map";
 import Seller from "./containers/Seller";
-import Sellers from "./containers/Sellers";
+import Sellers from "./containers/Sellers/Sellers";
 import Cart from "./containers/Cart";
 import PlaceOrder from "./containers/PlaceOrder";
-import Order from "./containers/Order";
-import Orders from "./containers/Orders";
+import CustomerOrder from "./containers/CustomerOrder";
+import CustomerOrders from "./containers/CustomerOrders";
 import Shipping from "./containers/Shipping";
 import Payment from "./containers/Payment";
-import MyOrders from "./containers/MyOrders";
-import MyOrder from "./containers/MyOrder";
+import SellerOrders from "./containers/SellerOrders";
+import SellerOrder from "./containers/SellerOrder";
 
 function App() {
   return (
@@ -44,10 +44,10 @@ function App() {
           <Route path="/sellers" element={<Sellers />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/placeorder" element={<PlaceOrder />} />
-          <Route path="/order/:id" element={<Order />} />
-          <Route path="/orders" element={<Orders />} />
-          <Route path="/myorders" element={<MyOrders />} />
-          <Route path="/seller-order/:id" element={<MyOrder />} />
+          <Route path="/customer-orders" element={<CustomerOrders />} />
+          <Route path="/customer-order/:id" element={<CustomerOrder />} />
+          <Route path="/seller-orders" element={<SellerOrders />} />
+          <Route path="/seller-order/:id" element={<SellerOrder />} />
           <Route path="/shipping" element={<Shipping />} />
           <Route path="/payment" element={<Payment />} />
         </Routes>

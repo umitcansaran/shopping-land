@@ -11,21 +11,21 @@ import {
 } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import Message from "../components/Message";
-import Loader from "../components/Loader";
+import Message from "../../components/Message";
+import Loader from "../../components/Loader";
 import {
   getSellerOrderDetails,
   sendSellerOrder,
   retrieveSellerOrder,
-} from "../store/actions/orderActions";
+} from "../../store/actions/orderActions";
 import {
   SELLER_ORDER_RETRIEVE_RESET,
   SELLER_ORDER_SEND_RESET,
-} from "../store/constants/orderConstants";
-import MyOrderItemCard from "./MyOrderItemCard";
-import isNumberDecimal from "../utils/isNumberDecimal";
+} from "../../store/constants/orderConstants";
+import isNumberDecimal from "../../utils/isNumberDecimal";
+import OrderItemCard from "./OrderItemCard";
 
-function MyOrder() {
+export default function SellerOrder() {
   const dispatch = useDispatch();
   const params = useParams();
   const navigate = useNavigate;
@@ -184,7 +184,7 @@ function MyOrder() {
                         </Row>
                         {sellerOrder.onlineOrderItems.map((item) => {
                           return (
-                            <MyOrderItemCard
+                            <OrderItemCard
                               item={item}
                               isNumberDecimal={isNumberDecimal}
                             />
@@ -220,7 +220,7 @@ function MyOrder() {
                         {sellerOrder.inStoreOrderItems.map((item) => {
                           return (
                             <>
-                              <MyOrderItemCard
+                              <OrderItemCard
                                 item={item}
                                 pickUpHandler={pickUpHandler}
                                 sellerOrder={sellerOrder}
@@ -309,5 +309,3 @@ function MyOrder() {
     </Container>
   );
 }
-
-export default MyOrder;

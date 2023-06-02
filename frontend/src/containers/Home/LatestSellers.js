@@ -3,13 +3,12 @@ import { Carousel, Col, Image, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 export default function LatestSellers({ latestSellers = [] }) {
-  const charLimit =
-    window.innerWidth < 1300 ? 30 : window.innerWidth < 1600 ? 40 : 70;
+
 
   return (
-    <div className="text-center sellers-carousel">
-      <h5>Latest Sellers</h5>
-      <Carousel style={{ alignItems: "center" }}>
+    <Row className="text-center">
+      <h5 className="text-center">Latest Sellers</h5>
+      <Carousel className="sellers-carousel" style={{ alignItems: "center" }}>
         {latestSellers.map((seller, index) => {
           return (
             seller && (
@@ -25,11 +24,12 @@ export default function LatestSellers({ latestSellers = [] }) {
                     alt="latest-sellers"
                   />
                   {seller.description && (
+                    <Row style={{ overflow:'hidden', height:'7rem', marginBottom:'1.5rem' }}>
+
                     <p style={{ marginTop: "2rem", fontSize: "1rem" }}>
-                      {seller.description.length > charLimit
-                        ? seller.description.substring(0, charLimit) + "..."
-                        : seller.description}
+                      {seller.description}
                     </p>
+                    </Row>
                   )}
                   <h6 style={{ color: "#5b6da8" }}>{seller.industry}</h6>
                 </Link>
@@ -38,6 +38,6 @@ export default function LatestSellers({ latestSellers = [] }) {
           );
         })}
       </Carousel>
-    </div>
+    </Row>
   );
 }

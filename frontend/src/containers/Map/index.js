@@ -59,12 +59,12 @@ export default function Map() {
           placeholder="Search for seller"
         />
         <Row>
-          <Nav className="justify-content-evenly home-categories-bar">
+          <Nav className="justify-content-evenly map-categories-bar">
             {categories?.map((category) => {
               return (
                 <Nav.Item key={category.id}>
                   <Nav.Link
-                    className="home-categories-link"
+                    className="map-categories-link"
                     onClick={() => setFilter(category.name)}
                   >
                     {category.name}

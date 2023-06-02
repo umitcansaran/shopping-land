@@ -14,9 +14,6 @@ import Message from "../components/Message";
 import CheckoutSteps from "../components/CheckoutSteps";
 import { createOrder } from "../store/actions/orderActions";
 import { ORDER_CREATE_RESET } from "../store/constants/orderConstants";
-import { updateStock } from "../store/actions/stockActions";
-import { listProductStocks } from "../store/actions/productActions";
-import { PRODUCT_STOCKS_RESET } from "../store/constants/productConstants";
 import isNumberDecimal from "../utils/isNumberDecimal";
 
 function PlaceOrderScreen() {
@@ -61,41 +58,6 @@ function PlaceOrderScreen() {
     }
   }, [dispatch, cart, success, order, navigate]);
 
-  const { stocks, loading: loadingStocks } = useSelector(
-    (state) => state.productStocks
-  );
-
-  // !! Updating stock number in the backend !!
-  //   const updateProductStock = () => {
-  //     cart.cartItems.forEach(async (item) => {
-  //       if (item.storeId) {
-  //       await dispatch(listProductStocks(item.id));
-  //       console.log('stocks', stocks)
-  //     }
-  //   }
-  //     dispatch(updateStock(item.stockId, { number: item.storeStock - item.quantity}))
-  //   );
-  // };
-
-  //   for (const item of cartItems) {
-  //     await dispatch(listProductStocks(item.id));
-  // }
-
-  // const updateProductStock = async () => {
-  //   for (const item of cartItems) {
-  //     if (!item.storeId) {
-  //       dispatch(listProductStocks(item.id));
-  //       await loadingStocks
-  //     }
-  //   }
-  // };
-
-  // const allPromises = cartItems.forEach((item) => {
-  //   return dispatch(listProductStocks(item.id));
-  // });
-
-  console.log(cart);
-
   const placeOrder = () => {
     dispatch(
       createOrder({
@@ -119,7 +81,7 @@ function PlaceOrderScreen() {
     .map((item) => item.seller)
     .sort();
 
-  // Remove duplicates and get unique pickup location(s)
+  // Remove duplicates and get unique location(s)
   let pickUpLocations = cartItems
     .filter((item) => item.orderType === "inStore")
     .reduce((accumulator, current) => {

@@ -75,7 +75,7 @@ class Product(models.Model):
     subcategory = models.ForeignKey(to=ProductSubcategory, related_name='products', on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return f'{self.brand} - {self.name}'
 
 
 class Stock(models.Model):

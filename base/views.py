@@ -24,6 +24,20 @@ User = get_user_model()
 
 from .serializers import StoreSerializer, MyStoreSerializer, UserSerializer, RegistrationSerializer, StockSerializer ,ProductSerializer, ProductSubcategorySerializer, ProductCategorySerializer, ProfileSerializer, ReviewSerializer, SearchStockSerializer, OrderSerializer, MySellerOrdersSerializer, MyOrderSerializer, SellerOrderSerializer
 
+class RegistrationView(CreateAPIView):
+    
+    queryset = User.objects.all()
+    permission_classes = []
+    serializer_class = RegistrationSerializer
+
+class UserViewSet(ModelViewSet):
+    """
+    GET: List users profiles. (-> request.user)
+    DELETE: Remove user profile. (-> request.user)
+    """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
 class StoreViewSet(ModelViewSet):
     """
     CRUD operations on the store model
@@ -148,22 +162,6 @@ class MeViewSet(ModelViewSet):
     def get_object(self):
         self.check_permissions(self.request)
         return self.request.user
-
-
-class UserViewSet(ModelViewSet):
-    """
-    GET: List the users profile. (-> request.user)
-    DELETE: Remove user profile. (-> request.user)
-    """
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-class RegistrationView(CreateAPIView):
-    
-    queryset = User.objects.all()
-    permission_classes = []
-    serializer_class = RegistrationSerializer
 
 
 class Search(ListAPIView):
