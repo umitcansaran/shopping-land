@@ -13,7 +13,7 @@ export const listProductCategories = () => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_CATEGORIES_LIST_REQUEST });
 
-    const { data } = await axios.get(`${baseUrl}/api/product-categories/`);
+    const { data } = await axios.get(`${baseUrl}/api/products/categories/`);
 
     dispatch({
       type: PRODUCT_CATEGORIES_LIST_SUCCESS,
@@ -34,7 +34,7 @@ export const listProductSubcategories = () => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_SUBCATEGORIES_LIST_REQUEST });
 
-    const { data } = await axios.get(`${baseUrl}/api/product-subcategories/`);
+    const { data } = await axios.get(`${baseUrl}/api/products/subcategories/`);
 
     dispatch({
       type: PRODUCT_SUBCATEGORIES_LIST_SUCCESS,

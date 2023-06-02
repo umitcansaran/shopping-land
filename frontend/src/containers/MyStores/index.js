@@ -47,7 +47,6 @@ export default function MyStores() {
 
   useEffect(() => {
     if (deleteConfirm === "store") {
-      console.log('yess')
       setDeleteConfirm(null);
       setDeleteWindow(false);
       setTimeout(() => {

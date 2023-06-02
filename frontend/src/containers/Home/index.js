@@ -50,22 +50,22 @@ export default function Home() {
       {
         queryKey: ["latestReviews"],
         queryFn: () =>
-          axios.get("/api/latest-reviews/").then((res) => res.data),
+          axios.get("/api/products/latest-reviews/").then((res) => res.data),
       },
       {
         queryKey: ["latestProducts"],
         queryFn: () =>
-          axios.get("/api/latest-products/").then((res) => res.data),
+          axios.get("/api/products/latest-products/").then((res) => res.data),
       },
       {
         queryKey: ["latestSellers"],
         queryFn: () =>
-          axios.get("/api/latest-sellers/").then((res) => res.data),
+          axios.get("/api/profiles/latest-sellers/").then((res) => res.data),
       },
       {
         queryKey: ["categories"],
         queryFn: () =>
-          axios.get("api/product-categories/").then((res) => res.data),
+          axios.get("api/products/categories/").then((res) => res.data),
       },
     ],
   });

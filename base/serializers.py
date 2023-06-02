@@ -313,7 +313,7 @@ class SellerOrderSerializer(serializers.ModelSerializer):
         return {
             'id': obj.order.id,
             'isPaid': obj.order.isPaid,
-            'paidAt': obj.order.paidAt,
+            'paidAt': obj.order.paidAt
         }
     
     def get_onlineOrderItems(self, obj):
@@ -332,9 +332,16 @@ class SellerOrderSerializer(serializers.ModelSerializer):
         return serializer.data
     
 class MySellerOrdersSerializer(serializers.ModelSerializer):
+    order = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = SellerOrder
         fields = '__all__'
+
+    def get_order(self, obj):
+        return {
+            'isPaid': obj.order.isPaid,
+            'paidAt': obj.order.paidAt
+        }
     
     

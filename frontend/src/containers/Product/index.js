@@ -16,7 +16,6 @@ import {
 } from "react-bootstrap";
 import {
   listProductDetails,
-  listProductStocks,
   listProductReviews,
   createProductReview,
 } from "../../store/actions/productActions";
@@ -24,11 +23,12 @@ import { myDetails } from "../../store/actions/userActions";
 import {
   PRODUCT_CREATE_REVIEW_RESET,
   PRODUCT_DETAILS_RESET,
-  PRODUCT_STOCKS_RESET,
 } from "../../store/constants/productConstants";
 import StocksCart from "./StocksCart";
 import { addToCart } from "../../store/actions/cartActions";
 import isNumberDecimal from "../../utils/isNumberDecimal";
+import { listProductStocks } from "../../store/actions/stockActions";
+import { PRODUCT_STOCKS_RESET } from "../../store/constants/stockConstants";
 
 function ProductScreen() {
   const [quantity, setQuantity] = useState(0);
@@ -37,9 +37,7 @@ function ProductScreen() {
   const [productStock, setProductStock] = useState("");
   const [stockId, setStockId] = useState("");
   const [storeId, setStoreId] = useState("");
-
   const [orderType, setOrderType] = useState("");
-
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
 
@@ -63,6 +61,8 @@ function ProductScreen() {
     error: errorProductReview,
     success: successProductReview,
   } = useSelector((state) => state.productReviewCreate);
+
+  const isLoggedInUserProduct = user.id === product.seller ? true : false;
 
   useEffect(() => {
     if (successProductReview) {
@@ -162,8 +162,6 @@ function ProductScreen() {
                   />
                 </ListGroup.Item>
 
-                {/* <ListGroup.Item>Price: CHF {product.price}</ListGroup.Item> */}
-
                 <ListGroup.Item>
                   Description: {product.description}
                 </ListGroup.Item>
@@ -229,6 +227,7 @@ function ProductScreen() {
                       inStoreOrderItemStock={inStoreOrderItemStock}
                       onlineOrderItemStock={onlineOrderItemStock}
                       totalStock={totalStock}
+                      isLoggedInUserProduct={isLoggedInUserProduct}
                     />
                   )}
                   {product.seller === user?.id && (

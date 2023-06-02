@@ -131,7 +131,6 @@ export default function CustomerOrder() {
   ]);
 
   const successPaymentHandler = (paymentResult) => {
-    console.log("paymentResult", paymentResult);
     dispatch(payOrder(orderId, paymentResult));
   };
 
@@ -408,8 +407,6 @@ export default function CustomerOrder() {
                                 });
                               }}
                               onApprove={(data, actions) => {
-                                console.log("data", data);
-                                console.log("actions", actions);
                                 return actions.order
                                   .capture()
                                   .then(successPaymentHandler());

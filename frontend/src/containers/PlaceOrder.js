@@ -53,7 +53,7 @@ function PlaceOrderScreen() {
       navigate("/payment");
     }
     if (success) {
-      navigate(`/order/${order.id}`);
+      navigate(`/customer-order/${order.id}`);
       dispatch({ type: ORDER_CREATE_RESET });
     }
   }, [dispatch, cart, success, order, navigate]);

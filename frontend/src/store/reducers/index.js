@@ -42,7 +42,6 @@ import {
   latestProductsListReducer,
   latestReviewsListReducer,
   productDetailsReducer,
-  productStocksReducer,
   productReviewsReducer,
   productDeleteReducer,
   productCreateReducer,
@@ -55,6 +54,7 @@ import {
   createStockReducer,
   stockListReducer,
   stockUpdateReducer,
+  productStocksReducer,
 } from './stockReducers'
 
 import {

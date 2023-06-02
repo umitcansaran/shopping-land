@@ -1,86 +1,78 @@
 from django.urls import path
-from . import views
+from .views import order_views, product_views, profile_views, search_views, sellerOrder_views, stock_views, user_views, store_views
 from rest_framework_simplejwt.views import (
     TokenObtainPairView
 )
 
-from django.conf.urls.static import static
-from django.conf import settings
-
 urlpatterns = [
 
-    # REGISTRATION
-    path('registration/', views.RegistrationView.as_view(), name='registration'),
+    # USER REGISTRATION
+    path('users/registration/', user_views.RegistrationView.as_view(), name='registration'),
 
     # USER
-    path('users/', views.UserViewSet.as_view({'get': 'list'})),
-    path('user/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('user/<int:pk>/', views.UserViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})),
+    path('users/', user_views.UserViewSet.as_view({'get': 'list'})),
+    path('users/<int:pk>/', user_views.UserViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})),
+    path('users/me/', user_views.MeViewSet.as_view({'get': 'retrieve', 'patch': 'partial_update'})),
+    path('users/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
 
     # PROFILE
-    path('me/', views.MeViewSet.as_view({'get': 'retrieve', 'patch': 'partial_update'})),
-    path('profiles/', views.ProfileViewSet.as_view({'get': 'list'})),
-    path('profile/new/', views.ProfileViewSet.as_view({'post': 'create'})),
-    path('profile/<int:pk>/', views.ProfileViewSet.as_view({'get': 'retrieve', 'patch': 'partial_update'})),
-    path('profiles/sellers/', views.ListSellerProfiles.as_view()),
-    path('profile/user/<int:user_id>/', views.ListProfileByUser.as_view()),
+    path('profiles/', profile_views.ProfileViewSet.as_view({'get': 'list'})),
+    path('profiles/new/', profile_views.ProfileViewSet.as_view({'post': 'create'})),
+    path('profiles/<int:pk>/', profile_views.ProfileViewSet.as_view({'get': 'retrieve', 'patch': 'partial_update'})),
+    path('profiles/sellers/', profile_views.ListSellerProfiles.as_view()),
+    path('profiles/latest-sellers/', profile_views.LatestSellers.as_view(), name='latest-sellers'),
+    path('profiles/user/<int:user_id>/', profile_views.ListProfileByUser.as_view()),
+    path('latest-sellers/', profile_views.LatestSellers.as_view(), name='latest-sellers'),
  
     # STORE
-    path('stores/', views.StoreViewSet.as_view({'get': 'list'})),
-    path('store/new/', views.StoreViewSet.as_view({'post': 'create'})),
-    path('store/<int:pk>/', views.StoreViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})),
-    path('mystores/', views.MyStoresViewSet.as_view({'get': 'list', 'delete': 'destroy'})),
-    path('stores/user/<int:user_id>/', views.ListStoresByUser.as_view()),
+    path('stores/', store_views.StoreViewSet.as_view({'get': 'list'})),
+    path('stores/new/', store_views.StoreViewSet.as_view({'post': 'create'})),
+    path('stores/<int:pk>/', store_views.StoreViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})),
+    path('stores/mystores/', store_views.MyStoresViewSet.as_view({'get': 'list', 'delete': 'destroy'})),
+    path('stores/user/<int:user_id>/', store_views.ListStoresByUser.as_view()),
 
     # PRODUCT
-    path('products/', views.ProductViewSet.as_view({'get': 'list'})),
-    path('product/new/', views.ProductViewSet.as_view({'post': 'create'})),
-    path('product/<int:pk>/', views.ProductViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})),
-    path('product/stocks/<int:product_id>/', views.ListProductStocks.as_view()),
-    path('myproducts/', views.MyProductsViewSet.as_view({'get': 'list'})),
-    path('latest-products/', views.LatestProducts.as_view(), name='latest-products'),
-    path('products/user/<int:user_id>/', views.ListProductsByUser.as_view()),
+    path('products/', product_views.ProductViewSet.as_view({'get': 'list'})),
+    path('products/new/', product_views.ProductViewSet.as_view({'post': 'create'})),
+    path('products/<int:pk>/', product_views.ProductViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})),
+    path('products/myproducts/', product_views.MyProductsViewSet.as_view({'get': 'list'})),
+    path('products/latest-products/', product_views.LatestProducts.as_view(), name='latest-products'),
+    path('products/user/<int:user_id>/', product_views.ListProductsByUser.as_view()),
 
-    # REVIEW
-    path('product/<int:pk>/reviews/', views.createProductReview, name="create-review"),
-    path('reviews/', views.Reviews.as_view(), name='reviews'),
-    path('latest-reviews/', views.LatestReviews.as_view(), name='latest-reviews'),
-    path('product/reviews/<int:product_id>/', views.ListProductReviews.as_view()),
+    # PRODUCT REVIEW
+    path('products/<int:pk>/reviews/', product_views.createProductReview, name="create-review"),
+    path('products/reviews/', product_views.Reviews.as_view(), name='reviews'),
+    path('products/latest-reviews/', product_views.LatestReviews.as_view(), name='latest-reviews'),
+    path('products/reviews/<int:product_id>/', product_views.ListProductReviews.as_view()),
 
-    # SELLER
-    path('latest-sellers/', views.LatestSellers.as_view(), name='latest-sellers'),
+    # PRODUCT CATEGORY
+    path('products/categories/', product_views.ProductCategory.as_view(), name='categories'),
+    path('products/subcategories/', product_views.ProductSubcategory.as_view(), name='subcategories'),
 
     # STOCK
-    path('stocks/', views.StockViewSet.as_view({'get': 'list'})),
-    # path('stock/new/', views.StockViewSet.as_view({'post': 'create'})),
-    path('stock/new/', views.createStock, name="stock-create"),
-    path('stock/<int:pk>/', views.updateStock, name="stock-update"),
-    path('stock/<int:pk>/', views.StockViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})),
-    path('store/stocks/<int:store_id>/', views.ListStoreStocks.as_view()),
+    path('stocks/', stock_views.StockViewSet.as_view({'get': 'list'})),
+    path('stocks/<int:pk>/', stock_views.StockViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})),
+    path('stocks/new/', stock_views.createStock, name="stock-create"),
+    path('stocks/<int:pk>/', stock_views.updateStock, name="stock-update"),
+    path('stocks/product/<int:product_id>/', stock_views.ListProductStocks.as_view()), 
+    path('stocks/store/<int:store_id>/', stock_views.ListStoreStocks.as_view()),
+ 
+    # CUSTOMER ORDER
+    path('orders/', order_views.getOrders, name='orders'),
+    path('orders/<int:pk>/', order_views.getOrderById, name='seller-order'),
+    path('orders/myorders/', order_views.getMyOrders, name='customer-myorders'),
+    path('orders/add/', order_views.createOrder, name='create-order'),
+    path('orders/<int:pk>/pay/', order_views.updateOrderToPaid, name='pay'),
+    path('orders/order-items/<int:pk>/retrieve/', order_views.updateOrderItemToRetrieved, name='order-item-retrieved'),
 
-    # CATEGORIES
-    path('product-categories/', views.ProductCategory.as_view(), name='categories'),
-    path('product-subcategories/', views.ProductSubcategory.as_view(), name='sub-categories'),
+    # SELLER ORDER
+    path('seller-orders', sellerOrder_views.getSellerOrders, name='seller-orders'),
+    path('seller-orders/<int:pk>/', sellerOrder_views.getSellerOrderById, name='seller-order'),
+    path('seller-orders/myorders/', sellerOrder_views.getMySellerOrders, name='seller-myorders'),
+    path('seller-orders/<int:pk>/send/', sellerOrder_views.updateSellerOrderToSent, name='seller-order-send'),
 
     # SEARCH
-    path('search/', views.Search.as_view()),
-
-    # ORDER
-    path('orders/', views.getOrders, name='orders'),
-    path('seller-orders/', views.getSellerOrders, name='seller-orders'),
-    path('order/add/', views.addOrderItems, name='orders-add'),
-    path('orders/mypurchases/', views.getMyPurchases, name='mypurchases'),
-    path('seller-orders/myorders/', views.getMySellerOrders, name='myorders'),
-    path('orders/myorders/', views.getMyOrders, name='myorders'),
-    path('order/<int:pk>/', views.getOrderById, name='user-order'),
-    path('seller-order/<int:pk>/', views.getSellerOrderById, name='user-order'),
-    path('seller-order/<int:pk>/send/', views.updateSellerOrderToSent, name='seller-order-sent'),
-    path('order-item/<int:pk>/retrieve/', views.updateOrderItemToRetrieved, name='order-item-retrieved'),
-
-    
-    # path('seller-order/<int:pk>/', views.ListSellerOrder.as_view()),
-    # path('orders/mypurchases/', views.getMyPurchases, name='mypurchases'),
-    # path('seller-order/<int:pk>/', views.getSellerOrderById, name='user-seller-order'),
-    path('order/<int:pk>/pay/', views.updateOrderToPaid, name='pay')
+    path('search/', search_views.Search.as_view())
 ]
+
 

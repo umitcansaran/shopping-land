@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
-import { listMyPurchases } from "../../store/actions/orderActions";
+import { listMyOrders } from "../../store/actions/orderActions";
 
 export default function CustomerOrders() {
   const dispatch = useDispatch();
@@ -18,10 +18,8 @@ export default function CustomerOrders() {
   } = useSelector((state) => state.purchaseMyList);
 
   useEffect(() => {
-    dispatch(listMyPurchases());
+    dispatch(listMyOrders());
   }, [dispatch, navigate]);
-
-  console.log(orders);
 
   return (
     <Container fluid>

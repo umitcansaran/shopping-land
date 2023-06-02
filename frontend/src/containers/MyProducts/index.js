@@ -41,8 +41,6 @@ export default function MyProducts() {
     (state) => state.productDelete
   );
 
-  console.log(myStores)
-
   useEffect(() => {
     if (createProductSuccess) {
       setTimeout(() => {

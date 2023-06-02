@@ -38,8 +38,6 @@ export default function SellerOrder() {
     loading: loadingSellerOrder,
   } = useSelector((state) => state.sellerOrderDetails);
 
-  console.log(sellerOrder);
-
   const sellerOrderSend = useSelector((state) => state.sellerOrderSend);
   const { loading: loadingSellerOrderSend, success: successSellerOrderSend } =
     sellerOrderSend;
@@ -58,6 +56,13 @@ export default function SellerOrder() {
 
   const hasInStorePickup =
     sellerOrder?.inStoreOrderItems.length > 0 ? true : false;
+
+  console.log(sellerOrder)
+  const itemsNotShipped = hasOnlinePurchase && !sellerOrder.isShipped
+  const itemsNotRetrieved = sellerOrder?.inStoreOrderItems.filter(item => item.isRetrieved === false).length > 0
+
+  console.log('itemsNotShipped', itemsNotShipped)
+  console.log('itemsNotRetrieved', itemsNotRetrieved)
 
   let pickUpLocations = sellerOrder?.inStoreOrderItems
     .reduce((accumulator, current) => {

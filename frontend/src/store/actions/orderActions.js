@@ -53,7 +53,7 @@ export const createOrder = (order) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.post(
-      `${baseUrl}/api/order/add/`,
+      `${baseUrl}/api/orders/add/`,
       order,
       config
     );
@@ -97,7 +97,7 @@ export const getOrderDetails = (id) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`${baseUrl}/api/order/${id}/`, config);
+    const { data } = await axios.get(`${baseUrl}/api/orders/${id}/`, config);
 
     dispatch({
       type: ORDER_DETAILS_SUCCESS,
@@ -131,7 +131,7 @@ export const getSellerOrderDetails = (id) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`${baseUrl}/api/seller-order/${id}/`, config);
+    const { data } = await axios.get(`${baseUrl}/api/seller-orders/${id}/`, config);
 
     dispatch({
       type: SELLER_ORDER_DETAILS_SUCCESS,
@@ -166,7 +166,7 @@ export const payOrder = (id, paymentResult) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.put(
-      `${baseUrl}/api/order/${id}/pay/`,
+      `${baseUrl}/api/orders/${id}/pay/`,
       paymentResult,
       config
     );
@@ -204,7 +204,7 @@ export const sendSellerOrder = (id) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.put(
-      `${baseUrl}/api/seller-order/${id}/send/`,
+      `${baseUrl}/api/seller-orders/${id}/send/`,
       {},
       config
     );
@@ -242,7 +242,7 @@ export const retrieveSellerOrder = (id) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.put(
-      `${baseUrl}/api/order-item/${id}/retrieve/`,
+      `${baseUrl}/api/orders/order-items/${id}/retrieve/`,
       {},
       config
     );
@@ -262,7 +262,7 @@ export const retrieveSellerOrder = (id) => async (dispatch, getState) => {
   }
 };
 
-export const listMyPurchases = () => async (dispatch, getState) => {
+export const listMyOrders = () => async (dispatch, getState) => {
   try {
     dispatch({
       type: ORDER_LIST_MY_REQUEST,
@@ -280,7 +280,7 @@ export const listMyPurchases = () => async (dispatch, getState) => {
     };
 
     const { data } = await axios.get(
-      `${baseUrl}/api/orders/mypurchases/`,
+      `${baseUrl}/api/orders/myorders/`,
       config
     );
 

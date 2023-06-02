@@ -38,6 +38,7 @@ export default function SellerOrders() {
                 <th>Date</th>
                 <th>Total</th>
                 <th>Paid</th>
+                <th>Completed</th>
                 <th></th>
               </tr>
             </thead>
@@ -57,7 +58,12 @@ export default function SellerOrders() {
                   </td>
                   <td>
                     <LinkContainer to={`/seller-order/${sellerOrder.id}`}>
-                      <Button className="btn-sm">Details</Button>
+                      <Button
+                        variant={!sellerOrder.order.isPaid ? "warning" : "primary"}
+                        // disabled={!sellerOrder.order.isPaid}
+                      >
+                        {!sellerOrder.order.isPaid ? "Not Paid" : "Details"}
+                      </Button>
                     </LinkContainer>
                   </td>
                 </tr>

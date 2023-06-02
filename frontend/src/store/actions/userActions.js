@@ -55,7 +55,7 @@ export const login = (username, password) => async (dispatch) => {
       type: USER_LOGIN_REQUEST,
     });
 
-    const { data } = await axios.post(`${baseUrl}/api/user/login/`, {
+    const { data } = await axios.post(`${baseUrl}/api/users/login/`, {
       username: username,
       password: password,
     });
@@ -101,7 +101,7 @@ export const createProfile =
         type: PROFILE_CREATE_REQUEST,
       });
 
-      const { data } = await axios.post(`${baseUrl}/api/profile/new/`, {
+      const { data } = await axios.post(`${baseUrl}/api/profiles/new/`, {
         user: id,
         status: profile,
       });
@@ -132,7 +132,7 @@ export const updateProfile = (profile, formData) => async (dispatch) => {
     };
 
     const { data } = await axios.patch(
-      `${baseUrl}/api/profile/${profile.id}/`,
+      `${baseUrl}/api/profiles/${profile.id}/`,
       formData,
       config
     );
@@ -170,7 +170,7 @@ export const deleteAccount = (id) => async (dispatch, getState) => {
       },
     };
 
-    await axios.delete(`${baseUrl}/api/user/${id}/`, config);
+    await axios.delete(`${baseUrl}/api/users/${id}/`, config);
 
     dispatch({
       type: USER_DELETE_SUCCESS,
@@ -193,7 +193,7 @@ export const register =
         type: USER_REGISTER_REQUEST,
       });
 
-      const { data } = await axios.post(`${baseUrl}/api/registration/`, {
+      const { data } = await axios.post(`${baseUrl}/api/users/registration/`, {
         username: username,
         email: email,
         password: password,
@@ -234,7 +234,7 @@ export const myDetails = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`${baseUrl}/api/me/`, config);
+    const { data } = await axios.get(`${baseUrl}/api/users/me/`, config);
 
     dispatch({
       type: MY_DETAILS_SUCCESS,
@@ -350,7 +350,7 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`${baseUrl}/api/user/${id}/`, config);
+    const { data } = await axios.get(`${baseUrl}/api/users/${id}/`, config);
 
     dispatch({
       type: USER_DETAILS_SUCCESS,
@@ -373,7 +373,7 @@ export const getProfileDetails = (id) => async (dispatch, getState) => {
       type: PROFILE_DETAILS_REQUEST,
     });
 
-    const { data } = await axios.get(`${baseUrl}/api/profile/${id}/`);
+    const { data } = await axios.get(`${baseUrl}/api/profiles/${id}/`);
 
     dispatch({
       type: PROFILE_DETAILS_SUCCESS,
@@ -394,7 +394,7 @@ export const listProfileByUser = (id) => async (dispatch) => {
   try {
     dispatch({ type: PROFILE_BY_USER_REQUEST });
 
-    const { data } = await axios.get(`${baseUrl}/api/profile/user/${id}`);
+    const { data } = await axios.get(`${baseUrl}/api/profiles/user/${id}`);
 
     dispatch({
       type: PROFILE_BY_USER_SUCCESS,
@@ -415,7 +415,7 @@ export const listLatestSellers = () => async (dispatch) => {
   try {
     dispatch({ type: LATEST_SELLERS_LIST_REQUEST });
 
-    const { data } = await axios.get(`${baseUrl}/api/latest-reviews/`);
+    const { data } = await axios.get(`${baseUrl}/api/latest-sellers/`);
 
     dispatch({
       type: LATEST_SELLERS_LIST_SUCCESS,

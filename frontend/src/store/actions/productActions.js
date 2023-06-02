@@ -16,9 +16,6 @@ import {
   PRODUCT_DETAILS_REQUEST,
   PRODUCT_DETAILS_SUCCESS,
   PRODUCT_DETAILS_FAIL,
-  PRODUCT_STOCKS_REQUEST,
-  PRODUCT_STOCKS_SUCCESS,
-  PRODUCT_STOCKS_FAIL,
   PRODUCT_REVIEWS_REQUEST,
   PRODUCT_REVIEWS_SUCCESS,
   PRODUCT_REVIEWS_FAIL,
@@ -57,7 +54,7 @@ export const createProduct = (formData) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.post(`/api/product/new/`, formData);
+    const { data } = await axios.post(`/api/products/new/`, formData);
     dispatch({
       type: PRODUCT_CREATE_SUCCESS,
       payload: data,
@@ -109,7 +106,7 @@ export const listMyProducts = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`${baseUrl}/api/myproducts/`, config);
+    const { data } = await axios.get(`${baseUrl}/api/products/myproducts/`, config);
 
     dispatch({
       type: PRODUCT_MY_LIST_SUCCESS,
@@ -130,7 +127,7 @@ export const listLatestProducts = () => async (dispatch) => {
   try {
     dispatch({ type: LATEST_PRODUCTS_LIST_REQUEST });
 
-    const { data } = await axios.get(`${baseUrl}/api/latest-products/`);
+    const { data } = await axios.get(`${baseUrl}/api/products/latest-products/`);
 
     dispatch({
       type: LATEST_PRODUCTS_LIST_SUCCESS,
@@ -151,7 +148,7 @@ export const listLatestReviews = () => async (dispatch) => {
   try {
     dispatch({ type: LATEST_REVIEWS_LIST_REQUEST });
 
-    const { data } = await axios.get(`${baseUrl}/api/latest-reviews/`);
+    const { data } = await axios.get(`${baseUrl}/api/products/latest-reviews/`);
 
     dispatch({
       type: LATEST_REVIEWS_LIST_SUCCESS,
@@ -172,7 +169,7 @@ export const listProductDetails = (id) => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_DETAILS_REQUEST });
 
-    const { data } = await axios.get(`${baseUrl}/api/product/${id}`);
+    const { data } = await axios.get(`${baseUrl}/api/products/${id}`);
 
     dispatch({
       type: PRODUCT_DETAILS_SUCCESS,
@@ -189,32 +186,13 @@ export const listProductDetails = (id) => async (dispatch) => {
   }
 };
 
-export const listProductStocks = (id) => async (dispatch) => {
-  try {
-    dispatch({ type: PRODUCT_STOCKS_REQUEST });
 
-    const { data } = await axios.get(`${baseUrl}/api/product/stocks/${id}`);
-
-    dispatch({
-      type: PRODUCT_STOCKS_SUCCESS,
-      payload: data,
-    });
-  } catch (error) {
-    dispatch({
-      type: PRODUCT_STOCKS_FAIL,
-      payload:
-        error.response && error.response.data.detail
-          ? error.response.data.detail
-          : error.message,
-    });
-  }
-};
 
 export const listProductReviews = (id) => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_REVIEWS_REQUEST });
 
-    const { data } = await axios.get(`${baseUrl}/api/product/reviews/${id}`);
+    const { data } = await axios.get(`${baseUrl}/api/products/reviews/${id}`);
 
     dispatch({
       type: PRODUCT_REVIEWS_SUCCESS,
@@ -249,7 +227,7 @@ export const deleteProduct = (id) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.delete(
-      `${baseUrl}/api/product/${id}/`,
+      `${baseUrl}/api/products/${id}/`,
       config
     );
 
@@ -286,7 +264,7 @@ export const createProductReview =
       };
 
       const { data } = await axios.post(
-        `${baseUrl}/api/product/${productId}/reviews/`,
+        `${baseUrl}/api/products/${productId}/reviews/`,
         review,
         config
       );
@@ -309,7 +287,7 @@ export const listReviews = () => async (dispatch) => {
   try {
     dispatch({ type: REVIEW_LIST_REQUEST });
 
-    const { data } = await axios.get(`${baseUrl}/api/reviews/`);
+    const { data } = await axios.get(`${baseUrl}/api/products/reviews/`);
 
     dispatch({
       type: REVIEW_LIST_SUCCESS,

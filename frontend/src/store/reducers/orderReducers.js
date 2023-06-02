@@ -255,7 +255,6 @@ export const sellerOrderMyListReducer = (
       };
 
     case SELLER_ORDER_LIST_MY_SUCCESS:
-      console.log(action.payload)
       return {
         loading: false,
         sellerOrders: action.payload,

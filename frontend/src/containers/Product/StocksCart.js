@@ -12,6 +12,7 @@ export default function StocksCart({
   inStoreOrderItemStock,
   onlineOrderItemStock,
   totalStock,
+  isLoggedInUserProduct
 }) {
   return (
     <>
@@ -43,7 +44,7 @@ export default function StocksCart({
                         });
                       });
                     }}
-                    disabled={stock.number === 0}
+                    disabled={stock.number === 0 || isLoggedInUserProduct} 
                   >
                     <Row>
                       <Col
@@ -114,7 +115,7 @@ export default function StocksCart({
                 setOrderType("online");
                 setSelectedStore({});
               }}
-              disabled={totalStock === 0}
+              disabled={totalStock === 0 || isLoggedInUserProduct}
             >
               <Row>
                 <Col

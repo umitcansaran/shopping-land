@@ -68,7 +68,7 @@ export const listMyStores = () => async (dispatch, getState) => {
         }
 
         const { data } = await axios.get(
-            `${baseUrl}/api/mystores/`,
+            `${baseUrl}/api/stores/mystores/`,
             config
         )
 
@@ -102,7 +102,7 @@ export const createStore = (formData) => async (dispatch, getState) => {
         // }
 
         const { data } = await axios.post(
-            `${baseUrl}/api/store/new/`,
+            `${baseUrl}/api/stores/new/`,
             formData
         )
 
@@ -139,7 +139,7 @@ export const deleteStore = (id) => async (dispatch, getState) => {
         }
 
         await axios.delete(
-            `${baseUrl}/api/store/${id}/`, config
+            `${baseUrl}/api/stores/${id}/`, config
         )
 
         dispatch({
@@ -161,7 +161,7 @@ export const listStoreDetails = (id) => async (dispatch) => {
     try {
         dispatch({ type: STORE_DETAILS_REQUEST })
 
-        const { data } = await axios.get(`${baseUrl}/api/store/${id}`)
+        const { data } = await axios.get(`${baseUrl}/api/stores/${id}`)
 
         dispatch({
             type: STORE_DETAILS_SUCCESS,
@@ -182,7 +182,7 @@ export const listStoreStocks = (id) => async (dispatch) => {
     try {
         dispatch({ type: STORE_STOCKS_REQUEST })
 
-        const { data } = await axios.get(`${baseUrl}/api/store/stocks/${id}`)
+        const { data } = await axios.get(`${baseUrl}/api/stocks/store/${id}`)
 
         dispatch({
             type: STORE_STOCKS_SUCCESS,

@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { Badge, Button, Col, Form, ListGroup, Row } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { PRODUCT_STOCKS_RESET } from "../../store/constants/productConstants";
 import "./index.css";
+import { PRODUCT_STOCKS_RESET } from "../../store/constants/stockConstants";
 
 function MyProductStocks({
   product,

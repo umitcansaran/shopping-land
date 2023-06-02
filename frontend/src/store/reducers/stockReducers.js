@@ -12,6 +12,11 @@ import {
     STOCK_CREATE_SUCCESS,
     STOCK_CREATE_FAIL,
 
+    PRODUCT_STOCKS_REQUEST,
+    PRODUCT_STOCKS_SUCCESS,
+    PRODUCT_STOCKS_FAIL,
+    PRODUCT_STOCKS_RESET,
+
     STOCK_SEARCH_SUCCESS,
 
 } from '../constants/stockConstants'
@@ -75,3 +80,22 @@ export const createStockReducer = (state = {}, action) => {
             return state
     }
 }
+
+export const productStocksReducer = (state = { stocks: [] }, action) => {
+    switch (action.type) {
+      case PRODUCT_STOCKS_REQUEST:
+        return { loading: true, ...state };
+  
+      case PRODUCT_STOCKS_SUCCESS:
+        return { loading: false, stocks: action.payload };
+  
+      case PRODUCT_STOCKS_FAIL:
+        return { loading: false, error: action.payload };
+  
+      case PRODUCT_STOCKS_RESET:
+        return { stocks: [] };
+  
+      default:
+        return state;
+    }
+  };

@@ -19,7 +19,7 @@ export const addToCart =
     storeId
   ) =>
   async (dispatch, getState) => {
-    const { data } = await axios.get(`${baseUrl}/api/product/${id}`);
+    const { data } = await axios.get(`${baseUrl}/api/products/${id}`);
 
     dispatch({
       type: CART_ADD_ITEM,
