@@ -7,8 +7,8 @@ from django.contrib.auth import get_user_model
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import ListAPIView
 from rest_framework.pagination import LimitOffsetPagination
-from ..models import Product, ProductCategory, ProductSubcategory, Review, Stock
-from ..serializers import ProductSerializer, ProductCategorySerializer, ProductSubcategorySerializer, ReviewSerializer, StockSerializer
+from ..models import Product, ProductCategory, ProductSubcategory, Review
+from ..serializers import ProductSerializer, ProductCategorySerializer, ProductSubcategorySerializer, ReviewSerializer
 
 User = get_user_model()
 

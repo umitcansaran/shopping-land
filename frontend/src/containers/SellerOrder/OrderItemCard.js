@@ -32,25 +32,24 @@ export default function MyOrderItemCard({ item, pickUpHandler, sellerOrder }) {
         </Row>
 
         {item.orderType === "inStore" && (
-          <Row className="justify-content-center">
-            <Col md={3} className="text-center">
-              {item.orderType === "inStore" &&
-                (item.isRetrieved ? (
-                  <Message variant="success">
-                    Retrieved on {item.retrievedAt.substring(0, 10)}
-                  </Message>
-                ) : (
-                  <Button
-                    type="button"
-                    className="btn-block blue-button"
-                    onClick={() => pickUpHandler(item.id)}
-                    disabled={!sellerOrder.order.isPaid}
-                  >
-                    Mark As Retrieved
-                  </Button>
-                ))}
-            </Col>
-          </Row>
+                              <Row className="justify-content-center my-1">
+                              <Col md={4} className="text-center">
+                                {item.isRetrieved ? (
+                                  <Message variant="success">
+                                    Retrieved on{" "}
+                                    {item.retrievedAt.substring(0, 10) + ' at ' + item.retrievedAt.substring(11, 16)}
+                                  </Message>
+                                ) : (
+                                  <Button
+                                  className="blue-button"
+                                    onClick={() => pickUpHandler(item.id)}
+                                    disabled={!sellerOrder.order.isPaid}
+                                  >
+                                    Mark As Retrieved
+                                  </Button>
+                                )}
+                              </Col>
+                            </Row>
         )}
       </ListGroup.Item>
     </>

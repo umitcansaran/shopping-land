@@ -57,10 +57,18 @@ export default function SellerOrders() {
                     )}
                   </td>
                   <td>
+                    {sellerOrder.isCompleted ? (
+                      sellerOrder.completedAt.substring(0, 10)
+                    ) : (
+                      <i className="fas fa-times" style={{ color: "red" }}></i>
+                    )}
+                  </td>
+                  <td>
                     <LinkContainer to={`/seller-order/${sellerOrder.id}`}>
                       <Button
+                      className="blue-button"
                         variant={!sellerOrder.order.isPaid ? "warning" : "primary"}
-                        // disabled={!sellerOrder.order.isPaid}
+                        disabled={!sellerOrder.order.isPaid}
                       >
                         {!sellerOrder.order.isPaid ? "Not Paid" : "Details"}
                       </Button>

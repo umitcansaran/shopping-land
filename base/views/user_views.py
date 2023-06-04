@@ -1,11 +1,9 @@
 from django.contrib.auth import get_user_model
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.generics import ListAPIView, CreateAPIView
-from ..models import Profile
-from ..serializers import UserSerializer, RegistrationSerializer, ProfileSerializer
+from rest_framework.generics import CreateAPIView
+from ..serializers import UserSerializer, RegistrationSerializer
 
 User = get_user_model()
-
 
 class RegistrationView(CreateAPIView):
     

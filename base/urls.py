@@ -51,9 +51,9 @@ urlpatterns = [
 
     # STOCK
     path('stocks/', stock_views.StockViewSet.as_view({'get': 'list'})),
-    path('stocks/<int:pk>/', stock_views.StockViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})),
     path('stocks/new/', stock_views.createStock, name="stock-create"),
     path('stocks/<int:pk>/', stock_views.updateStock, name="stock-update"),
+    path('stocks/<int:pk>/', stock_views.StockViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})),
     path('stocks/product/<int:product_id>/', stock_views.ListProductStocks.as_view()), 
     path('stocks/store/<int:store_id>/', stock_views.ListStoreStocks.as_view()),
  
@@ -70,6 +70,7 @@ urlpatterns = [
     path('seller-orders/<int:pk>/', sellerOrder_views.getSellerOrderById, name='seller-order'),
     path('seller-orders/myorders/', sellerOrder_views.getMySellerOrders, name='seller-myorders'),
     path('seller-orders/<int:pk>/send/', sellerOrder_views.updateSellerOrderToSent, name='seller-order-send'),
+    path('seller-orders/<int:pk>/complete/', sellerOrder_views.updateSellerOrderToCompleted, name='seller-order-complete'),
 
     # SEARCH
     path('search/', search_views.Search.as_view())

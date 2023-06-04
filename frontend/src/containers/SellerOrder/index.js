@@ -17,8 +17,11 @@ import {
   getSellerOrderDetails,
   sendSellerOrder,
   retrieveSellerOrder,
+  completeSellerOrder,
 } from "../../store/actions/orderActions";
 import {
+  SELLER_ORDER_COMPLETE_RESET,
+  SELLER_ORDER_DETAILS_RESET,
   SELLER_ORDER_RETRIEVE_RESET,
   SELLER_ORDER_SEND_RESET,
 } from "../../store/constants/orderConstants";
@@ -48,6 +51,12 @@ export default function SellerOrder() {
     success: successSellerOrderRetrieve,
   } = sellerItemRetrieve;
 
+  const sellerOrderComplete = useSelector((state) => state.sellerOrderComplete);
+  const {
+    loading: loadingSellerOrderComplete,
+    success: successSellerOrderComplete,
+  } = sellerOrderComplete;
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
@@ -57,12 +66,12 @@ export default function SellerOrder() {
   const hasInStorePickup =
     sellerOrder?.inStoreOrderItems.length > 0 ? true : false;
 
-  console.log(sellerOrder)
-  const itemsNotShipped = hasOnlinePurchase && !sellerOrder.isShipped
-  const itemsNotRetrieved = sellerOrder?.inStoreOrderItems.filter(item => item.isRetrieved === false).length > 0
-
-  console.log('itemsNotShipped', itemsNotShipped)
-  console.log('itemsNotRetrieved', itemsNotRetrieved)
+  const hasItemNotShipped = hasOnlinePurchase && !sellerOrder?.isShipped;
+  const hasItemNotRetrieved =
+    hasInStorePickup &&
+    sellerOrder?.inStoreOrderItems.find((item) => item.isRetrieved === false)
+      ? true
+      : false;
 
   let pickUpLocations = sellerOrder?.inStoreOrderItems
     .reduce((accumulator, current) => {
@@ -107,17 +116,42 @@ export default function SellerOrder() {
     ) {
       dispatch({ type: SELLER_ORDER_SEND_RESET });
       dispatch({ type: SELLER_ORDER_RETRIEVE_RESET });
+      dispatch({ type: SELLER_ORDER_COMPLETE_RESET });
       dispatch(getSellerOrderDetails(sellerOrderId));
     }
   }, [
     dispatch,
+    navigate,
     userInfo,
     sellerOrder,
     sellerOrderId,
     successSellerOrderSend,
     successSellerOrderRetrieve,
-    navigate,
   ]);
+
+  useEffect(() => {
+    if (
+      sellerOrder &&
+      !sellerOrder.isCompleted &&
+      sellerOrder.id === Number(sellerOrderId)
+    ) {
+      if (
+        (!hasItemNotShipped || !hasOnlinePurchase) &&
+        (!hasItemNotRetrieved || !hasInStorePickup)
+      ) {
+        dispatch(completeSellerOrder(sellerOrderId));
+        dispatch(getSellerOrderDetails(sellerOrderId));
+      }
+    }
+  }, [dispatch, hasItemNotShipped, hasItemNotRetrieved]);
+
+  useEffect(() => {
+    if (successSellerOrderComplete) {
+      dispatch({ type: SELLER_ORDER_SEND_RESET });
+      dispatch({ type: SELLER_ORDER_RETRIEVE_RESET });
+      dispatch({ type: SELLER_ORDER_COMPLETE_RESET });
+    }
+  }, [dispatch, successSellerOrderComplete]);
 
   const shippingHandler = () => {
     dispatch(sendSellerOrder(sellerOrder.id));
@@ -187,24 +221,24 @@ export default function SellerOrder() {
                         <Row className="text-center mt-2">
                           <h6>Shipping Item(s)</h6>
                         </Row>
-                        {sellerOrder.onlineOrderItems.map((item) => {
+                        {sellerOrder.onlineOrderItems.map((item, index) => {
                           return (
                             <OrderItemCard
                               item={item}
                               isNumberDecimal={isNumberDecimal}
+                              key={index}
                             />
                           );
                         })}
                         <Row className="justify-content-center">
-                          <Col md={3} className="text-center">
+                          <Col md={4} className="text-center mt-2">
                             {sellerOrder.isShipped ? (
                               <Message variant="success">
-                                Sent on {sellerOrder.shippedAt.substring(0, 10)}
+                                Sent on {sellerOrder.shippedAt.substring(0, 10)  + ' at ' + sellerOrder.shippedAt.substring(11, 16)}
                               </Message>
                             ) : (
                               <Button
-                                type="button"
-                                className="btn-block blue-button my-2"
+                                className="blue-button mb-2"
                                 onClick={() => shippingHandler()}
                                 disabled={!sellerOrder.order.isPaid}
                               >
@@ -222,13 +256,14 @@ export default function SellerOrder() {
                           <h6>In-Store Pick Up Item(s)</h6>
                         </Row>
 
-                        {sellerOrder.inStoreOrderItems.map((item) => {
+                        {sellerOrder.inStoreOrderItems.map((item, index) => {
                           return (
                             <>
                               <OrderItemCard
                                 item={item}
                                 pickUpHandler={pickUpHandler}
                                 sellerOrder={sellerOrder}
+                                key={index}
                               />
                             </>
                           );

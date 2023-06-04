@@ -37,6 +37,7 @@
   width: 100%;
   height: auto;
   max-height: 17rem;
+  max-width: 17rem;
   object-fit: cover;
 }
 
@@ -44,6 +45,7 @@
   display: flex;
   justify-content: center;
   height: 17.5rem;
+  /* max-width: 17.5rem; */
   align-items: center;
   margin: auto;
 }

@@ -1,23 +1,11 @@
-from django.shortcuts import render
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth import get_user_model
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.response import Response
-from rest_framework.generics import ListAPIView, CreateAPIView
-from ..models import Store, Product, Profile, ProductCategory, ProductSubcategory, Stock, Review, Order, SellerOrder, OnlineOrderItem, InStoreOrderItem, ShippingAddress
-from base.permissions import IsAnon
-from ..permissions import IsOwnerOrReadOnly
-from django.db.models import Q
-from rest_framework.pagination import LimitOffsetPagination
-from django.utils import timezone
-from rest_framework import status
-from datetime import datetime
-from decimal import Decimal
+from rest_framework.generics import ListAPIView
+from ..models import Store
 
 User = get_user_model()
 
-from ..serializers import StoreSerializer, MyStoreSerializer, UserSerializer, RegistrationSerializer, StockSerializer ,ProductSerializer, ProductSubcategorySerializer, ProductCategorySerializer, ProfileSerializer, ReviewSerializer, SearchStockSerializer, OrderSerializer, MySellerOrdersSerializer, MyOrderSerializer, SellerOrderSerializer
+from ..serializers import StoreSerializer, MyStoreSerializer
 
 class StoreViewSet(ModelViewSet):
     """

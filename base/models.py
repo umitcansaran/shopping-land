@@ -122,6 +122,8 @@ class SellerOrder(models.Model):
     shippingPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
     isShipped = models.BooleanField(default=False)
     shippedAt = models.DateTimeField(auto_now_add=False, null=True, blank=True) 
+    isCompleted = models.BooleanField(default=False)
+    completedAt = models.DateTimeField(auto_now_add=False, null=True, blank=True) 
     totalPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
     
     # Relations:

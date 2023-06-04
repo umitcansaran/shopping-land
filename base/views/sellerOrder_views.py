@@ -68,3 +68,19 @@ def updateSellerOrderToSent(request, pk):
     sellerOrder.save()
 
     return Response('Seller Order is sent')
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateSellerOrderToCompleted(request, pk):
+    print(id)
+    print('wwhhYYYYYYYYYYYY')
+
+    sellerOrder = SellerOrder.objects.get(id=pk)
+    print(sellerOrder)
+
+    sellerOrder.isCompleted = True
+    sellerOrder.completedAt = timezone.now()
+    sellerOrder.save()
+
+    return Response('Seller Order is completed')

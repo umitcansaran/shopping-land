@@ -13,6 +13,9 @@ import {
   ORDER_PAY_REQUEST,
   ORDER_PAY_SUCCESS,
   ORDER_PAY_FAIL,
+  SELLER_ORDER_COMPLETE_REQUEST,
+  SELLER_ORDER_COMPLETE_SUCCESS,
+  SELLER_ORDER_COMPLETE_FAIL,
   ORDER_LIST_MY_REQUEST,
   ORDER_LIST_MY_SUCCESS,
   ORDER_LIST_MY_FAIL,
@@ -178,6 +181,44 @@ export const payOrder = (id, paymentResult) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: ORDER_PAY_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+
+export const completeSellerOrder = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: SELLER_ORDER_COMPLETE_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.access}`,
+      },
+    };
+
+    const { data } = await axios.put(
+      `${baseUrl}/api/seller-orders/${id}/complete/`,
+      {},
+      config
+    );
+
+    dispatch({
+      type: SELLER_ORDER_COMPLETE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: SELLER_ORDER_COMPLETE_FAIL,
       payload:
         error.response && error.response.data.detail
           ? error.response.data.detail
