@@ -62,7 +62,7 @@ function Product() {
     success: successProductReview,
   } = useSelector((state) => state.productReviewCreate);
 
-  const isLoggedInUserProduct = user.id === product.seller ? true : false;
+  const isLoggedInUserProduct = user?.id === product.seller ? true : false;
 
   useEffect(() => {
     if (successProductReview) {
