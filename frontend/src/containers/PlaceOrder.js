@@ -14,9 +14,7 @@ import Message from "../components/Message";
 import CheckoutSteps from "../components/CheckoutSteps";
 import { createOrder } from "../store/actions/orderActions";
 import { ORDER_CREATE_RESET } from "../store/constants/orderConstants";
-import { updateStock } from "../store/actions/stockActions";
-import { listProductStocks } from "../store/actions/productActions";
-import { PRODUCT_STOCKS_RESET } from "../store/constants/productConstants";
+import isNumberDecimal from "../utils/isNumberDecimal";
 
 function PlaceOrderScreen() {
   const orderCreate = useSelector((state) => state.orderCreate);
@@ -35,16 +33,6 @@ function PlaceOrderScreen() {
   const navigate = useNavigate();
 
   const cart = useSelector((state) => state.cart);
-
-  console.log("cart", cart);
-
-  const isNumberDecimal = (num) => {
-    if (num.toFixed(2) % 1 !== 0) {
-      return num.toFixed(2);
-    } else {
-      return Math.trunc(num) + ".-";
-    }
-  };
 
   cart.itemsPrice = cart.cartItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
@@ -65,45 +53,10 @@ function PlaceOrderScreen() {
       navigate("/payment");
     }
     if (success) {
-      navigate(`/order/${order.id}`);
+      navigate(`/customer-order/${order.id}`);
       dispatch({ type: ORDER_CREATE_RESET });
     }
   }, [dispatch, cart, success, order, navigate]);
-
-  const { stocks, loading: loadingStocks } = useSelector(
-    (state) => state.productStocks
-  );
-
-  // !! Updating stock number in the backend !!
-  //   const updateProductStock = () => {
-  //     cart.cartItems.forEach(async (item) => {
-  //       if (item.storeId) {
-  //       await dispatch(listProductStocks(item.id));
-  //       console.log('stocks', stocks)
-  //     }
-  //   }
-  //     dispatch(updateStock(item.stockId, { number: item.storeStock - item.quantity}))
-  //   );
-  // };
-
-  //   for (const item of cartItems) {
-  //     await dispatch(listProductStocks(item.id));
-  // }
-
-  // const updateProductStock = async () => {
-  //   for (const item of cartItems) {
-  //     if (!item.storeId) {
-  //       dispatch(listProductStocks(item.id));
-  //       await loadingStocks
-  //     }
-  //   }
-  // };
-
-  // const allPromises = cartItems.forEach((item) => {
-  //   return dispatch(listProductStocks(item.id));
-  // });
-
-  console.log(cart)
 
   const placeOrder = () => {
     dispatch(
@@ -112,7 +65,7 @@ function PlaceOrderScreen() {
         paymentMethod: cart.paymentMethod,
         totalShippingPrice: totalShippingPrice,
         totalPrice: cart.itemsPrice,
-        shippingAddress: cart.shippingAddress
+        shippingAddress: cart.shippingAddress,
       })
     );
   };
@@ -128,7 +81,7 @@ function PlaceOrderScreen() {
     .map((item) => item.seller)
     .sort();
 
-  // Remove duplicates and get unique pickup location(s)
+  // Remove duplicates and get unique location(s)
   let pickUpLocations = cartItems
     .filter((item) => item.orderType === "inStore")
     .reduce((accumulator, current) => {
@@ -171,14 +124,12 @@ function PlaceOrderScreen() {
             {hasInStorePickup && (
               <ListGroup.Item>
                 <h2>Pickup Location(s)</h2>
-                {console.log(pickUpLocations)}
                 {pickUpLocations.map((location) => {
                   return (
                     <p>
-                        <span style={{ color: "#698bc2" }}>
-                        {location.seller} - {location.storeName}:
-                      {" "}
-                          </span>
+                      <span style={{ color: "#698bc2" }}>
+                        {location.seller} - {location.storeName}:{" "}
+                      </span>
                       {cartItems
                         .filter((item) => item.storeId === location.storeId)
                         .reduce((acc, item) => acc + item.quantity, 0)}{" "}
@@ -204,7 +155,7 @@ function PlaceOrderScreen() {
               ) : (
                 sellers.map((seller, index) => {
                   return (
-                    <Card >
+                    <Card>
                       <Card.Title
                         className="text-center pt-3"
                         style={{ color: "#698bc2" }}

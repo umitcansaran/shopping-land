@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { listProductCategories } from "../store/actions/categoriesActions";
 import { updateProfile } from "../store/actions/userActions";
 
-function EditProfileScreen() {
+function EditProfile() {
   const { user } = useSelector((state) => state.myDetails);
   const { categories } = useSelector((state) => state.productCategories);
 
@@ -143,4 +143,4 @@ function EditProfileScreen() {
   );
 }
 
-export default EditProfileScreen;
+export default EditProfile;

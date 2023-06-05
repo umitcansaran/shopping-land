@@ -15,6 +15,10 @@ import {
   ORDER_PAY_SUCCESS,
   ORDER_PAY_FAIL,
   ORDER_PAY_RESET,
+  SELLER_ORDER_COMPLETE_REQUEST,
+  SELLER_ORDER_COMPLETE_SUCCESS,
+  SELLER_ORDER_COMPLETE_FAIL,
+  SELLER_ORDER_COMPLETE_RESET,
   ORDER_LIST_MY_REQUEST,
   ORDER_LIST_MY_SUCCESS,
   ORDER_LIST_MY_FAIL,
@@ -160,6 +164,33 @@ export const orderPayReducer = (state = {}, action) => {
   }
 };
 
+export const sellerOrderCompleteReducer = (state = {}, action) => {
+  switch (action.type) {
+    case SELLER_ORDER_COMPLETE_REQUEST:
+      return {
+        loading: true,
+      };
+
+    case SELLER_ORDER_COMPLETE_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+      };
+
+    case SELLER_ORDER_COMPLETE_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+
+    case SELLER_ORDER_COMPLETE_RESET:
+      return {};
+
+    default:
+      return state;
+  }
+};
+
 export const sellerOrderSendReducer = (state = {}, action) => {
   switch (action.type) {
     case SELLER_ORDER_SEND_REQUEST:
@@ -214,7 +245,6 @@ export const sellerOrderRetrieveReducer = (state = {}, action) => {
   }
 };
 
-
 export const purchaseMyListReducer = (state = { orders: [] }, action) => {
   switch (action.type) {
     case ORDER_LIST_MY_REQUEST:
@@ -255,7 +285,6 @@ export const sellerOrderMyListReducer = (
       };
 
     case SELLER_ORDER_LIST_MY_SUCCESS:
-      console.log(action.payload)
       return {
         loading: false,
         sellerOrders: action.payload,
@@ -300,7 +329,10 @@ export const orderListReducer = (state = { orders: [] }, action) => {
   }
 };
 
-export const sellerOrderListReducer = (state = { sellerOrders: [] }, action) => {
+export const sellerOrderListReducer = (
+  state = { sellerOrders: [] },
+  action
+) => {
   switch (action.type) {
     case SELLER_ORDER_LIST_REQUEST:
       return {

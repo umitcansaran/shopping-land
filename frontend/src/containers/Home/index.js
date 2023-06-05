@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Button, Col, Container, Form } from "react-bootstrap";
+import { Row, Button, Col, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import LatestReviews from "./LatestReviews";
 import LatestSellers from "./LatestSellers";
@@ -15,12 +15,12 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import axios from "axios";
-import useDebounce from "../../utils/use-debouncer";
+import useDebounce from "../../utils/useDebounce";
 import "./index.css";
 import SearchBox from "../../components/SearchBox";
 import { listUsers } from "../../store/actions/userActions";
 
-export default function Home() {
+function Home() {
   const [value, setValue] = useState("");
   const [searching, setSearching] = useState(false);
   const [redirect, setRedirect] = useState(false);
@@ -50,22 +50,22 @@ export default function Home() {
       {
         queryKey: ["latestReviews"],
         queryFn: () =>
-          axios.get("/api/latest-reviews/").then((res) => res.data),
+          axios.get("/api/products/latest-reviews/").then((res) => res.data),
       },
       {
         queryKey: ["latestProducts"],
         queryFn: () =>
-          axios.get("/api/latest-products/").then((res) => res.data),
+          axios.get("/api/products/latest-products/").then((res) => res.data),
       },
       {
         queryKey: ["latestSellers"],
         queryFn: () =>
-          axios.get("/api/latest-sellers/").then((res) => res.data),
+          axios.get("/api/profiles/latest-sellers/").then((res) => res.data),
       },
       {
         queryKey: ["categories"],
         queryFn: () =>
-          axios.get("api/product-categories/").then((res) => res.data),
+          axios.get("api/products/categories/").then((res) => res.data),
       },
     ],
   });
@@ -77,7 +77,7 @@ export default function Home() {
     return data;
   };
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery(
       ["products"],
       ({ pageParam }) => fetchProducts(pageParam),
@@ -91,14 +91,13 @@ export default function Home() {
       }
     );
 
-  // Prefetching '/sellers' route data in advance.
+  // Prefetching and caching '/sellers' and '/map' routes data in advance.
   queryClient.prefetchQuery({
     queryKey: ["sellers"],
     queryFn: () => axios.get("/api/profiles/sellers/").then((res) => res.data),
     cacheTime: 5 * 60 * 1000,
   });
 
-  // Prefetching '/map' route data in advance.
   queryClient.prefetchQuery({
     queryKey: ["profiles"],
     queryFn: () => axios.get("/api/profiles/").then((res) => res.data),
@@ -146,18 +145,24 @@ export default function Home() {
           Back
         </Button>
       )}
-      <Row className="d-md-flex d-sm-none d-none home-carousel-container">
+      <Row className="d-md-flex d-sm-none d-none">
         {!searching && value.length < 2 && (
           // do not render these components if searching or screen size is mobile
           <>
-            <LatestReviews latestReviews={latestReviewsQuery.data} />
-            <ProductCarousel latestProducts={latestProductsQuery.data} />
-            <LatestSellers latestSellers={latestSellersQuery.data} />
+            <Col md={4}>
+              <LatestReviews latestReviews={latestReviewsQuery.data} />
+            </Col>
+            <Col md={4}>
+              <ProductCarousel latestProducts={latestProductsQuery.data} />
+            </Col>
+            <Col md={4}>
+              <LatestSellers latestSellers={latestSellersQuery.data} />
+            </Col>
           </>
         )}
       </Row>
       <Row>
-        <div className=" home-sidebar-container">
+        <div className="home-sidebar-container">
           <HomeSidebar
             categories={categoriesQuery.data}
             categoryFilterHandler={categoryFilterHandler}
@@ -166,31 +171,35 @@ export default function Home() {
         <Col className="mx-1">
           {value.length <= 1 && !searching ? (
             // show all products at first render
-            <Row className="justify-content-center">
+            <Row className="product-card-container">
+              <Row className="product-card-row">
                 {data?.pages.map((page, index) => {
                   return page.results.map((product) => (
                     <ProductCard product={product} key={index} />
                   ));
                 })}
-              {data && value.length === 0 && hasNextPage && (
-                <Row className="justify-content-center">
-                  <Button
-                    className="home-button blue-button"
-                    onClick={() => fetchNextPage()}
-                  >
-                    {isFetchingNextPage
-                      ? "Loading more..."
-                      : hasNextPage && "Load More"}
-                  </Button>
-                </Row>
-              )}
+                {data && value.length === 0 && hasNextPage && (
+                  <Row className="justify-content-center">
+                    <Button
+                      className="home-button blue-button"
+                      onClick={() => fetchNextPage()}
+                    >
+                      {isFetchingNextPage
+                        ? "Loading more..."
+                        : hasNextPage && "Load More"}
+                    </Button>
+                  </Row>
+                )}
+              </Row>
             </Row>
           ) : (
             // show search results
-            <Row>
+            <Row className="product-card-container">
+              <Row className="product-card-row">
                 {searchResult?.map((product, index) => (
                   <ProductCard product={product} key={index} />
                 ))}
+              </Row>
             </Row>
           )}
         </Col>
@@ -198,3 +207,5 @@ export default function Home() {
     </Container>
   );
 }
+
+export default Home;

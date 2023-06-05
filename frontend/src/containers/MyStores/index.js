@@ -13,8 +13,9 @@ import DeletePopup from "../../components/DeletePopup";
 import SearchBox from "../../components/SearchBox";
 import StoreButtons from "./StoreButtons";
 import StoreStocks from "./StoreStocks";
+import Loader from "../../components/Loader";
 
-export default function MyStores() {
+function MyStores() {
   const [viewButton, setViewButton] = useState({});
   const [value, setValue] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState(null);
@@ -46,7 +47,7 @@ export default function MyStores() {
   }, [dispatch, value, createStoreSuccess, deleteStoreSuccess]);
 
   useEffect(() => {
-    if (deleteConfirm === "yes") {
+    if (deleteConfirm === "store") {
       setDeleteConfirm(null);
       setDeleteWindow(false);
       setTimeout(() => {
@@ -103,94 +104,98 @@ export default function MyStores() {
         placeholder="Search for id or name"
       />
       <AddStoreButton />
-      {!myStoresLoading && myStores.length != 0 && (
-        <Table
-          striped
-          hover
-          responsive
-          className="table-sm my-2"
-          style={{ width: "100%" }}
-        >
-          <thead style={{ backgroundColor: "#f2f5fa" }}>
-            <tr style={{ textAlign: "center" }}>
-              <th>ID</th>
-              <th>NAME</th>
-              <th>ADDRESS</th>
-              <th>PHONE</th>
-              <th className="d-none d-sm-table-cell">PRODUCT</th>
-              <th className="d-none d-sm-table-cell">DELETE</th>
-            </tr>
-          </thead>
-          <tbody>
-            {myStores.map((store, index) => (
-              <>
-                <tr style={{ textAlign: "center" }}>
-                  <td>{index + 1}</td>
-                  <td>
-                    <strong>{store.name}</strong>
-                  </td>
-                  <td>{store.address}</td>
-                  <td>{store.phone}</td>
-                  <td
-                    style={{ width: "11rem", textAlign: "center" }}
-                    className="d-none d-sm-table-cell"
-                  >
-                    {viewButton[index] ? (
-                      <Button
-                        onClick={() => {
-                          closeStockHandler(index);
-                        }}
-                        stye={{ color: "#f2f5fa" }}
-                        className="btn-block blue-button"
-                      >
-                        Close
-                      </Button>
-                    ) : (
-                      <Button
-                        onClick={() => {
-                          viewStockHandler(index);
-                        }}
-                        stye={{ color: "#f2f5fa" }}
-                        className="btn-block blue-button"
-                      >
-                        View Products
-                      </Button>
-                    )}
-                  </td>
-                  <td
-                    style={{ width: "8rem", textAlign: "center" }}
-                    className="d-none d-sm-table-cell"
-                  >
-                    <Button
-                      onClick={() => {
-                        deleteStoreHandler(store);
-                      }}
-                      className="btn-block red-button"
+      {myStoresLoading ? (
+        <Loader />
+      ) : (
+        myStores.length != 0 && (
+          <Table
+            striped
+            hover
+            responsive
+            className="table-sm my-2"
+            style={{ width: "100%" }}
+          >
+            <thead style={{ backgroundColor: "#f2f5fa" }}>
+              <tr style={{ textAlign: "center" }}>
+                <th>ID</th>
+                <th>NAME</th>
+                <th>ADDRESS</th>
+                <th>PHONE</th>
+                <th className="d-none d-sm-table-cell">PRODUCT</th>
+                <th className="d-none d-sm-table-cell">DELETE</th>
+              </tr>
+            </thead>
+            <tbody>
+              {myStores.map((store, index) => (
+                <>
+                  <tr style={{ textAlign: "center" }}>
+                    <td>{index + 1}</td>
+                    <td>
+                      <strong>{store.name}</strong>
+                    </td>
+                    <td>{store.address}</td>
+                    <td>{store.phone}</td>
+                    <td
+                      style={{ width: "11rem", textAlign: "center" }}
+                      className="d-none d-sm-table-cell"
                     >
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
-                {/* renders only on mobile screens */}
-                <StoreButtons
-                  store={store}
-                  index={index}
-                  viewButton={viewButton}
-                  viewStockHandler={viewStockHandler}
-                  closeStockHandler={closeStockHandler}
-                  deleteStoreHandler={deleteStoreHandler}
-                />
-                {viewButton[index] && (
-                  <StoreStocks
+                      {viewButton[index] ? (
+                        <Button
+                          onClick={() => {
+                            closeStockHandler(index);
+                          }}
+                          stye={{ color: "#f2f5fa" }}
+                          className="btn-block blue-button"
+                        >
+                          Close
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={() => {
+                            viewStockHandler(index);
+                          }}
+                          stye={{ color: "#f2f5fa" }}
+                          className="btn-block blue-button"
+                        >
+                          View Products
+                        </Button>
+                      )}
+                    </td>
+                    <td
+                      style={{ width: "8rem", textAlign: "center" }}
+                      className="d-none d-sm-table-cell"
+                    >
+                      <Button
+                        onClick={() => {
+                          deleteStoreHandler(store);
+                        }}
+                        className="btn-block red-button"
+                      >
+                        Delete
+                      </Button>
+                    </td>
+                  </tr>
+                  {/* renders only on mobile screens */}
+                  <StoreButtons
                     store={store}
-                    searchHandler={searchHandler}
-                    value={value}
+                    index={index}
+                    viewButton={viewButton}
+                    viewStockHandler={viewStockHandler}
+                    closeStockHandler={closeStockHandler}
+                    deleteStoreHandler={deleteStoreHandler}
                   />
-                )}
-              </>
-            ))}
-          </tbody>
-        </Table>
+                  {viewButton[index] && (
+                    <StoreStocks
+                      store={store}
+                      searchHandler={searchHandler}
+                      value={value}
+                    />
+                  )}
+                </>
+              ))}
+            </tbody>
+          </Table>
+        )
       )}
 
       {deleteWindow && (
@@ -209,3 +214,5 @@ export default function MyStores() {
     </Container>
   );
 }
+
+export default MyStores;

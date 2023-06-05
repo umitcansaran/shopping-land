@@ -13,7 +13,7 @@ export default function AddProductButton() {
         <Nav variant="pills" className="d-flex justify-content-center" style={{ margin:'0', padding:'0'}}>
           <Nav.Item>
             <Nav.Link
-              className="d-flex align-items-center"
+              className="d-flex align-items-center "
               style={{ height: "2rem", backgroundColor: "#648dc3", color:'white' }}
               onClick={() => setSelect(!select)}
               eventKey="product"

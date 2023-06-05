@@ -41,6 +41,14 @@ code {
   width: 100vw;
 }
 
+.map-categories-bar {
+  border-bottom: 0.5px solid #818ca1;
+}
+
+.map-categories-link {
+  color: #32415c;
+}
+
 .map-seller-image {
   width: auto;
   height: 13px;
@@ -48,7 +56,7 @@ code {
 
 .map-seller-image:hover {
   opacity: 0.9;
-  transform:scale(1.1);
+  transform: scale(1.1);
 }
 
 .map-store-container {

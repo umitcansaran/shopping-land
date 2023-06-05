@@ -15,6 +15,7 @@ import DeletePopup from "../../components/DeletePopup";
 import { PRODUCT_DELETE_RESET } from "../../store/constants/productConstants";
 import MyProductStocks from "./MyProductStocks";
 import ProductButtons from "./ProductButtons";
+import Loader from "../../components/Loader";
 
 export default function MyProducts() {
   const [value, setValue] = useState("");
@@ -40,8 +41,6 @@ export default function MyProducts() {
   const { success: deleteProductSuccess } = useSelector(
     (state) => state.productDelete
   );
-
-  console.log(myStores)
 
   useEffect(() => {
     if (createProductSuccess) {
@@ -150,97 +149,101 @@ export default function MyProducts() {
         placeholder="Search for id, brand or name"
       />
       <AddProductButton />
-      {!myProductsLoading && myProducts.length !== 0 && (
-        <Table hover responsive className="table-sm my-2">
-          <thead style={{ backgroundColor: "#f2f5fa" }}>
-            <tr style={{ textAlign: "center" }}>
-              <th>ID</th>
-              <th>BRAND</th>
-              <th>NAME</th>
-              <th>PRICE</th>
-              <th>CATEGORY</th>
-              <th className="d-none d-sm-table-cell">STOCK</th>
-              <th className="d-none d-sm-table-cell">DELETE</th>
-            </tr>
-          </thead>
-          <tbody>
-            {myProducts.map((product, index) => (
-              <>
-                <tr key={product.id} style={{ textAlign: "center" }}>
-                  <td>{product.id}</td>
-                  <td>
-                    <strong>{product.brand}</strong>
-                  </td>
-                  <td>{product.name}</td>
-                  <td>CHF {Math.trunc(product.price)}</td>
-                  <td>{product.category}</td>
-                  <td
-                    style={{ width: "9rem", textAlign: "center" }}
-                    className="d-none d-sm-table-cell"
-                  >
-                    {viewButton[index] ? (
-                      <Button
-                        onClick={() => {
-                          closeStockHandler(index);
-                        }}
-                        stye={{ color: "#f2f5fa" }}
-                        className="btn-block blue-button"
-                      >
-                        <i class="fa-solid fa-angle-up"></i>
-                      </Button>
-                    ) : (
-                      <Button
-                        onClick={() => {
-                          viewStockHandler(index);
-                        }}
-                        stye={{ color: "#f2f5fa" }}
-                        className="btn-block blue-button"
-                      >
-                        View Stock
-                      </Button>
-                    )}
-                  </td>
-                  <td
-                    style={{ width: "6rem", textAlign: "center" }}
-                    className="d-none d-sm-table-cell"
-                  >
-                    <Button
-                      onClick={() => {
-                        deleteProductHandler(product);
-                      }}
-                      stye={{ color: "#f2f5fa" }}
-                      className="btn-block red-button"
+      {myProductsLoading ? (
+        <Loader />
+      ) : (
+        myProducts.length !== 0 && (
+          <Table hover responsive className="table-sm my-2">
+            <thead style={{ backgroundColor: "#f2f5fa" }}>
+              <tr style={{ textAlign: "center" }}>
+                <th>ID</th>
+                <th>BRAND</th>
+                <th>NAME</th>
+                <th>PRICE</th>
+                <th>CATEGORY</th>
+                <th className="d-none d-sm-table-cell">STOCK</th>
+                <th className="d-none d-sm-table-cell">DELETE</th>
+              </tr>
+            </thead>
+            <tbody>
+              {myProducts.map((product, index) => (
+                <>
+                  <tr key={product.id} style={{ textAlign: "center" }}>
+                    <td>{product.id}</td>
+                    <td>
+                      <strong>{product.brand}</strong>
+                    </td>
+                    <td>{product.name}</td>
+                    <td>CHF {Math.trunc(product.price)}</td>
+                    <td>{product.categoryName}</td>
+                    <td
+                      style={{ width: "9rem", textAlign: "center" }}
+                      className="d-none d-sm-table-cell"
                     >
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
-                {/* renders only on mobile screens */}
-                <ProductButtons
-                  product={product}
-                  index={index}
-                  viewButton={viewButton}
-                  viewStockHandler={viewStockHandler}
-                  closeStockHandler={closeStockHandler}
-                  deleteProductHandler={deleteProductHandler}
-                />
-                {viewButton[index] && (
-                  <MyProductStocks
+                      {viewButton[index] ? (
+                        <Button
+                          onClick={() => {
+                            closeStockHandler(index);
+                          }}
+                          stye={{ color: "#f2f5fa" }}
+                          className="btn-block blue-button"
+                        >
+                          <i class="fa-solid fa-angle-up"></i>
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={() => {
+                            viewStockHandler(index);
+                          }}
+                          stye={{ color: "#f2f5fa" }}
+                          className="btn-block blue-button"
+                        >
+                          View Stock
+                        </Button>
+                      )}
+                    </td>
+                    <td
+                      style={{ width: "6rem", textAlign: "center" }}
+                      className="d-none d-sm-table-cell"
+                    >
+                      <Button
+                        onClick={() => {
+                          deleteProductHandler(product);
+                        }}
+                        stye={{ color: "#f2f5fa" }}
+                        className="btn-block red-button"
+                      >
+                        Delete
+                      </Button>
+                    </td>
+                  </tr>
+                  {/* renders only on mobile screens */}
+                  <ProductButtons
                     product={product}
-                    myStores={myStores}
-                    stockInput={stockInput}
-                    setStockInput={setStockInput}
-                    stock={stock}
-                    stockInputHandler={stockInputHandler}
-                    saveHandler={saveHandler}
-                    deleteStockHandler={deleteStockHandler}
-                    loading={loading}
+                    index={index}
+                    viewButton={viewButton}
+                    viewStockHandler={viewStockHandler}
+                    closeStockHandler={closeStockHandler}
+                    deleteProductHandler={deleteProductHandler}
                   />
-                )}
-              </>
-            ))}
-          </tbody>
-        </Table>
+                  {viewButton[index] && (
+                    <MyProductStocks
+                      product={product}
+                      myStores={myStores}
+                      stockInput={stockInput}
+                      setStockInput={setStockInput}
+                      stock={stock}
+                      stockInputHandler={stockInputHandler}
+                      saveHandler={saveHandler}
+                      deleteStockHandler={deleteStockHandler}
+                      loading={loading}
+                    />
+                  )}
+                </>
+              ))}
+            </tbody>
+          </Table>
+        )
       )}
       {deleteWindow && (
         <DeletePopup

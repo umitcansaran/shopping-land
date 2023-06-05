@@ -16,7 +16,6 @@ import {
 } from "react-bootstrap";
 import {
   listProductDetails,
-  listProductStocks,
   listProductReviews,
   createProductReview,
 } from "../../store/actions/productActions";
@@ -24,21 +23,21 @@ import { myDetails } from "../../store/actions/userActions";
 import {
   PRODUCT_CREATE_REVIEW_RESET,
   PRODUCT_DETAILS_RESET,
-  PRODUCT_STOCKS_RESET,
 } from "../../store/constants/productConstants";
 import StocksCart from "./StocksCart";
 import { addToCart } from "../../store/actions/cartActions";
+import isNumberDecimal from "../../utils/isNumberDecimal";
+import { listProductStocks } from "../../store/actions/stockActions";
+import { PRODUCT_STOCKS_RESET } from "../../store/constants/stockConstants";
 
-function ProductScreen() {
+function Product() {
   const [quantity, setQuantity] = useState(0);
   const [selectedStore, setSelectedStore] = useState({});
   const [storeName, setStoreName] = useState("");
   const [productStock, setProductStock] = useState("");
   const [stockId, setStockId] = useState("");
   const [storeId, setStoreId] = useState("");
-
-  const [orderType, setOrderType] = useState('');
-
+  const [orderType, setOrderType] = useState("");
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
 
@@ -63,6 +62,8 @@ function ProductScreen() {
     success: successProductReview,
   } = useSelector((state) => state.productReviewCreate);
 
+  const isLoggedInUserProduct = user.id === product.seller ? true : false;
+
   useEffect(() => {
     if (successProductReview) {
       setRating(0);
@@ -79,7 +80,13 @@ function ProductScreen() {
 
   const totalStock = stocks.reduce((acc, stock) => acc + stock.number, 0);
 
-  const inStoreStock = (e, storeName, stockNumber, stockId, storeId) => {
+  const inStoreOrderItemStock = (
+    e,
+    storeName,
+    stockNumber,
+    stockId,
+    storeId
+  ) => {
     setQuantity(Number(e.target.value));
     setStoreName(storeName);
     setProductStock(stockNumber);
@@ -87,23 +94,30 @@ function ProductScreen() {
     setStoreId(storeId);
   };
 
-  const onlineStock = (stockNumber) => {
+  const onlineOrderItemStock = (stockNumber) => {
     setQuantity(stockNumber);
     setProductStock(totalStock);
   };
 
   const addToCartHandler = () => {
-    dispatch(addToCart(
-      product.id,
-      quantity,
-      storeName,
-      productStock,
-      stockId,
-      storeId,
-      orderType
-    ))
-    navigate('/cart')
-  }
+    if (orderType === "inStore") {
+      dispatch(
+        addToCart(
+          product.id,
+          quantity,
+          orderType,
+          productStock,
+          stockId,
+          storeName,
+          storeId
+        )
+      );
+    }
+    if (orderType === "online") {
+      dispatch(addToCart(product.id, quantity, orderType, productStock));
+    }
+    navigate("/cart");
+  };
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -112,21 +126,23 @@ function ProductScreen() {
 
   return (
     <Container fluid className="product-page-container">
-      <Button onClick={() => navigate(-1)} className="btn btn-light my-3">
-        Go Back
-      </Button>
       {loadingProduct || loadingStocks ? (
         <Loader />
       ) : error ? (
         <Message variant="danger">{error}</Message>
       ) : (
-        <div>
+        <Col className="mt-3">
           <Row>
             <Col md={4}>
               <Image
                 className="rounded mx-auto d-block"
                 src={product.image}
                 alt={product.name}
+                style={{
+                  maxHeight: "25rem",
+                  maxWidth: "25rem",
+                  padding: "2rem",
+                }}
                 fluid
               />
             </Col>
@@ -147,14 +163,10 @@ function ProductScreen() {
                 </ListGroup.Item>
 
                 <ListGroup.Item>
-                  Price: CHF {product.price}
-                </ListGroup.Item>
-
-                <ListGroup.Item>
                   Description: {product.description}
                 </ListGroup.Item>
 
-                <ListGroup.Item>Product ID: {product.id}</ListGroup.Item>
+                <ListGroup.Item>Product # {product.id}</ListGroup.Item>
 
                 <ListGroup.Item>
                   Sold by{" "}
@@ -176,7 +188,9 @@ function ProductScreen() {
                     <Row>
                       <Col>Price:</Col>
                       <Col>
-                        <strong>CHF {product.price}</strong>
+                        <strong>
+                          CHF {isNumberDecimal(Number(product.price))}
+                        </strong>
                       </Col>
                     </Row>
                   </ListGroup.Item>
@@ -204,27 +218,27 @@ function ProductScreen() {
                   {totalStock > 0 && (
                     <StocksCart
                       stocks={stocks}
-                      selectedStore={selectedStore}
-                      setSelectedStore={setSelectedStore}
                       quantity={quantity}
                       setQuantity={setQuantity}
-                      inStoreStock={inStoreStock}
-                      onlineStock={onlineStock}
+                      selectedStore={selectedStore}
+                      setSelectedStore={setSelectedStore}
                       orderType={orderType}
                       setOrderType={setOrderType}
+                      inStoreOrderItemStock={inStoreOrderItemStock}
+                      onlineOrderItemStock={onlineOrderItemStock}
                       totalStock={totalStock}
+                      isLoggedInUserProduct={isLoggedInUserProduct}
                     />
                   )}
-
-                  {/* {user && user.profile.status === "STORE_OWNER" && (
-                    // Add to cart feature is active during development.
-                    // Visitors can log in with the provided credentials and test both the admin panel and the checkout steps.
+                  {product.seller === user?.id && (
                     <ListGroup.Item>
                       <Message variant="danger">
-                        Seller accounts are not able to make purchases.
+                        Seller accounts can't buy products from their own
+                        stores.
                       </Message>
                     </ListGroup.Item>
-                  )} */}
+                  )}
+
                   <ListGroup.Item>
                     <Row className="justify-content-center">
                       <Button
@@ -244,7 +258,7 @@ function ProductScreen() {
             </Col>
           </Row>
 
-          <Row>
+          <Row className="pt-4">
             <Col md={6}>
               <h4>Reviews</h4>
               {reviews && reviews.length === 0 && (
@@ -322,10 +336,10 @@ function ProductScreen() {
               </ListGroup>
             </Col>
           </Row>
-        </div>
+        </Col>
       )}
     </Container>
   );
 }
 
-export default ProductScreen;
+export default Product;

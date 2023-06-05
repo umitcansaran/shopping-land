@@ -9,8 +9,8 @@ import FormContainer from "../../components/FormContainer";
 import "./index.css";
 import { login } from "../../store/actions/userActions";
 
-function LoginScreen() {
-  const [username, setUsername] = useState("Nike");
+function Login() {
+  const [username, setUsername] = useState("InterDiscount");
   const [password, setPassword] = useState("django123");
 
   const dispatch = useDispatch();
@@ -74,4 +74,4 @@ function LoginScreen() {
   );
 }
 
-export default LoginScreen;
+export default Login;

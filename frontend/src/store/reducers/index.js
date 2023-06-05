@@ -12,29 +12,28 @@ import {
   profileDetailsReducer,
   sellerProfilesReducer,
   profileByUserReducer,
-} from './userReducers'
+} from "./userReducers";
 
-import { 
-  cartReducer 
-} from './cartReducers'
+import { cartReducer } from "./cartReducers";
 
 import {
   productCategoriesReducer,
   productSubcategoriesReducer,
-} from './categoriesReducers'
+} from "./categoriesReducers";
 
 import {
   orderCreateReducer,
   orderDetailsReducer,
   sellerOrderDetailsReducer,
   orderPayReducer,
+  sellerOrderCompleteReducer,
   purchaseMyListReducer,
   sellerOrderMyListReducer,
   orderListReducer,
   sellerOrderListReducer,
   sellerOrderSendReducer,
-  sellerOrderRetrieveReducer
-} from './orderReducers'
+  sellerOrderRetrieveReducer,
+} from "./orderReducers";
 
 import {
   productListReducer,
@@ -42,33 +41,32 @@ import {
   latestProductsListReducer,
   latestReviewsListReducer,
   productDetailsReducer,
-  productStocksReducer,
   productReviewsReducer,
   productDeleteReducer,
   productCreateReducer,
   productReviewCreateReducer,
   productsByUserReducer,
   reviewListReducer,
-} from './productReducers'
+} from "./productReducers";
 
 import {
   createStockReducer,
   stockListReducer,
   stockUpdateReducer,
-} from './stockReducers'
+  productStocksReducer,
+} from "./stockReducers";
 
 import {
-    createStoreReducer,
-    storeListReducer,
-    storeMyListReducer,
-    storeDetailsReducer,
-    storeStocksReducer,
-    storesByUserReducer,
-    storeDeleteReducer,
-} from './storeReducers'
+  createStoreReducer,
+  storeListReducer,
+  storeMyListReducer,
+  storeDetailsReducer,
+  storeStocksReducer,
+  storesByUserReducer,
+  storeDeleteReducer,
+} from "./storeReducers";
 
 export const reducers = combineReducers({
-
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
   profile: profileReducer,
@@ -80,7 +78,7 @@ export const reducers = combineReducers({
   userList: userListReducer,
   userDelete: userDeleteReducer,
   profileByUser: profileByUserReducer,
-  
+
   cart: cartReducer,
 
   productCategories: productCategoriesReducer,
@@ -90,6 +88,7 @@ export const reducers = combineReducers({
   orderDetails: orderDetailsReducer,
   sellerOrderDetails: sellerOrderDetailsReducer,
   orderPay: orderPayReducer,
+  sellerOrderComplete: sellerOrderCompleteReducer,
   purchaseMyList: purchaseMyListReducer,
   sellerOrderMyList: sellerOrderMyListReducer,
   orderList: orderListReducer,
@@ -119,6 +118,6 @@ export const reducers = combineReducers({
   storeDetails: storeDetailsReducer,
   storeStocks: storeStocksReducer,
   createStore: createStoreReducer,
-  storesByUser: storesByUserReducer,  
-  storeDelete: storeDeleteReducer
+  storesByUser: storesByUserReducer,
+  storeDelete: storeDeleteReducer,
 });

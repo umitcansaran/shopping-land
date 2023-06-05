@@ -124,7 +124,7 @@ export const storeStocksReducer = (state = { stocks: [] }, action) => {
   switch (action.type) {
     case STORE_STOCKS_REQUEST:
       return { loading: true, ...state };
-      
+
     case STORE_STOCKS_SUCCESS:
       return { loading: false, stocks: action.payload };
 
