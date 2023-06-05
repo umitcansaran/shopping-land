@@ -10,7 +10,7 @@ Quickly sign in with the provided credentials to check it out
 
 * Map 
 
-![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl_store-map.png)
+![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl_store-map.png) 
 
 * Admin panel - product & stock management
 
@@ -46,7 +46,6 @@ Quickly sign in with the provided credentials to check it out
 * Database: AWS PostgreSQL
 * File storage: AWS S3
 * Deployment: Heroku
-* Hosting: Hostpoint
 
 # Download & Setup Instructions
 
