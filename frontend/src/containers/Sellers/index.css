@@ -1,0 +1,9 @@
+.sellers-page-filter {
+  width: 40%;
+  margin: auto;
+}
+
+.seller-image:hover {
+  opacity: 0.9;
+  transform: scale(1.1);
+}

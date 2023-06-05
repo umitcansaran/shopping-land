@@ -9,6 +9,7 @@ import useSWR from "swr";
 import axios from "axios";
 import { SELLER_PROFILES_RESET } from "../../store/constants/userConstants";
 import { useQuery } from "@tanstack/react-query";
+import "./index.css";
 
 function Sellers() {
   const [searchResult, setSearchResult] = useState(false);

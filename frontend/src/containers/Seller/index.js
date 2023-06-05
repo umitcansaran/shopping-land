@@ -5,10 +5,9 @@ import {
   ListGroup,
   Form,
   Button,
-  Image,
-  Container,
+  Image
 } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { listProductsByUser } from "../../store/actions/productActions";
 import { search } from "../../store/actions/searchAction";
@@ -23,7 +22,6 @@ function Seller() {
   const [store, setStore] = useState("");
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const params = useParams();
 
   const { stores } = useSelector((state) => state.storesByUser);

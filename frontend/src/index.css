@@ -30,20 +30,6 @@ h2 {
   background-color: #648dc3;
 }
 
-.seller-store-button {
-  background-color: #648dc328;
-  color: rgb(70, 69, 69);
-  width: 70%;
-  margin-bottom: 0.3rem;
-  box-shadow: none;
-}
-
-.seller-store-button:focus,
-.seller-store-button:hover {
-  background-color: #648dc38a;
-  color: rgb(70, 69, 69);
-}
-
 .blue-button:focus,
 .blue-button:hover {
   background-color: #4b74aa;
@@ -64,16 +50,6 @@ h2 {
 
 .green-badge {
   background-color: rgb(59, 145, 66) !important;
-}
-
-.sellers-page-filter {
-  width: 40%;
-  margin: auto;
-}
-
-.seller-image:hover {
-  opacity: 0.9;
-  transform: scale(1.1);
 }
 
 .product-page-container,
