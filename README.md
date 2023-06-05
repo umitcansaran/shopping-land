@@ -6,30 +6,36 @@ Quickly sign in with the provided credentials to check it out
 
 * Homescreen
 
-![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/shopping-land_homescreen.png)
-
-* Admin panel - stock management
-
-![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/shopping-land_admin-panel.png)
-
-* Admin panel - store management
-
-![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/shopping-land_admin-panel2.png)
+![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl+-home.png)
 
 * Map 
 
-![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/shopping-land_map.png)
+![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl_store-map.png)
+
+* Admin panel - products & stocks management
+
+![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl_seller-products.png)
+
+* Admin panel - stores management & stocks listing
+
+![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/shopping-land_admin-panel2.png)
+
+* Admin panel = seller orders 
+
+![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl_store-map.png)
+
+* Admin panel = Customer order details
+
+![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl_seller-order-panel.png)
 
 # Features
 
 * Admin panel where sellers can add stores with specific locations and products to the corresponding store. Product stocks can be viewed and updated for each stores individually. Search function to check product availability in store based on ID, brand or name
-* Interactive map where you can view all the stores and their informations. Each store redirect to the seller's page with products
-* Customer profile with orders and profile informations which can be updated
-* Multifunctional search and filtering options
+* Interactive map where you can view all seller stores and their informations. Each store redirect to the seller's page with products, store filtering and search options.
+* Separate Customer and Seller profiles can be created and updated
+* Sellers can change order item(s) status as 'sent' or 'picked up' depending on purchase method. Order status changes to 'Completed' automatically.
 * Full featured shopping cart
 * Product reviews and ratings
-* Latest products carousel
-* Mark orders as paid or sent option
 * Checkout process (shipping, payment method, etc)
 * PayPal / credit card integration
 
@@ -44,7 +50,7 @@ Quickly sign in with the provided credentials to check it out
 
 # Download & Setup Instructions
 
-* 1 - Clone project: git clone https://github.com/umitcansaran/shopping-land.ch
+* 1 - Clone project: git clone https://github.com/umitcansaran/shopping-land
 
 # Install React Modules
 * 1 - cd frontend
