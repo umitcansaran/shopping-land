@@ -36,7 +36,7 @@ export default function MyOrderItemCard({ item, pickUpHandler, sellerOrder }) {
                               <Col md={4} className="text-center">
                                 {item.isRetrieved ? (
                                   <Message variant="success">
-                                    Retrieved on{" "}
+                                    Pickep up on{" "}
                                     {item.retrievedAt.substring(0, 10) + ' at ' + item.retrievedAt.substring(11, 16)}
                                   </Message>
                                 ) : (
@@ -45,7 +45,7 @@ export default function MyOrderItemCard({ item, pickUpHandler, sellerOrder }) {
                                     onClick={() => pickUpHandler(item.id)}
                                     disabled={!sellerOrder.order.isPaid}
                                   >
-                                    Mark As Retrieved
+                                    Mark as Picked Up
                                   </Button>
                                 )}
                               </Col>
