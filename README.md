@@ -8,7 +8,9 @@ Quickly sign in with the provided credentials to check it out
 
 ![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl+-home.png)
 
+* Map 
 
+![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl_store-map.png) 
 
 * Admin panel - product & stock management
 
