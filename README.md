@@ -8,9 +8,7 @@ Quickly sign in with the provided credentials to check it out
 
 ![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl+-home.png)
 
-* Map 
 
-![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl_store-map.png) 
 
 * Admin panel - product & stock management
 
@@ -20,11 +18,11 @@ Quickly sign in with the provided credentials to check it out
 
 ![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/shopping-land_admin-panel2.png)
 
-* Admin panel - Seller orders 
+* Admin panel - seller orders 
 
 ![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl_seller-orders-panel.png)
 
-* Admin panel - Customer order details
+* Admin panel - customer order details
 
 ![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl_seller-order-panel.png)
 
