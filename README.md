@@ -12,17 +12,17 @@ Quickly sign in with the provided credentials to check it out
 
 ![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl_store-map.png)
 
-* Admin panel - products & stocks management
+* Admin panel - product & stock management
 
 ![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl_seller-products.png)
 
-* Admin panel - stores management & stocks listing
+* Admin panel - store management & stock listing
 
 ![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/shopping-land_admin-panel2.png)
 
-* Admin panel = seller orders 
+* Admin panel - seller orders 
 
-![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl_store-map.png)
+![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl_seller-orders-panel.png)
 
 * Admin panel = Customer order details
 
