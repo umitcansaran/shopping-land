@@ -11,6 +11,7 @@ class RegistrationView(CreateAPIView):
     permission_classes = []
     serializer_class = RegistrationSerializer
 
+
 class UserViewSet(ModelViewSet):
     """
     GET: List users profiles. (-> request.user)
@@ -18,6 +19,7 @@ class UserViewSet(ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
 
 class MeViewSet(ModelViewSet):
     """

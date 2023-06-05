@@ -3,6 +3,7 @@ from django.db import models
 
 User = get_user_model()
 
+
 class ProductCategory(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True)
 
@@ -117,6 +118,7 @@ class Order(models.Model):
     def __str__(self):
         return f'ID: {self.id}'
     
+
 class SellerOrder(models.Model):
     createdAt = models.DateTimeField(auto_now_add=True)
     shippingPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
@@ -148,6 +150,7 @@ class OnlineOrderItem(models.Model):
 
     def __str__(self):
         return str(self.name)
+
 
 class InStoreOrderItem(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True)

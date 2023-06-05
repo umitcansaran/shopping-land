@@ -24,16 +24,16 @@ import {
   SELLER_ORDER_LIST_MY_FAIL,
   ORDER_LIST_REQUEST,
   ORDER_LIST_SUCCESS,
+  ORDER_LIST_FAIL,
   SELLER_ORDER_LIST_REQUEST,
   SELLER_ORDER_LIST_SUCCESS,
   SELLER_ORDER_LIST_FAIL,
-  ORDER_LIST_FAIL, 
   SELLER_ORDER_SEND_REQUEST,
   SELLER_ORDER_SEND_SUCCESS,
   SELLER_ORDER_SEND_FAIL,
   SELLER_ORDER_RETRIEVE_REQUEST,
   SELLER_ORDER_RETRIEVE_SUCCESS,
-  SELLER_ORDER_RETRIEVE_FAIL
+  SELLER_ORDER_RETRIEVE_FAIL,
 } from "../constants/orderConstants";
 
 import { CART_CLEAR_ITEMS } from "../constants/cartConstants";
@@ -134,7 +134,10 @@ export const getSellerOrderDetails = (id) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`${baseUrl}/api/seller-orders/${id}/`, config);
+    const { data } = await axios.get(
+      `${baseUrl}/api/seller-orders/${id}/`,
+      config
+    );
 
     dispatch({
       type: SELLER_ORDER_DETAILS_SUCCESS,
@@ -320,10 +323,7 @@ export const listMyOrders = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(
-      `${baseUrl}/api/orders/myorders/`,
-      config
-    );
+    const { data } = await axios.get(`${baseUrl}/api/orders/myorders/`, config);
 
     dispatch({
       type: ORDER_LIST_MY_SUCCESS,

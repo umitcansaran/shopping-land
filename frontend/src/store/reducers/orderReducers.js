@@ -245,7 +245,6 @@ export const sellerOrderRetrieveReducer = (state = {}, action) => {
   }
 };
 
-
 export const purchaseMyListReducer = (state = { orders: [] }, action) => {
   switch (action.type) {
     case ORDER_LIST_MY_REQUEST:
@@ -330,7 +329,10 @@ export const orderListReducer = (state = { orders: [] }, action) => {
   }
 };
 
-export const sellerOrderListReducer = (state = { sellerOrders: [] }, action) => {
+export const sellerOrderListReducer = (
+  state = { sellerOrders: [] },
+  action
+) => {
   switch (action.type) {
     case SELLER_ORDER_LIST_REQUEST:
       return {

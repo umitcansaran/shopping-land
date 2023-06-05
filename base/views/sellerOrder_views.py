@@ -22,6 +22,7 @@ class ListSellerOrder(ListAPIView):
         queryset = queryset.filter(id=keyword)
         return queryset
     
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getSellerOrders(request):
@@ -73,11 +74,8 @@ def updateSellerOrderToSent(request, pk):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def updateSellerOrderToCompleted(request, pk):
-    print(id)
-    print('wwhhYYYYYYYYYYYY')
 
     sellerOrder = SellerOrder.objects.get(id=pk)
-    print(sellerOrder)
 
     sellerOrder.isCompleted = True
     sellerOrder.completedAt = timezone.now()

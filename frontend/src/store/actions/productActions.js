@@ -34,7 +34,6 @@ import {
   PRODUCTS_BY_USER_REQUEST,
   PRODUCTS_BY_USER_SUCCESS,
   PRODUCTS_BY_USER_FAIL,
-
 } from "../constants/productConstants";
 
 export const createProduct = (formData) => async (dispatch, getState) => {
@@ -106,7 +105,10 @@ export const listMyProducts = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`${baseUrl}/api/products/myproducts/`, config);
+    const { data } = await axios.get(
+      `${baseUrl}/api/products/myproducts/`,
+      config
+    );
 
     dispatch({
       type: PRODUCT_MY_LIST_SUCCESS,
@@ -127,7 +129,9 @@ export const listLatestProducts = () => async (dispatch) => {
   try {
     dispatch({ type: LATEST_PRODUCTS_LIST_REQUEST });
 
-    const { data } = await axios.get(`${baseUrl}/api/products/latest-products/`);
+    const { data } = await axios.get(
+      `${baseUrl}/api/products/latest-products/`
+    );
 
     dispatch({
       type: LATEST_PRODUCTS_LIST_SUCCESS,
@@ -185,8 +189,6 @@ export const listProductDetails = (id) => async (dispatch) => {
     });
   }
 };
-
-
 
 export const listProductReviews = (id) => async (dispatch) => {
   try {
@@ -324,4 +326,3 @@ export const listProductsByUser = (id) => async (dispatch) => {
     });
   }
 };
-

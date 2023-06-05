@@ -86,23 +86,23 @@ export const createStock =
     }
   };
 
-  export const listProductStocks = (id) => async (dispatch) => {
-    try {
-      dispatch({ type: PRODUCT_STOCKS_REQUEST });
-  
-      const { data } = await axios.get(`${baseUrl}/api/stocks/product/${id}`);
-  
-      dispatch({
-        type: PRODUCT_STOCKS_SUCCESS,
-        payload: data,
-      });
-    } catch (error) {
-      dispatch({
-        type: PRODUCT_STOCKS_FAIL,
-        payload:
-          error.response && error.response.data.detail
-            ? error.response.data.detail
-            : error.message,
-      });
-    }
-  };
+export const listProductStocks = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: PRODUCT_STOCKS_REQUEST });
+
+    const { data } = await axios.get(`${baseUrl}/api/stocks/product/${id}`);
+
+    dispatch({
+      type: PRODUCT_STOCKS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_STOCKS_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};

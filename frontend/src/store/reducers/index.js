@@ -12,16 +12,14 @@ import {
   profileDetailsReducer,
   sellerProfilesReducer,
   profileByUserReducer,
-} from './userReducers'
+} from "./userReducers";
 
-import { 
-  cartReducer 
-} from './cartReducers'
+import { cartReducer } from "./cartReducers";
 
 import {
   productCategoriesReducer,
   productSubcategoriesReducer,
-} from './categoriesReducers'
+} from "./categoriesReducers";
 
 import {
   orderCreateReducer,
@@ -34,8 +32,8 @@ import {
   orderListReducer,
   sellerOrderListReducer,
   sellerOrderSendReducer,
-  sellerOrderRetrieveReducer
-} from './orderReducers'
+  sellerOrderRetrieveReducer,
+} from "./orderReducers";
 
 import {
   productListReducer,
@@ -49,27 +47,26 @@ import {
   productReviewCreateReducer,
   productsByUserReducer,
   reviewListReducer,
-} from './productReducers'
+} from "./productReducers";
 
 import {
   createStockReducer,
   stockListReducer,
   stockUpdateReducer,
   productStocksReducer,
-} from './stockReducers'
+} from "./stockReducers";
 
 import {
-    createStoreReducer,
-    storeListReducer,
-    storeMyListReducer,
-    storeDetailsReducer,
-    storeStocksReducer,
-    storesByUserReducer,
-    storeDeleteReducer,
-} from './storeReducers'
+  createStoreReducer,
+  storeListReducer,
+  storeMyListReducer,
+  storeDetailsReducer,
+  storeStocksReducer,
+  storesByUserReducer,
+  storeDeleteReducer,
+} from "./storeReducers";
 
 export const reducers = combineReducers({
-
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
   profile: profileReducer,
@@ -81,7 +78,7 @@ export const reducers = combineReducers({
   userList: userListReducer,
   userDelete: userDeleteReducer,
   profileByUser: profileByUserReducer,
-  
+
   cart: cartReducer,
 
   productCategories: productCategoriesReducer,
@@ -121,6 +118,6 @@ export const reducers = combineReducers({
   storeDetails: storeDetailsReducer,
   storeStocks: storeStocksReducer,
   createStore: createStoreReducer,
-  storesByUser: storesByUserReducer,  
-  storeDelete: storeDeleteReducer
+  storesByUser: storesByUserReducer,
+  storeDelete: storeDeleteReducer,
 });

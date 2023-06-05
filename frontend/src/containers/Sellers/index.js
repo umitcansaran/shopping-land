@@ -10,7 +10,7 @@ import axios from "axios";
 import { SELLER_PROFILES_RESET } from "../../store/constants/userConstants";
 import { useQuery } from "@tanstack/react-query";
 
-export default function SellersScreen() {
+function Sellers() {
   const [searchResult, setSearchResult] = useState(false);
   const [resetFilter, setResetFilter] = useState(true);
 
@@ -21,7 +21,7 @@ export default function SellersScreen() {
   );
 
   const fetcher = (url) => axios.get(url).then((res) => res.data);
-  const { data: categories } = useSWR("/api/product-categories/", fetcher);
+  const { data: categories } = useSWR("/api/products/categories/", fetcher);
 
   // Using React Query for faster reload after filtering by mounting cached components.
   const { data: sellerProfiles, isLoading: loading } = useQuery({
@@ -108,3 +108,5 @@ export default function SellersScreen() {
     </>
   );
 }
+
+export default Sellers;

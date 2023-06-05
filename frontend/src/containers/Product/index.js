@@ -30,7 +30,7 @@ import isNumberDecimal from "../../utils/isNumberDecimal";
 import { listProductStocks } from "../../store/actions/stockActions";
 import { PRODUCT_STOCKS_RESET } from "../../store/constants/stockConstants";
 
-function ProductScreen() {
+function Product() {
   const [quantity, setQuantity] = useState(0);
   const [selectedStore, setSelectedStore] = useState({});
   const [storeName, setStoreName] = useState("");
@@ -342,4 +342,4 @@ function ProductScreen() {
   );
 }
 
-export default ProductScreen;
+export default Product;

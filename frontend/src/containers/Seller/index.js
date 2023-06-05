@@ -18,7 +18,7 @@ import { PROFILE_DETAILS_RESET } from "../../store/constants/userConstants";
 import ProductCard from "../../components/ProductCard";
 import "./index.css";
 
-export default function SellerScreen() {
+function Seller() {
   const [value, setValue] = useState("");
   const [store, setStore] = useState("");
 
@@ -190,3 +190,5 @@ export default function SellerScreen() {
     </>
   );
 }
+
+export default Seller;

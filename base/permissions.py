@@ -1,6 +1,5 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
-
 class IsOwnerOrReadOnly(BasePermission):
     """
     Object-level permission to only allow owners of an object to edit it.

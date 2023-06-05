@@ -9,7 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import SearchBox from "../../components/SearchBox";
 
-export default function Map() {
+function Map() {
   let zoomNumber;
   window.innerWidth < 991 ? (zoomNumber = 6.5) : (zoomNumber = 8.2);
 
@@ -38,7 +38,7 @@ export default function Map() {
   );
 
   const { data: categories } = useQuery(["product-categories"], () =>
-    axios.get("/api/product-categories/").then((res) => res.data)
+    axios.get("/api/products/categories/").then((res) => res.data)
   );
 
   let stores;
@@ -159,3 +159,5 @@ export default function Map() {
     </>
   );
 }
+
+export default Map;

@@ -14,7 +14,7 @@ import AddProduct from "./containers/AddProduct";
 import Product from "./containers/Product";
 import Map from "./containers/Map";
 import Seller from "./containers/Seller";
-import Sellers from "./containers/Sellers/Sellers";
+import Sellers from "./containers/Sellers";
 import Cart from "./containers/Cart";
 import PlaceOrder from "./containers/PlaceOrder";
 import CustomerOrder from "./containers/CustomerOrder";

@@ -15,6 +15,7 @@ class ProfileViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save()
 
+
 class ListSellerProfiles(ListAPIView):
     """
     List all the seller profiles
@@ -25,6 +26,7 @@ class ListSellerProfiles(ListAPIView):
         queryset = Profile.objects.all()
         queryset = queryset.filter(status='STORE_OWNER')
         return queryset
+    
     
 class LatestSellers(ListAPIView):
     """

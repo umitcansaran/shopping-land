@@ -4,9 +4,10 @@ import { useSelector } from "react-redux";
 import { LinkContainer } from "react-router-bootstrap";
 
 function CheckoutSteps({ step1, step2, step3, step4 }) {
-
-  const { cartItems} = useSelector((state) => state.cart);
-  const hasOnlinePurchase = cartItems.find(item => item.orderType === 'online')
+  const { cartItems } = useSelector((state) => state.cart);
+  const hasOnlinePurchase = cartItems.find(
+    (item) => item.orderType === "online"
+  );
 
   return (
     <Nav className="justify-content-center mb-4">
@@ -20,18 +21,17 @@ function CheckoutSteps({ step1, step2, step3, step4 }) {
         )}
       </Nav.Item>
 
-      { hasOnlinePurchase && (
-      <Nav.Item>
-        {step2 ? (
-          <LinkContainer to="/shipping">
-            <Nav.Link>Shipping</Nav.Link>
-          </LinkContainer>
-        ) : (
-          <Nav.Link disabled>Shipping</Nav.Link>
-        )}
-      </Nav.Item>
+      {hasOnlinePurchase && (
+        <Nav.Item>
+          {step2 ? (
+            <LinkContainer to="/shipping">
+              <Nav.Link>Shipping</Nav.Link>
+            </LinkContainer>
+          ) : (
+            <Nav.Link disabled>Shipping</Nav.Link>
+          )}
+        </Nav.Item>
       )}
-
 
       <Nav.Item>
         {step3 ? (

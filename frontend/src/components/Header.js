@@ -9,7 +9,6 @@ import {
   NavDropdown,
   Row,
   Image,
-  Col,
 } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { myDetails, logout } from "../store/actions/userActions";
@@ -115,7 +114,7 @@ const Header = () => {
                       <Image
                         src={user && user.profile.image}
                         alt="retailer-profile"
-                        style={{ maxHeight: "1.6rem", maxWidth: '4rem' }}
+                        style={{ maxHeight: "1.6rem", maxWidth: "4rem" }}
                       />
                     }
                     id="adminmenu"
@@ -144,7 +143,10 @@ const Header = () => {
                 className={isMobile ? "" : "ms-5" + " header-nav-link"}
                 to="/login"
               >
-                <i class="fa-solid fa-user" style={{ color: "#1e478a", marginRight:'0.3rem' }}></i>
+                <i
+                  class="fa-solid fa-user"
+                  style={{ color: "#1e478a", marginRight: "0.3rem" }}
+                ></i>
                 Sign In
               </Nav.Link>
             )}
@@ -156,7 +158,7 @@ const Header = () => {
             >
               <i
                 className="fa-solid fa-cart-shopping"
-                style={{ color: "#1e478a",  marginRight:'0.3rem' }}
+                style={{ color: "#1e478a", marginRight: "0.3rem" }}
               ></i>
               Cart
               {cartItemsQuantities > 0 && (

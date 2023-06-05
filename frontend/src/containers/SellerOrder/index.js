@@ -1,15 +1,6 @@
-import React, { useState, useEffect } from "react";
-import {
-  Button,
-  Row,
-  Col,
-  ListGroup,
-  Image,
-  Card,
-  Container,
-  ListGroupItem,
-} from "react-bootstrap";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Button, Row, Col, ListGroup, Card, Container } from "react-bootstrap";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
@@ -21,14 +12,13 @@ import {
 } from "../../store/actions/orderActions";
 import {
   SELLER_ORDER_COMPLETE_RESET,
-  SELLER_ORDER_DETAILS_RESET,
   SELLER_ORDER_RETRIEVE_RESET,
   SELLER_ORDER_SEND_RESET,
 } from "../../store/constants/orderConstants";
 import isNumberDecimal from "../../utils/isNumberDecimal";
 import OrderItemCard from "./OrderItemCard";
 
-export default function SellerOrder() {
+function SellerOrder() {
   const dispatch = useDispatch();
   const params = useParams();
   const navigate = useNavigate;
@@ -147,8 +137,6 @@ export default function SellerOrder() {
 
   useEffect(() => {
     if (successSellerOrderComplete) {
-      dispatch({ type: SELLER_ORDER_SEND_RESET });
-      dispatch({ type: SELLER_ORDER_RETRIEVE_RESET });
       dispatch({ type: SELLER_ORDER_COMPLETE_RESET });
     }
   }, [dispatch, successSellerOrderComplete]);
@@ -234,7 +222,10 @@ export default function SellerOrder() {
                           <Col md={4} className="text-center mt-2">
                             {sellerOrder.isShipped ? (
                               <Message variant="success">
-                                Sent on {sellerOrder.shippedAt.substring(0, 10)  + ' at ' + sellerOrder.shippedAt.substring(11, 16)}
+                                Sent on{" "}
+                                {sellerOrder.shippedAt.substring(0, 10) +
+                                  " at " +
+                                  sellerOrder.shippedAt.substring(11, 16)}
                               </Message>
                             ) : (
                               <Button
@@ -349,3 +340,5 @@ export default function SellerOrder() {
     </Container>
   );
 }
+
+export default SellerOrder;

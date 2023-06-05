@@ -8,7 +8,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import ListAPIView
 from rest_framework.pagination import LimitOffsetPagination
 from ..models import Product, ProductCategory, ProductSubcategory, Review
-from ..serializers import ProductSerializer, ProductCategorySerializer, ProductSubcategorySerializer, ReviewSerializer
+from ..serializers import ProductSerializer, MyProductSerializer, ProductCategorySerializer, ProductSubcategorySerializer, ReviewSerializer
 
 User = get_user_model()
 
@@ -35,6 +35,7 @@ class ProductViewSet(ModelViewSet):
             permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
     
+
 class ListProductsByUser(ListAPIView):
     """
     List all the products of a seller (int: user_id)
@@ -53,7 +54,7 @@ class MyProductsViewSet(ModelViewSet):
     A simple ViewSet for listing or retrieving a retailer's products.
     """
 
-    serializer_class = ProductSerializer
+    serializer_class = MyProductSerializer
 
     def get_queryset(self):
         user = self.request.user.id
@@ -61,6 +62,7 @@ class MyProductsViewSet(ModelViewSet):
         queryset = products.filter(seller_id=user)
         return queryset
     
+
 class LatestProducts(ListAPIView):
     """
     GET: Get most recently added five products.
@@ -96,6 +98,7 @@ class ProductSubcategory(ListAPIView):
     """
     queryset = ProductSubcategory.objects.all()
     serializer_class = ProductSubcategorySerializer
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -144,6 +147,7 @@ class Reviews(ListAPIView):
     """
     queryset = Review.objects.all().order_by('-createdAt')
     serializer_class = ReviewSerializer
+
 
 class LatestReviews(ListAPIView):
     """

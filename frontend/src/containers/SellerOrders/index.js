@@ -7,7 +7,7 @@ import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import { listMySellerOrders } from "../../store/actions/orderActions";
 
-export default function SellerOrders() {
+function SellerOrders() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -66,8 +66,10 @@ export default function SellerOrders() {
                   <td>
                     <LinkContainer to={`/seller-order/${sellerOrder.id}`}>
                       <Button
-                      className="blue-button"
-                        variant={!sellerOrder.order.isPaid ? "warning" : "primary"}
+                        className="blue-button"
+                        variant={
+                          !sellerOrder.order.isPaid ? "warning" : "primary"
+                        }
                         disabled={!sellerOrder.order.isPaid}
                       >
                         {!sellerOrder.order.isPaid ? "Not Paid" : "Details"}
@@ -83,3 +85,5 @@ export default function SellerOrders() {
     </Container>
   );
 }
+
+export default SellerOrders;

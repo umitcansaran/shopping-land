@@ -13,7 +13,7 @@ import OrderItemCard from "./OrderItemCard";
 import isNumberDecimal from "../../utils/isNumberDecimal";
 import { getOrderDetails, payOrder } from "../../store/actions/orderActions";
 
-export default function CustomerOrder() {
+function CustomerOrder() {
   const dispatch = useDispatch();
   const params = useParams();
   const navigate = useNavigate;
@@ -336,30 +336,6 @@ export default function CustomerOrder() {
                       </Row>
                     </ListGroup.Item>
 
-                    {/* {hasOnlinePurchase && (
-                      <>
-                        <ListGroup.Item>
-                          <Row>
-                            <Col>Price:</Col>
-                            <Col>
-                              CHF {isNumberDecimal(Number(order.totalPrice))}
-                            </Col>
-                          </Row>
-                        </ListGroup.Item>
-
-                        <ListGroup.Item>
-                          <Row>
-                            <Col>Shipping:</Col>
-                            <Col>
-                              {Number(order.totalShippingPrice) === 0
-                                ? "Free"
-                                : order.totalShippingPrice}
-                            </Col>
-                          </Row>
-                        </ListGroup.Item>
-                      </>
-                    )} */}
-
                     <ListGroup.Item>
                       <Row>
                         <Col>Total Price:</Col>
@@ -426,3 +402,5 @@ export default function CustomerOrder() {
     </Container>
   );
 }
+
+export default CustomerOrder;

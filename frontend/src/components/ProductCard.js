@@ -3,7 +3,7 @@ import { Card, Col, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./ProductCard.css";
 
-export default function ProductCard({ product, index }) {
+function ProductCard({ product, index }) {
   return (
     <Col xs={6} sm={4} md={6} lg={4} xl={3} className="gx-2 gy-2">
       <Card
@@ -38,7 +38,14 @@ export default function ProductCard({ product, index }) {
               </Card.Title>
             </Link>
             {product.description ? (
-              <Card.Text className="product-card-description" style={{ textOverflow:'ellipsis', overflow:'hidden', whiteSpace:'nowrap' }}>
+              <Card.Text
+                className="product-card-description"
+                style={{
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                  whiteSpace: "nowrap",
+                }}
+              >
                 {product.description}
               </Card.Text>
             ) : (
@@ -60,7 +67,11 @@ export default function ProductCard({ product, index }) {
               className="text-center mb-1"
             >
               Sold by{" "}
-              <Link to={`/seller/${product.sellerDetails && product.sellerDetails.id}`}>
+              <Link
+                to={`/seller/${
+                  product.sellerDetails && product.sellerDetails.id
+                }`}
+              >
                 {product.sellerDetails && product.sellerDetails.name}
               </Link>
             </Card.Text>
@@ -70,3 +81,5 @@ export default function ProductCard({ product, index }) {
     </Col>
   );
 }
+
+export default ProductCard;

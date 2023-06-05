@@ -7,7 +7,7 @@ import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import { listMyOrders } from "../../store/actions/orderActions";
 
-export default function CustomerOrders() {
+function CustomerOrders() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -71,3 +71,5 @@ export default function CustomerOrders() {
     </Container>
   );
 }
+
+export default CustomerOrders;

@@ -20,7 +20,7 @@ import "./index.css";
 import SearchBox from "../../components/SearchBox";
 import { listUsers } from "../../store/actions/userActions";
 
-export default function Home() {
+function Home() {
   const [value, setValue] = useState("");
   const [searching, setSearching] = useState(false);
   const [redirect, setRedirect] = useState(false);
@@ -149,17 +149,15 @@ export default function Home() {
         {!searching && value.length < 2 && (
           // do not render these components if searching or screen size is mobile
           <>
-          <Col md={4}>
-            <LatestReviews latestReviews={latestReviewsQuery.data} />
-          </Col>
-          <Col md={4}>
-          
-            <ProductCarousel latestProducts={latestProductsQuery.data} />
-          </Col>
-          <Col md={4}> 
-          
-            <LatestSellers latestSellers={latestSellersQuery.data} />
-          </Col>
+            <Col md={4}>
+              <LatestReviews latestReviews={latestReviewsQuery.data} />
+            </Col>
+            <Col md={4}>
+              <ProductCarousel latestProducts={latestProductsQuery.data} />
+            </Col>
+            <Col md={4}>
+              <LatestSellers latestSellers={latestSellersQuery.data} />
+            </Col>
           </>
         )}
       </Row>
@@ -209,3 +207,5 @@ export default function Home() {
     </Container>
   );
 }
+
+export default Home;

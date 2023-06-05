@@ -7,6 +7,7 @@ User = get_user_model()
 
 from ..serializers import StoreSerializer, StockSerializer ,ProductSerializer, ProfileSerializer, SearchStockSerializer
 
+
 class Search(ListAPIView):
     """
     GET: Search for Stores, Products or Profiles.. {type: "stores", search_string: "Fashion"}
@@ -38,7 +39,6 @@ class Search(ListAPIView):
     def get_queryset(self):
         search_type = self.request.query_params.get('type', None)
         search_string = self.request.query_params.get('search_string', None)
-        store_name = self.request.query_params.get('store_name', None)
         store_id = self.request.query_params.get('store_id', None)
         seller_id = self.request.query_params.get('seller_id', None)
         if search_type is not None:

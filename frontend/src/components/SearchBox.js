@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Row, Form, Col } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { search } from "../store/actions/searchAction";
 import useDebounce from "../utils/useDebounce";
 
-export default function SearchBox({
+function SearchBox({
   searchProps,
   value,
   setValue,
@@ -52,3 +52,5 @@ export default function SearchBox({
     </Row>
   );
 }
+
+export default SearchBox

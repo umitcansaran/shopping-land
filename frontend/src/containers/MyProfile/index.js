@@ -5,13 +5,10 @@ import EditProfileScreen from "../../components/EditProfileScreen";
 import { Row, Col, Image, ListGroup, Button } from "react-bootstrap";
 import { deleteAccount, logout } from "../../store/actions/userActions";
 import { listProductCategories } from "../../store/actions/categoriesActions";
-import { baseUrl } from "../../store/constants";
 import "./index.css";
-import axios from "axios";
 import DeletePopup from "../../components/DeletePopup";
-import Notification from "../../components/Notification";
 
-function ProfileScreen() {
+function Profile() {
   const [editProfile, setEditProfile] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [deleteWindow, setDeleteWindow] = useState(false);
@@ -22,7 +19,6 @@ function ProfileScreen() {
   const navigate = useNavigate();
 
   const { user } = useSelector((state) => state.myDetails);
-  const { categories } = useSelector((state) => state.productCategories);
 
   const profile = user?.profile;
 
@@ -68,11 +64,9 @@ function ProfileScreen() {
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <strong>Category: </strong>
-                  {profile.category.map((profileCategory) => {
-                    const categoryName = categories.find(
-                      (category) => category.id === profileCategory
-                    );
-                    return <li>{categoryName && categoryName.name}</li>;
+                  {console.log(profile)}
+                  {profile.categoryDetails.map((category) => {
+                    return <li>{category.name}</li>;
                   })}
                 </ListGroup.Item>
                 <ListGroup.Item>
@@ -152,4 +146,4 @@ function ProfileScreen() {
   );
 }
 
-export default ProfileScreen;
+export default Profile;

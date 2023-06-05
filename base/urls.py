@@ -74,6 +74,7 @@ urlpatterns = [
 
     # SEARCH
     path('search/', search_views.Search.as_view())
+    
 ]
 
 
