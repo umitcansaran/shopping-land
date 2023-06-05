@@ -20,11 +20,11 @@ Quickly sign in with the provided credentials to check it out
 
 ![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/shopping-land_admin-panel2.png)
 
-* Admin panel - seller orders 
+* Admin panel - Seller orders 
 
 ![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl_seller-orders-panel.png)
 
-* Admin panel = Customer order details
+* Admin panel - Customer order details
 
 ![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl_seller-order-panel.png)
 
