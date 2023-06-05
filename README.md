@@ -6,27 +6,27 @@ Quickly sign in with the provided credentials to check it out
 
 * Homescreen
 
-![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl+-home.png)
+![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/home.png)
 
 * Map 
 
-![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl_store-map.png) 
+![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/store-map.png) 
 
 * Admin panel - product & stock management
 
-![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl_seller-products.png)
+![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/seller-products.png)
 
 * Admin panel - store management & stock listing
 
-![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/shopping-land_admin-panel2.png)
+![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/seller-stores.png)
 
 * Admin panel - seller orders 
 
-![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl_seller-orders-panel.png)
+![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/seller-orders-panel.png)
 
 * Admin panel - customer order details
 
-![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/sl_seller-order-panel.png)
+![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/seller-order-panel.png)
 
 # Features
 
