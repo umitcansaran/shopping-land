@@ -10,13 +10,13 @@ import {
 } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import Message from "../components/Message";
-import CheckoutSteps from "../components/CheckoutSteps";
-import { createOrder } from "../store/actions/orderActions";
-import { ORDER_CREATE_RESET } from "../store/constants/orderConstants";
-import isNumberDecimal from "../utils/isNumberDecimal";
+import Message from "../../components/Message";
+import CheckoutSteps from "../../components/CheckoutSteps";
+import { createOrder } from "../../store/actions/orderActions";
+import { ORDER_CREATE_RESET } from "../../store/constants/orderConstants";
+import isNumberDecimal from "../../utils/isNumberDecimal";
 
-function PlaceOrderScreen() {
+function PlaceOrder() {
   const orderCreate = useSelector((state) => state.orderCreate);
   const { order, error, success } = orderCreate;
 
@@ -321,4 +321,4 @@ function PlaceOrderScreen() {
   );
 }
 
-export default PlaceOrderScreen;
+export default PlaceOrder;

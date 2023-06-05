@@ -11,16 +11,16 @@ import {
   Card,
   Container,
 } from "react-bootstrap";
-import Message from "../components/Message";
+import Message from "../../components/Message";
 import {
   addToCart,
   emptyCart,
   removeFromCart,
-} from "../store/actions/cartActions";
-import { listUsers } from "../store/actions/userActions";
-import isNumberDecimal from "../utils/isNumberDecimal";
+} from "../../store/actions/cartActions";
+import { listUsers } from "../../store/actions/userActions";
+import isNumberDecimal from "../../utils/isNumberDecimal";
 
-function CartScreen() {
+function Cart() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,7 +30,7 @@ function CartScreen() {
   const { users } = useSelector((state) => state.userList);
 
   let shippingCost;
-  let totalShippingCost = 0
+  let totalShippingCost = 0;
   let subTotalPrice;
 
   useEffect(() => {
@@ -123,7 +123,7 @@ function CartScreen() {
                       .map((product) => {
                         shippingCost =
                           totalPriceBySeller[index] >= 100 ? 0 : 20;
-                        totalShippingCost += shippingCost
+                        totalShippingCost += shippingCost;
                         subTotalPrice =
                           totalPriceBySeller[index] + shippingCost;
                         return (
@@ -145,8 +145,7 @@ function CartScreen() {
                                 </Col>
 
                                 <Col md={3}>
-                                  CHF{" "}
-                                  {isNumberDecimal(Number(product.price))}
+                                  CHF {isNumberDecimal(Number(product.price))}
                                 </Col>
 
                                 <Col md={4}>
@@ -226,8 +225,7 @@ function CartScreen() {
                             margin: "0.5rem",
                           }}
                         >
-                          Subtotal: CHF{" "}
-                          {isNumberDecimal(subTotalPrice)}
+                          Subtotal: CHF {isNumberDecimal(subTotalPrice)}
                         </h6>
                       </Row>
                     </ListGroup.Item>
@@ -250,8 +248,7 @@ function CartScreen() {
                   )}
                   ) items
                 </h2>
-                CHF{" "}
-                {isNumberDecimal(Number(totalPrice) + totalShippingCost)}
+                CHF {isNumberDecimal(Number(totalPrice) + totalShippingCost)}
               </ListGroup.Item>
             </ListGroup>
             <ListGroup.Item>
@@ -273,4 +270,4 @@ function CartScreen() {
   );
 }
 
-export default CartScreen;
+export default Cart;

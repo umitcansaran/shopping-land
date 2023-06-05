@@ -2,17 +2,17 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Button, Form, Row, Col } from "react-bootstrap";
-import { listProductCategories } from "../store/actions/categoriesActions";
-import { myDetails } from "../store/actions/userActions";
-import { createStore } from "../store/actions/storeActions";
-import { STORE_CREATE_RESET } from "../store/constants/storeConstants";
-import FormContainer from "../components/FormContainer";
-import AddressInputField from "../components/AddressInputField";
-import Loader from "../components/Loader";
-import Notification from "../components/Notification";
-import Message from "../components/Message";
+import { listProductCategories } from "../../store/actions/categoriesActions";
+import { myDetails } from "../../store/actions/userActions";
+import { createStore } from "../../store/actions/storeActions";
+import { STORE_CREATE_RESET } from "../../store/constants/storeConstants";
+import FormContainer from "../../components/FormContainer";
+import AddressInputField from "../../components/AddressInputField";
+import Loader from "../../components/Loader";
+import Notification from "../../components/Notification";
+import Message from "../../components/Message";
 
-export default function AddStore() {
+function AddStore() {
   const [viewState, setViewState] = useState({
     latitude: 46.738436,
     longitude: 8.082641,
@@ -217,3 +217,5 @@ export default function AddStore() {
     </>
   );
 }
+
+export default AddStore;

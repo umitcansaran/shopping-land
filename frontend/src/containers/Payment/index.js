@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Form, Button, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import FormContainer from "../components/FormContainer";
-import CheckoutSteps from "../components/CheckoutSteps";
-import { savePaymentMethod } from "../store/actions/cartActions";
+import FormContainer from "../../components/FormContainer";
+import CheckoutSteps from "../../components/CheckoutSteps";
+import { savePaymentMethod } from "../../store/actions/cartActions";
 
-function PaymentScreen() {
+function Payment() {
   const { shippingAddress } = useSelector((state) => state.cart);
 
   const dispatch = useDispatch();
@@ -26,7 +26,7 @@ function PaymentScreen() {
 
   return (
     <FormContainer>
-        <CheckoutSteps step1  step2 step3/>
+      <CheckoutSteps step1 step2 step3 />
 
       <Form onSubmit={submitHandler}>
         <Form.Group>
@@ -51,4 +51,4 @@ function PaymentScreen() {
   );
 }
 
-export default PaymentScreen;
+export default Payment;

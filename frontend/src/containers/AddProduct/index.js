@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Button, Row, Col, Form, FormGroup } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { listProductCategories } from "../store/actions/categoriesActions";
-import { myDetails } from "../store/actions/userActions";
+import { listProductCategories } from "../../store/actions/categoriesActions";
+import { myDetails } from "../../store/actions/userActions";
 import { useNavigate } from "react-router-dom";
-import FormContainer from "../components/FormContainer";
-import { createProduct } from "../store/actions/productActions";
-import { PRODUCT_CREATE_RESET } from "../store/constants/productConstants";
-import Loader from "../components/Loader";
-import Notification from "../components/Notification";
-import Message from "../components/Message";
+import FormContainer from "../../components/FormContainer";
+import { createProduct } from "../../store/actions/productActions";
+import { PRODUCT_CREATE_RESET } from "../../store/constants/productConstants";
+import Loader from "../../components/Loader";
+import Notification from "../../components/Notification";
+import Message from "../../components/Message";
 
-export default function AddProduct() {
+function AddProduct() {
   const [brand, setBrand] = useState("");
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
@@ -183,3 +183,5 @@ export default function AddProduct() {
     </>
   );
 }
+
+export default AddProduct;
