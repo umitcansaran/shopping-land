@@ -239,6 +239,13 @@ function Cart() {
         <Col md={4}>
           <Card>
             <ListGroup variant="flush">
+              {hasOnlinePurchase && (
+                <ListGroup.Item>
+                  <p style={{ textAlign: "center", margin: "0" }}>
+                    Free shipping on orders over CHF 100.-
+                  </p>
+                </ListGroup.Item>
+              )}
               <ListGroup.Item>
                 <h2>
                   Total Price (
@@ -255,7 +262,7 @@ function Cart() {
               <Row className="justify-content-center">
                 <Button
                   type="button"
-                  className="btn-block"
+                  className="blue-button mb-2"
                   disabled={cartItems.length === 0}
                   onClick={checkoutHandler}
                 >

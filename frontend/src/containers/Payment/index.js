@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Button, Col } from "react-bootstrap";
+import { Form, Button, Col, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import FormContainer from "../../components/FormContainer";
@@ -27,26 +27,32 @@ function Payment() {
   return (
     <FormContainer>
       <CheckoutSteps step1 step2 step3 />
+      <Row className="justify-content-center">
+        <Col xs={6} md={10} lg={8} xl={6} xxl={5}>
+          <h1>Payment Method</h1>
 
-      <Form onSubmit={submitHandler}>
-        <Form.Group>
-          <Form.Label as="legend">Select Method</Form.Label>
-          <Col>
-            <Form.Check
-              type="radio"
-              label="PayPal or Credit Card"
-              id="paypal"
-              name="paymentMethod"
-              checked
-              onChange={(e) => setPaymentMethod(e.target.value)}
-            ></Form.Check>
-          </Col>
-        </Form.Group>
+          <Form onSubmit={submitHandler}>
+            <Form.Group>
+              <Form.Check
+                type="radio"
+                label="PayPal or Credit Card"
+                id="paypal"
+                name="paymentMethod"
+                checked
+                onChange={(e) => setPaymentMethod(e.target.value)}
+              ></Form.Check>
+            </Form.Group>
 
-        <Button type="submit" variant="primary">
-          Continue
-        </Button>
-      </Form>
+            <Button
+              type="submit"
+              variant="primary"
+              className="blue-button mt-3"
+            >
+              Continue
+            </Button>
+          </Form>
+        </Col>
+      </Row>
     </FormContainer>
   );
 }

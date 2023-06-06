@@ -311,7 +311,7 @@ function PlaceOrder() {
                 <Row className="justify-content-center">
                   <Button
                     type="button"
-                    className="btn-block"
+                    className="blue-button"
                     disabled={cart.cartItems === 0 || !user}
                     onClick={placeOrder}
                   >

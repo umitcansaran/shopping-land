@@ -45,12 +45,10 @@ function Login() {
 
   return (
     <FormContainer>
-      <h2 className="login-title">SIGN IN</h2>
-
       <Nav
         variant="pills"
         defaultActiveKey="customer"
-        className="justify-content-center"
+        className="justify-content-center mt-3"
       >
         <Nav.Item>
           <Nav.Link
@@ -59,7 +57,7 @@ function Login() {
             }}
             eventKey="customer"
           >
-            Customer
+            Buyer
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>

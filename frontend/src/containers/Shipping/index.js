@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import FormContainer from "../../components/FormContainer";
 import CheckoutSteps from "../../components/CheckoutSteps";
@@ -27,7 +27,7 @@ function Shipping() {
   return (
     <FormContainer>
       <CheckoutSteps step1 step2 />
-      <h1>Shipping</h1>
+      <h1 className="text-center">Shipping</h1>
       <Form onSubmit={submitHandler}>
         <Form.Group controlId="address">
           <Form.Label>Address</Form.Label>
@@ -73,9 +73,11 @@ function Shipping() {
           ></Form.Control>
         </Form.Group>
 
-        <Button type="submit" variant="primary">
-          Continue
-        </Button>
+        <Row className="justify-content-center mt-3">
+          <Button type="submit" variant="primary" className="blue-button">
+            Continue
+          </Button>
+        </Row>
       </Form>
     </FormContainer>
   );
