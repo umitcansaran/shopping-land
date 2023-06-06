@@ -21,6 +21,7 @@ function PlaceOrder() {
   const { order, error, success } = orderCreate;
 
   const { cartItems } = useSelector((state) => state.cart);
+  const { user } = useSelector((state) => state.myDetails);
 
   const hasOnlinePurchase = cartItems.find(
     (item) => item.orderType === "online"
@@ -59,15 +60,17 @@ function PlaceOrder() {
   }, [dispatch, cart, success, order, navigate]);
 
   const placeOrder = () => {
-    dispatch(
-      createOrder({
-        orderItems: cart.cartItems,
-        paymentMethod: cart.paymentMethod,
-        totalShippingPrice: totalShippingPrice,
-        totalPrice: cart.itemsPrice,
-        shippingAddress: cart.shippingAddress,
-      })
-    );
+    if (user) {
+      dispatch(
+        createOrder({
+          orderItems: cart.cartItems,
+          paymentMethod: cart.paymentMethod,
+          totalShippingPrice: totalShippingPrice,
+          totalPrice: cart.itemsPrice,
+          shippingAddress: cart.shippingAddress,
+        })
+      );
+    }
   };
 
   // Remove duplicates and get unique seller name(s)
@@ -299,6 +302,9 @@ function PlaceOrder() {
 
               <ListGroup.Item>
                 {error && <Message variant="danger">{error}</Message>}
+                {!user && (
+                  <Message variant="danger">Please log in to continue.</Message>
+                )}
               </ListGroup.Item>
 
               <ListGroup.Item>
@@ -306,7 +312,7 @@ function PlaceOrder() {
                   <Button
                     type="button"
                     className="btn-block"
-                    disabled={cart.cartItems === 0}
+                    disabled={cart.cartItems === 0 || !user}
                     onClick={placeOrder}
                   >
                     Place Order
