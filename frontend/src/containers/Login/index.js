@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Form, Button, Row, Col } from "react-bootstrap";
+import { Form, Button, Row, Col, Nav } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import Loader from "../../components/Loader";
@@ -12,6 +12,16 @@ import { login } from "../../store/actions/userActions";
 function Login() {
   const [username, setUsername] = useState("InterDiscount");
   const [password, setPassword] = useState("django123");
+  const [profile, setProfile] = useState("CUSTOMER");
+
+  useEffect(() => {
+    if (profile === "CUSTOMER") {
+      setUsername("umit");
+    }
+    if (profile === "STORE_OWNER") {
+      setUsername("InterDiscount");
+    }
+  }, [profile]);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -36,6 +46,34 @@ function Login() {
   return (
     <FormContainer>
       <h2 className="login-title">SIGN IN</h2>
+
+      <Nav
+        variant="pills"
+        defaultActiveKey="customer"
+        className="justify-content-center"
+      >
+        <Nav.Item>
+          <Nav.Link
+            onClick={() => {
+              setProfile("CUSTOMER");
+            }}
+            eventKey="customer"
+          >
+            Customer
+          </Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link
+            onClick={() => {
+              setProfile("STORE_OWNER");
+            }}
+            eventKey="store-owner"
+          >
+            Seller
+          </Nav.Link>
+        </Nav.Item>
+      </Nav>
+
       {error && <Message variant="danger">{error}</Message>}
       {loading && <Loader />}
       <Form onSubmit={submitHandler}>
