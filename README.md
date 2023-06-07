@@ -2,7 +2,7 @@
 
 Live Demo can be viewed at https://www.shopping-land.ch/
 
-Quickly sign in with the provided credentials to check it out
+Log in as a 'customer' or 'seller' with the provided credentials to try all the features.
 
 * Homescreen
 
@@ -12,21 +12,25 @@ Quickly sign in with the provided credentials to check it out
 
 ![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/store-map.png) 
 
-* Admin panel - product & stock management
+* Product & stock management
 
 ![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/seller-products.png)
 
-* Admin panel - store management & stock listing
+* Store management
 
 ![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/seller-stores.png)
 
-* Admin panel - seller orders 
+* Seller panel - orders view
 
 ![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/seller-orders-panel.png)
 
-* Admin panel - customer order details
+* Seller panel - order details
 
 ![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/seller-order-panel.png)
+
+* Customer panel - order details
+
+![DEMO](https://shoppingland.s3.eu-central-1.amazonaws.com/SL+images/customer-order.png)
 
 # Features
 
@@ -43,17 +47,14 @@ Quickly sign in with the provided credentials to check it out
 
 * Frontend: React with Redux
 * Backend: Django REST Framework
-* Database: AWS PostgreSQL
+* Database: Amazon RDS PostgreSQL
 * File storage: AWS S3
 * Deployment: Heroku
 
 # Download & Setup Instructions
 
 * 1 - Clone project: git clone https://github.com/umitcansaran/shopping-land
-
-# Install React Modules
-* 1 - cd frontend
-* 2 - npm install
+* 2 - cd shopping-land
 
 # Create a Virtual Environment
 * 1 - pip3 install virtualenv
@@ -63,3 +64,9 @@ Quickly sign in with the provided credentials to check it out
 # Install Python Packages for Django
 * 1 - cd app
 * 2 - pip3 install -r requirements.txt
+* 3 - python3 manage.py runserver
+
+# Install React Modules
+* 1 - cd frontend
+* 2 - npm install
+* 3 - npm start

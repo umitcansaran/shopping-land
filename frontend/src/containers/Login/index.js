@@ -56,8 +56,9 @@ function Login() {
               setProfile("CUSTOMER");
             }}
             eventKey="customer"
+            style={{ width: "7.6rem", textAlign: "center" }}
           >
-            Buyer
+            Customer
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
@@ -66,6 +67,7 @@ function Login() {
               setProfile("STORE_OWNER");
             }}
             eventKey="store-owner"
+            style={{ width: "7.6rem", textAlign: "center" }}
           >
             Seller
           </Nav.Link>

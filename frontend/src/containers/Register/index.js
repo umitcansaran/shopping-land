@@ -7,7 +7,7 @@ import Loader from "../../components/Loader";
 import FormContainer from "../../components/FormContainer";
 import { register } from "../../store/actions/userActions";
 
-const RegisterScreen = () => {
+const Register = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,12 +44,10 @@ const RegisterScreen = () => {
 
   return (
     <FormContainer>
-      <h2 style={{ textAlign: "center", marginTop: "1rem" }}>REGISTER</h2>
-
       <Nav
         variant="pills"
         defaultActiveKey="customer"
-        className="justify-content-center"
+        className="justify-content-center mt-3"
       >
         <Nav.Item>
           <Nav.Link
@@ -57,6 +55,7 @@ const RegisterScreen = () => {
               setProfile("CUSTOMER");
             }}
             eventKey="customer"
+            style={{ width: "7.6rem", textAlign: "center" }}
           >
             Customer
           </Nav.Link>
@@ -67,6 +66,7 @@ const RegisterScreen = () => {
               setProfile("STORE_OWNER");
             }}
             eventKey="store-owner"
+            style={{ width: "7.6rem", textAlign: "center" }}
           >
             Seller
           </Nav.Link>
@@ -122,7 +122,7 @@ const RegisterScreen = () => {
             marginTop: "1rem",
           }}
         >
-          <Button type="submit" variant="primary">
+          <Button type="submit" variant="primary" className="blue-button">
             Register
           </Button>
         </div>
@@ -131,4 +131,4 @@ const RegisterScreen = () => {
   );
 };
 
-export default RegisterScreen;
+export default Register;
