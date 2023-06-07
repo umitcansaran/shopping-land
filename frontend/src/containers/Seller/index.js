@@ -21,9 +21,7 @@ function Seller() {
   const { stores, loading: storesLoading } = useSelector(
     (state) => state.storesByUser
   );
-  const { products, loading: productsLoading } = useSelector(
-    (state) => state.productsByUser
-  );
+  const { products } = useSelector((state) => state.productsByUser);
   const { profile, loading: profileLoading } = useSelector(
     (state) => state.profileDetails
   );
@@ -95,7 +93,7 @@ function Seller() {
           </Form>
         </Col>
       </Row>
-      {productsLoading || storesLoading || profileLoading ? (
+      {storesLoading || profileLoading ? (
         <Loader />
       ) : (
         <>
