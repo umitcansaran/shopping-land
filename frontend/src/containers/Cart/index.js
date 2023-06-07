@@ -106,9 +106,9 @@ function Cart() {
             </Message>
           ) : (
             sellers.map((seller, index) => {
-              const sellerId = users?.find(
-                (user) => user.username === seller
-              )?.id;
+              const sellerId = cartItems.find(
+                (item) => item.seller === seller
+              ).sellerId
               return (
                 <Card style={{ marginBlockStart: "1rem" }}>
                   <Card.Title

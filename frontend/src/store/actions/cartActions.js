@@ -28,6 +28,7 @@ export const addToCart =
         stockId,
         storeId,
         seller: data.sellerDetails.name,
+        sellerId: data.sellerDetails.id,
         orderType,
       },
     });
