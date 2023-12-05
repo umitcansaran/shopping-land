@@ -19,9 +19,8 @@ import environ
 env = environ.Env()
 environ.Env.read_env()
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent.parent 
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -32,7 +31,7 @@ SECRET_KEY = "django-insecure--y#josdlxhy7god6sn9j5$)9ax^x@0ypsjv__3wl9ifg!(3r4t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'shopping-land.herokuapp.com', 'www.shopping-land.ch', 'localhost', 'backend']
+ALLOWED_HOSTS = ['127.0.0.1', 'shopping-land.herokuapp.com', 'www.shopping-land.ch']
 
 # Application definition
 CORS_ALLOW_ALL_ORIGINS = True
@@ -192,7 +191,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'frontend/build/static'), )
+STATICFILES_DIRS = [
+    BASE_DIR / 'static/',
+    BASE_DIR / 'frontend/build/static/'
+]
 
 MEDIA_ROOT = BASE_DIR / 'media'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
