@@ -31,7 +31,7 @@ SECRET_KEY = "django-insecure--y#josdlxhy7god6sn9j5$)9ax^x@0ypsjv__3wl9ifg!(3r4t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'shopping-land.herokuapp.com', 'www.shopping-land.ch']
+ALLOWED_HOSTS = ['127.0.0.1', 'shopping-land.herokuapp.com', 'www.shopping-land.ch', 'localhost', 'backend']
 
 # Application definition
 CORS_ALLOW_ALL_ORIGINS = True
