@@ -100,7 +100,6 @@ def createOrder(request):
                                 stock.save()
 
                     elif x['orderType'] == 'inStore':
-                        print('FUCKKKK')
 
                         store = Store.objects.get(id=x['storeId'])
 
