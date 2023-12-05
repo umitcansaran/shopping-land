@@ -5,7 +5,7 @@ RUN pip install --upgrade pip
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 
-COPY . /backend
-WORKDIR /backend
+COPY . /shopping-land
+WORKDIR /shopping-land
 
-ENTRYPOINT ["sh", "/backend/entrypoint.sh"]
+ENTRYPOINT ["sh", "/shopping-land/entrypoint.sh"]

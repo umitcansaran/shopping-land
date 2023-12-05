@@ -3,13 +3,13 @@ version: '3.7'
 services:
   backend:
     build:
-      context: ./backend
+      context: ./
     ports:
       - "8000:8000"
     volumes:
       - static:/staticfiles
     env_file:
-      - backend/app/.env
+      - ./app/.env
   frontend:
     build:
       context: ./frontend
@@ -34,3 +34,4 @@ services:
 volumes:
   static:
   frontend:
+
