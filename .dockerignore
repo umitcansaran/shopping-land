@@ -1,0 +1,15 @@
+#Ignore all Dockerfile files
+**/*Dockerfile
+
+#Ignore node_modules folder
+**/*node_modules
+
+#Ignore environment variables
+**/*.env
+**/*.env.local
+
+#Ignoring git folder
+.git
+
+#Ignoring markdown file
+*.md
