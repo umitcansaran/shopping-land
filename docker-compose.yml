@@ -21,7 +21,7 @@ services:
   nginx:
     build: ./nginx
     volumes:
-      - static:/static
+      - static:/backend/staticfiles
       - frontend:/var/www/frontend
     ports:
       - "80:80"
