@@ -13,3 +13,6 @@
 
 #Ignoring markdown file
 *.md
+
+#Ignoring virtual environment
+myenv

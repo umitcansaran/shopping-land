@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+
+  backend:
+    build: ./backend
+    volumes:
+      - static:/staticfiles
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/app/.env
+  frontend:
+    build: ./frontend
+    volumes:
+      - frontend:/frontend/build
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./frontend/.env.local
+  nginx:
+    build: ./nginx
+    volumes:
+      - static:/static
+      - frontend:/var/www/frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
+
+volumes:
+  static:
+  frontend:
+
