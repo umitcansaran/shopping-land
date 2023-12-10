@@ -1,1 +1,12 @@
+# dependencies
+**/node_modules
+
+#Ignore environment variables
+**/.env
+**/.env.local
+
+# virtualenv
 myenv
+
+# misc
+.DS_Store

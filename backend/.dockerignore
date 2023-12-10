@@ -1,0 +1,5 @@
+#Ignore all Dockerfile files
+Dockerfile
+
+#Ignore environment variables
+.env
