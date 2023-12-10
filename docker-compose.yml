@@ -5,7 +5,7 @@ services:
   backend:
     build: ./backend
     volumes:
-      - static:/staticfiles
+      - static:/backend/staticfiles
     ports:
       - "8000:8000"
     env_file:
