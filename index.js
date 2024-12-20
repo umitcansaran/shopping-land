@@ -234,6 +234,8 @@ app.get("/api/products/subcategories", async (req, res) => {
   }
 });
 
-app.listen(6000, () => {
-  console.log("server has started on port 6000");
+const port = process.env.PORT || 80;
+
+app.listen(port, () => {
+  console.log(`server has started on port ${port}`);
 });
