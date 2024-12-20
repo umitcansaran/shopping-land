@@ -1,0 +1,11 @@
+# dependencies
+**/node_modules
+
+#Ignore environment variables
+**/.env
+
+# virtualenv
+myenv
+
+# misc
+.DS_Store
