@@ -4,8 +4,5 @@
 #Ignore environment variables
 **/.env
 
-# virtualenv
-myenv
-
 # misc
 .DS_Store

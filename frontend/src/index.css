@@ -1,0 +1,73 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+main {
+  min-height: 80vh;
+}
+
+h1 {
+  font-size: 1.8rem;
+  padding: 1rem 0;
+}
+
+h2 {
+  font-size: 1.4rem;
+  padding: 0.5rem 0;
+}
+
+.rating span {
+  margin: 0.1rem;
+}
+
+#adminmenu {
+  color: rgb(70, 69, 69);
+}
+
+.blue-button {
+  background-color: #648dc3;
+}
+
+.blue-button:focus,
+.blue-button:hover {
+  background-color: #4b74aa;
+}
+
+.red-button {
+  background-color: rgb(238, 103, 103);
+}
+
+.red-button:hover,
+.red-button:focus {
+  background-color: rgb(190, 68, 68);
+}
+
+.red-badge {
+  background-color: rgb(238, 103, 103) !important;
+}
+
+.green-badge {
+  background-color: rgb(59, 145, 66) !important;
+}
+
+.product-page-container,
+.card-page-container,
+.placeorder-page-container,
+.order-page-container {
+  width: 90%;
+}
+
+.main-order-id {
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+@media (max-width: 960px) {
+  .product-page-container,
+  .card-page-container,
+  .placeorder-page-container,
+  .order-page-container {
+    width: 100%;
+  }
+}

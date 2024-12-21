@@ -1,0 +1,109 @@
+.home-searchbox {
+  justify-content: center;
+  height: 3rem;
+  background-color: #495b7a;
+}
+
+.home-categories-bar {
+  border-bottom: 0.5px solid #818ca1;
+}
+
+.home-categories-link {
+  color: #32415c;
+}
+
+.carousel-caption {
+  position: absolute;
+  top: 0;
+}
+
+.carousel-caption h2 {
+  color: #493838;
+}
+
+.main-carousel-container {
+  height: 25.5rem;
+  align-items: center;
+}
+
+.main-carousel-container h4, h5 {
+  color: #2c3852;
+}
+
+.main-carousel-img {
+  width: auto;
+  height: auto;
+  max-height: 18rem;
+  max-width: 18rem;
+  margin: 0 auto;
+}
+
+.main-carousel-img-container {
+  display: flex;
+  justify-content: center;
+  height: 15.5rem;
+  align-items: center;
+  margin: auto;
+}
+
+.carousel a {
+  margin: 0 auto;
+}
+
+.carousel {
+  display: flex;
+  justify-content: center;
+  height: 23.5rem;
+  margin: auto;
+}
+
+.main-carousel {
+  height: 25rem;
+  background-color: #f7f7f78b;
+}
+
+.reviews-carousel, .sellers-carousel {
+  width: 80%;
+}
+
+.home-sidebar h5 {
+  color: #495b7a;
+}
+
+.sidebar-form-check {
+  color: #495b7a;
+}
+
+.home-load-button-container {
+  justify-content: center;
+}
+
+.home-button {
+  width: 200px;
+  margin-top: 10px;
+}
+
+.home-sidebar-container {
+  align-self: flex-start;
+  width: 14rem;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+}
+
+@media (min-width: 767) and (max-width: 992px) {
+  .home-sidebar-container {
+    width: 9rem;
+  }
+
+  .main-carousel {
+    width: 100%;
+  }
+}
+
+@media (max-width: 767px) {
+  .home-sidebar-container {
+    position:relative;
+    width: 100%;
+  }
+}

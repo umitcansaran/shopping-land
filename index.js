@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const pool = require("./db");
+const path = require('path');
 require("dotenv").config();
 
 // Middleware
@@ -16,6 +17,14 @@ pool.connect((err, client, release) => {
   console.log("Connected to the database");
   release(); // release the client back to the pool
 });
+
+// Serve static files from the React frontend app
+app.use(express.static(path.join(__dirname, './frontend/build')));
+
+// // Handle React routing, return all requests to React's index.html
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, './frontend/build', 'index.html'));
+// });
 
 // -------------------- HELPER FUNCTIONS
 
@@ -234,8 +243,8 @@ app.get("/api/products/subcategories", async (req, res) => {
   }
 });
 
-const port = process.env.PORT || 80;
+const PORT = process.env.PORT || 80;
 
-app.listen(port, () => {
-  console.log(`server has started on port ${port}`);
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });

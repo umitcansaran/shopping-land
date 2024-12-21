@@ -1,0 +1,98 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.marker-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.marker-btn img {
+  width: auto;
+  height: 18px;
+}
+
+.map-filters-bar {
+  justify-content: center;
+  height: 3rem;
+  background-color: #495b7a;
+}
+
+.map-search,
+.map-filter {
+  width: 50%;
+  margin: auto;
+}
+
+.map {
+  height: 90vh;
+  width: 100vw;
+}
+
+.map-categories-bar {
+  border-bottom: 0.5px solid #818ca1;
+}
+
+.map-categories-link {
+  color: #32415c;
+}
+
+.map-seller-image {
+  width: auto;
+  height: 13px;
+}
+
+.map-seller-image:hover {
+  opacity: 0.9;
+  transform: scale(1.1);
+}
+
+.map-store-container {
+  overflow: visible;
+}
+
+.map-store-container h4 {
+  margin: 0;
+  padding: 0;
+}
+
+.map-store-image {
+  width: 100%;
+  height: auto;
+  max-height: 14rem;
+  object-fit: cover;
+}
+
+@media (max-width: 991px) {
+  .map-container {
+    height: 5.5rem;
+  }
+
+  .map-search,
+  .map-filter {
+    width: 100%;
+  }
+
+  .map-filters-bar {
+    justify-content: center;
+    height: 6rem;
+    background-color: #495b7a;
+  }
+
+  .marker-btn img {
+    width: auto;
+    height: 13px;
+  }
+}

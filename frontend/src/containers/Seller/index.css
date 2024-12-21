@@ -1,0 +1,20 @@
+.seller-sidebar {
+  align-self: flex-start;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+}
+
+.seller-store-button {
+  background-color: #648dc328;
+  color: rgb(70, 69, 69);
+  width: 70%;
+  margin-bottom: 0.3rem;
+  box-shadow: none;
+}
+
+.seller-store-button:focus,
+.seller-store-button:hover {
+  background-color: #648dc38a;
+  color: rgb(70, 69, 69);
+}
