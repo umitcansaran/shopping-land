@@ -67,12 +67,8 @@ function ProductCard({ product, index }) {
               className="text-center mb-1"
             >
               Sold by{" "}
-              <Link
-                to={`/seller/${
-                  product && product.seller_id
-                }`}
-              >
-                {product && product.seller_name}
+              <Link to={`/seller/${product && product.seller_id}`}>
+                {product && product.username}
               </Link>
             </Card.Text>
           </Card.Body>

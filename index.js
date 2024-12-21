@@ -2,12 +2,19 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const pool = require("./db");
-const path = require('path');
+const path = require("path");
 require("dotenv").config();
 
 // Middleware
 app.use(cors());
 app.use(express.json()); //req.body
+
+// Start the server and listen on port
+const PORT = process.env.PORT || 80;
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 
 // Check db connection
 pool.connect((err, client, release) => {
@@ -19,12 +26,7 @@ pool.connect((err, client, release) => {
 });
 
 // Serve static files from the React frontend app
-app.use(express.static(path.join(__dirname, './frontend/build')));
-
-// // Handle React routing, return all requests to React's index.html
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, './frontend/build', 'index.html'));
-// });
+app.use(express.static(path.join(__dirname, "./frontend/build")));
 
 // -------------------- HELPER FUNCTIONS
 
@@ -56,26 +58,26 @@ app.get("/api/products", async (req, res) => {
   const limit = parseInt(req.query.limit) || 12; // Default to 12 if not provided
   const offset = parseInt(req.query.offset) || 0; // Default to 0 if not provided
 
-  // Serialize "Review" with the product field
-  async function serializeSeller(sellerId) {
-    const productResult = await pool.query(
-      "SELECT * FROM auth_user WHERE id = $1",
-      [sellerId]
-    );
-    return productResult.rows[0]; // Return the serialized product data
-  }
+  // // Serialize "Review" with the product field
+  // async function serializeSeller(sellerId) {
+  //   const productResult = await pool.query(
+  //     "SELECT * FROM auth_user WHERE id = $1",
+  //     [sellerId]
+  //   );
+  //   return productResult.rows[0]; // Return the serialized product data
+  // }
 
-  async function serializeProduct(product) {
-    const seller = await serializeSeller(product.seller_id); // Fetch the related product
-    return {
-      ...product,
-      seller_name: seller.username, // Add the serialized product image
-    };
-  }
+  // async function serializeProduct(product) {
+  //   const seller = await serializeSeller(product.seller_id); // Fetch the related product
+  //   return {
+  //     ...product,
+  //     seller_name: seller.username, // Add the serialized product image
+  //   };
+  // }
   try {
     // Fetch last 5 reviews
     const allProducts = await pool.query(
-      "SELECT * FROM base_product ORDER BY name DESC LIMIT $1 OFFSET $2",
+      "SELECT * FROM base_product LEFT JOIN auth_user ON base_product.seller_id = auth_user.id ORDER BY name DESC LIMIT $1 OFFSET $2",
       [limit, offset]
     );
 
@@ -86,13 +88,13 @@ app.get("/api/products", async (req, res) => {
     const next = offset + 12;
     const hasNextPage = offset + limit < count;
 
-    // Serialize each review with the related product
-    let serializedProducts = await Promise.all(
-      allProducts.rows.map(async (product) => await serializeProduct(product))
-    );
+    // // Serialize each review with the related product
+    // let serializedProducts = await Promise.all(
+    //   allProducts.rows.map(async (product) => await serializeProduct(product))
+    // );
 
     const response = addToImagePath(
-      serializedProducts,
+      allProducts.rows,
       process.env.AWS_S3_BUCKET_URL
     );
 
@@ -243,8 +245,23 @@ app.get("/api/products/subcategories", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 80;
+// GET search all products
+app.get("/api/search", async (req, res) => {
+  const searchQuery = `%${req.query.search_string}%`
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  try {
+    const allProducts = await pool.query(
+      "SELECT * FROM base_product LEFT JOIN auth_user ON base_product.seller_id = auth_user.id WHERE LOWER(base_product.brand) LIKE LOWER($1) OR LOWER(base_product.name) LIKE LOWER($1) OR LOWER(auth_user.username) LIKE LOWER($1)",
+      [searchQuery]
+    );
+
+    const response = addToImagePath(
+      allProducts.rows,
+      process.env.AWS_S3_BUCKET_URL
+    );
+
+    res.json(response);
+  } catch (err) {
+    console.error(err.message);
+  }
 });
