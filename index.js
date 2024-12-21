@@ -77,7 +77,7 @@ app.get("/api/products", async (req, res) => {
   try {
     // Fetch last 5 reviews
     const allProducts = await pool.query(
-      "SELECT * FROM base_product LEFT JOIN auth_user ON base_product.seller_id = auth_user.id ORDER BY name DESC LIMIT $1 OFFSET $2",
+      "SELECT brand, name, price, description, image, seller_id, username FROM base_product LEFT JOIN auth_user ON base_product.seller_id = auth_user.id ORDER BY name DESC LIMIT $1 OFFSET $2",
       [limit, offset]
     );
 
