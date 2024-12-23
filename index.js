@@ -19,7 +19,7 @@ app.use(express.json()); //req.body
 const JWT_SECRET = process.env.JWT_SECRET_KEY;
 
 // Start the server and listen on port
-const PORT = process.env.PORT || 6060;
+const PORT = process.env.PORT || 80;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
