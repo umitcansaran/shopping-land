@@ -36,6 +36,8 @@ const Header = () => {
 
   const isMobile = window.innerWidth < 991;
 
+  console.log(user)
+
   return (
     <Navbar bg="light" expand="lg">
       <Container fluid className="mx-1">

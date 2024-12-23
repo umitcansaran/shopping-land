@@ -105,6 +105,7 @@ export const createProfile =
         user: id,
         status: profile,
       });
+      
 
       dispatch({
         type: PROFILE_CREATE_SUCCESS,
@@ -192,21 +193,23 @@ export const register =
       dispatch({
         type: USER_REGISTER_REQUEST,
       });
-
+      
       const { data } = await axios.post(`${baseUrl}/api/users/registration/`, {
         username: username,
         email: email,
         password: password,
       });
-
+      
       dispatch({
         type: USER_REGISTER_SUCCESS,
         payload: data,
       });
-
+      
       localStorage.setItem("userInfo", JSON.stringify(data));
+  
       dispatch(createProfile(data.id, username, password, profile));
     } catch (error) {
+      console.log(error.response.data)
       dispatch({
         type: USER_REGISTER_FAIL,
         payload:
