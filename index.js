@@ -503,13 +503,11 @@ app.get("/api/users", async (req, res) => {
   }
 });
 
-// GET All stores of a logged in seller
+// GET All stores of a logged in user with a "Seller" profile
 app.get("/api/stores/mystores", loggedInUser, async (req, res) => {
-  // const response = loggedInUser(req, res);
-
   try {
-    const allStores = await getStoresByOwnerId(req.user.userId);
-    res.json(allStores);
+    const response = await getStoresByOwnerId(req.user.userId);
+    res.json(response);
   } catch (err) {
     console.error(err.message);
   }
