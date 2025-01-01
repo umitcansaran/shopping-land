@@ -36,7 +36,7 @@ function Map() {
     ["profiles"],
     () => axios.get("/api/profiles/").then((res) => res.data)
   );
-
+  
   const { data: categories } = useQuery(["product-categories"], () =>
     axios.get("/api/products/categories/").then((res) => res.data)
   );

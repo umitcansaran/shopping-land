@@ -8,8 +8,11 @@ const bcrypt = require("bcryptjs");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const { getStoresByOwnerId } = require("./queries/storeQueries");
 const loggedInUser = require("./middleware/loggedInUser");
+const { getStoresByOwnerId } = require("./queries/storeQueries");
+const { getUserDetailsById, getAllUsers } = require("./queries/userQueries");
+const { getProductsByOwnerId } = require("./queries/productQueries");
+const { getAllStocks, getAllStocksByStore } = require("./queries/stockQueries");
 
 // Middleware
 app.use(cors());
@@ -86,8 +89,19 @@ function addToImagePath(arr, stringToAdd) {
 // GET all user profiles
 app.get("/api/profiles", async (req, res) => {
   try {
-    const allProfiles = await pool.query("SELECT * FROM base_profile");
-    res.json(allProfiles.rows);
+    const allProfiles = await pool.query(`
+      SELECT base_profile.*,
+       auth_user.username AS name
+      FROM base_profile
+      JOIN auth_user ON base_profile.user_id = auth_user.id
+      `);
+
+    const response = addToImagePath(
+      allProfiles.rows,
+      process.env.AWS_S3_BUCKET_URL
+    );
+
+    res.json(response);
   } catch (err) {
     console.error(err.message);
   }
@@ -251,20 +265,75 @@ app.get("/api/products/subcategories", async (req, res) => {
 app.get("/api/search", async (req, res) => {
   const searchQuery = `%${req.query.search_string}%`;
 
-  try {
-    const allProducts = await pool.query(
-      "SELECT * FROM base_product LEFT JOIN auth_user ON base_product.seller_id = auth_user.id WHERE LOWER(base_product.brand) LIKE LOWER($1) OR LOWER(base_product.name) LIKE LOWER($1) OR LOWER(auth_user.username) LIKE LOWER($1)",
-      [searchQuery]
-    );
+  if (req.query.type === "all") {
+    try {
+      const allProducts = await pool.query(
+        "SELECT * FROM base_product LEFT JOIN auth_user ON base_product.seller_id = auth_user.id WHERE LOWER(base_product.brand) LIKE LOWER($1) OR LOWER(base_product.name) LIKE LOWER($1) OR LOWER(auth_user.username) LIKE LOWER($1)",
+        [searchQuery]
+      );
 
-    const response = addToImagePath(
-      allProducts.rows,
-      process.env.AWS_S3_BUCKET_URL
-    );
+      const response = addToImagePath(
+        allProducts.rows,
+        process.env.AWS_S3_BUCKET_URL
+      );
 
-    res.json(response);
-  } catch (err) {
-    console.error(err.message);
+      res.json(response);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+  if (req.query.type === "products_in_my_store") {
+    try {
+      const allProducts = await pool.query(
+        `
+        SELECT base_stock.id,
+       jsonb_build_object('id', base_product.id, 'name', base_product.name, 'price', base_product.price, 'brand', base_product.brand) AS product,
+       base_store.name AS storeName,
+       base_stock.number,
+       base_store.id AS store
+    FROM base_stock
+    JOIN base_store ON base_stock.store_id = base_store.id
+    JOIN base_product ON base_stock.product_id = base_product.id
+    WHERE base_store.id = $1
+    AND (CAST(base_product.id AS TEXT) ILIKE '%' || $2 || '%'
+                OR base_product.brand ILIKE '%' || $2 || '%'
+                OR base_product.name ILIKE '%' || $2 || '%')
+    GROUP BY base_stock.id,
+            base_product.id,
+            base_store.id;`,
+        [req.query.store_id, searchQuery]
+      );
+
+      const response = addToImagePath(
+        allProducts.rows,
+        process.env.AWS_S3_BUCKET_URL
+      );
+
+      res.json(response);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+  if (req.query.type === "stores") {
+    try {
+      const allStores = await pool.query(`
+      SELECT base_store.*,
+       auth_user.username AS owner_name
+      FROM base_store
+      LEFT JOIN auth_user ON base_store.owner_id = auth_user.id
+      `);
+
+      const response = addToImagePath(
+        allStores.rows,
+        process.env.AWS_S3_BUCKET_URL
+      );
+      console.log("STOOOOOOO");
+      console.log(response);
+
+      res.json(response);
+    } catch (err) {
+      console.error(err.message);
+    }
   }
 });
 
@@ -332,7 +401,6 @@ app.post("/api/users/registration", async (req, res) => {
 // POST create a profile
 app.post("/api/profiles/new", async (req, res) => {
   const { user, status } = req.body;
-
   try {
     const insertProfileuery = `
           INSERT INTO base_profile (user_id, status) 
@@ -343,7 +411,6 @@ app.post("/api/profiles/new", async (req, res) => {
       user,
       status,
     ]);
-
     // Return the new user (excluding the password)
     const newProfile = insertProfileResult.rows[0];
     res
@@ -360,7 +427,6 @@ app.post("/api/users/login", async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    // Query user from the database
     const result = await pool.query(
       "SELECT * FROM auth_user WHERE username = $1",
       [username]
@@ -417,87 +483,23 @@ app.post("/api/users/login", async (req, res) => {
   }
 });
 
-// GET logged in user's details
-app.get("/api/users/me", async (req, res) => {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader) {
-    return res.status(401).json({ message: "Authorization header missing" });
-  }
-
-  // Extract the token from the header (assumes "Bearer <token>")
-  const token = authHeader.split(" ")[1];
-
-  if (!token) {
-    return res.status(401).json({ message: "Token missing" });
-  }
-
-  // Use the token (e.g., validate it, decode it, etc.)
-  const decodeJwtToken = (token) => {
-    try {
-      return jwt.verify(token, JWT_SECRET); // Replace with your secret key
-    } catch (err) {
-      throw new Error("Invalid token");
-    }
-  };
-  // Perform your user-specific logic
-  // For example, decode the token to get the user's ID or fetch the user from a database
-  const user = decodeJwtToken(token); // Replace with your token decoding logic
-
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
-  }
-
+// GET Logged in user's details
+app.get("/api/users/me", loggedInUser, async (req, res) => {
   try {
-    const loggedInUser = await pool.query(
-      `
-      SELECT auth_user.*, 
-       jsonb_build_object(
-           'id', base_profile.id,
-           'name', auth_user.username,
-           'status', base_profile.status,
-           'user', base_profile.user_id,
-           'description', base_profile.description,
-           'headquarter', base_profile.headquarter,
-           'image', base_profile.image,
-           'industry', base_profile.industry,
-           'categoryDetails', json_agg(jsonb_build_object(
-               'id', base_productcategory.id,
-               'name', base_productcategory.name
-           ))
-       ) AS profile
-FROM auth_user
-LEFT JOIN base_profile ON auth_user.id = base_profile.user_id
-LEFT JOIN base_profile_category ON base_profile.id = base_profile_category.profile_id
-LEFT JOIN base_productcategory ON base_profile_category.productcategory_id = base_productcategory.id
-WHERE auth_user.id = $1
-GROUP BY auth_user.id, base_profile.id;
-      `,
-      [user.userId]
-    );
-    let response = loggedInUser.rows[0];
+    const response = await getUserDetailsById(req.user.userId);
     response.profile.image =
       process.env.AWS_S3_BUCKET_URL + response.profile.image;
-    // addToImagePath(response.profile, process.env.AWS_S3_BUCKET_URL);
-
     res.json(response);
   } catch (err) {
     console.error(err.message);
   }
 });
 
-// GET all user profiles
+// GET All user profiles
 app.get("/api/users", async (req, res) => {
   try {
-    const allUsers = await pool.query(`
-      SELECT auth_user.*, 
-      jsonb_build_object(
-      'id', base_profile.id,
-      'status', base_profile.status
-      ) AS profile
-      FROM auth_user
-      LEFT JOIN base_profile ON auth_user.id = base_profile.user_id;`);
-    res.json(allUsers.rows);
+    const response = await getAllUsers();
+    res.json(response);
   } catch (err) {
     console.error(err.message);
   }
@@ -508,6 +510,51 @@ app.get("/api/stores/mystores", loggedInUser, async (req, res) => {
   try {
     const response = await getStoresByOwnerId(req.user.userId);
     res.json(response);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
+// GET All products of a logged in user with a "Seller" profile
+app.get("/api/products/myproducts", loggedInUser, async (req, res) => {
+  try {
+    const response = await getProductsByOwnerId(req.user.userId);
+    res.json(response);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
+// GET All stocks
+app.get("/api/stocks", async (req, res) => {
+  try {
+    const response = await getAllStocks();
+    res.json(response);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
+// GET All stocks by store
+app.get("/api/stocks/store/:storeId", async (req, res) => {
+  try {
+    const response = await getAllStocksByStore(req.params.storeId);
+    res.json(response);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
+// GET All stores
+app.get("/api/stores", async (req, res) => {
+  try {
+    const allStores = await pool.query(`
+      SELECT base_store.*,
+       auth_user.username AS owner_name
+      FROM base_store
+      LEFT JOIN auth_user ON base_store.owner_id = auth_user.id
+      `);
+    res.json(allStores.rows);
   } catch (err) {
     console.error(err.message);
   }

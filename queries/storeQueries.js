@@ -6,7 +6,7 @@ const getStoresByOwnerId = async (ownerId) => {
            json_agg(DISTINCT base_productcategory.name) AS category,
            COALESCE(
                json_agg(DISTINCT jsonb_build_object(
-                   'id', base_stock.id, 
+                   'id', base_stock.id,
                    'number', base_stock.number,
                    'storeName', base_store.name,
                    'store', base_store.id,
@@ -17,8 +17,8 @@ const getStoresByOwnerId = async (ownerId) => {
                        'category', product_category.name,
                        'brand', base_product.brand
                    )
-               )) 
-               FILTER (WHERE base_stock.id IS NOT NULL), 
+               ))
+               FILTER (WHERE base_stock.id IS NOT NULL),
                '[]'
            ) AS stocks
     FROM base_store
