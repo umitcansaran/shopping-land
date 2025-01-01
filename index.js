@@ -89,6 +89,28 @@ function addToImagePath(arr, stringToAdd) {
 
 // -------------------- ROUTES
 
+app.get("/api/profiles/:id(\\d+)", async (req, res) => {
+  const profileId = (req.params.id)
+  try {
+    const allProfiles = await pool.query(`
+      SELECT base_profile.*,
+       auth_user.username AS name
+      FROM base_profile
+      JOIN auth_user ON base_profile.user_id = auth_user.id
+      WHERE base_profile.id = $1
+      `, [profileId]);
+
+    const response = addToImagePath(
+      allProfiles.rows,
+      process.env.AWS_S3_BUCKET_URL
+    );
+
+    res.json(response[0]);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
 // GET all user profiles
 app.get("/api/profiles", async (req, res) => {
   try {
@@ -109,6 +131,35 @@ app.get("/api/profiles", async (req, res) => {
     console.error(err.message);
   }
 });
+
+app.get("/api/products/user/:id", async (req, res) => {
+  const userId = (req.params.id)
+
+  try {
+    const allProducts = await pool.query(
+      `SELECT base_product.brand, base_product.name, base_product.price, base_product.description, base_product.image, base_product.seller_id, auth_user.username
+      FROM base_product
+      LEFT JOIN auth_user ON base_product.seller_id = auth_user.id 
+      WHERE auth_user.id = $1
+      ORDER BY base_product.name DESC`,
+      [userId]
+    );
+
+    const countResult = await pool.query("SELECT * FROM base_product");
+    const count = countResult.rowCount;
+
+    const response = addToImagePath(
+      allProducts.rows,
+      process.env.AWS_S3_BUCKET_URL
+    );
+
+    // Respond with the paginated products and metadata
+    res.json(response);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
 
 // GET all products
 app.get("/api/products", async (req, res) => {
@@ -324,12 +375,18 @@ app.get("/api/search", async (req, res) => {
       const allStores = await pool.query(
         `
       SELECT base_store.*,
-      base_profile.image AS profile_image,
-      auth_user.username AS owner_name
+            base_profile.image AS profile_image,
+            auth_user.username AS owner_name,
+            base_profile_category.id,
+            base_productcategory.name AS category
       FROM base_store
       LEFT JOIN auth_user ON base_store.owner_id = auth_user.id
       LEFT JOIN base_profile ON auth_user.id = base_profile.user_id
-      WHERE ($1 = '%%' OR auth_user.username ILIKE $1)
+      LEFT JOIN base_profile_category ON base_profile.id = base_profile_category.profile_id
+      LEFT JOIN base_productcategory ON base_profile_category.productcategory_id = base_productcategory.id
+      WHERE ($1 = '%%'
+            OR auth_user.username ILIKE $1
+            OR base_productcategory.name ILIKE $1)
       `,
         [searchQuery]
       );
@@ -554,6 +611,23 @@ app.get("/api/stocks/store/:storeId", async (req, res) => {
   }
 });
 
+app.get("/api/stores/user/:id", async (req, res) => {
+  const userId = (req.params.id)
+  try {
+    const allStores = await pool.query(`
+      SELECT base_store.*,
+       auth_user.username AS owner_name
+      FROM base_store
+      LEFT JOIN auth_user ON base_store.owner_id = auth_user.id
+      WHERE auth_user.id = $1
+      `, [userId]);
+    res.json(allStores.rows);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
+
 // GET All stores
 app.get("/api/stores", async (req, res) => {
   try {
@@ -568,3 +642,4 @@ app.get("/api/stores", async (req, res) => {
     console.error(err.message);
   }
 });
+

@@ -9,7 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import SearchBox from "../../components/SearchBox";
 
-function Map() {
+function Map() { 
   let zoomNumber;
   window.innerWidth < 991 ? (zoomNumber = 6.5) : (zoomNumber = 7.7);
 
