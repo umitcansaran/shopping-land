@@ -46,7 +46,10 @@ app.use(express.static(path.join(__dirname, "./frontend/build")));
 function addToImagePath(arr, stringToAdd) {
   return arr.map((obj) => {
     if (obj.hasOwnProperty("image")) {
-      obj.image = stringToAdd + obj.image; // Append the string to the image value
+      obj.image = stringToAdd + obj.image;
+    }
+    if (obj.hasOwnProperty("profile_image")) {
+      obj.profile_image = stringToAdd + obj.profile_image;
     }
     return obj;
   });
@@ -263,7 +266,9 @@ app.get("/api/products/subcategories", async (req, res) => {
 
 // GET search all products
 app.get("/api/search", async (req, res) => {
-  const searchQuery = `%${req.query.search_string}%`;
+  const searchQuery = req.query.search_string
+    ? `%${req.query.search_string}%`
+    : "%%";
 
   if (req.query.type === "all") {
     try {
@@ -314,21 +319,25 @@ app.get("/api/search", async (req, res) => {
       console.error(err.message);
     }
   }
-  if (req.query.type === "stores") {
+  if (req.query.type === "stores" || req.query.type === "map") {
     try {
-      const allStores = await pool.query(`
+      const allStores = await pool.query(
+        `
       SELECT base_store.*,
-       auth_user.username AS owner_name
+      base_profile.image AS profile_image,
+      auth_user.username AS owner_name
       FROM base_store
       LEFT JOIN auth_user ON base_store.owner_id = auth_user.id
-      `);
+      LEFT JOIN base_profile ON auth_user.id = base_profile.user_id
+      WHERE ($1 = '%%' OR auth_user.username ILIKE $1)
+      `,
+        [searchQuery]
+      );
 
       const response = addToImagePath(
         allStores.rows,
         process.env.AWS_S3_BUCKET_URL
       );
-      console.log("STOOOOOOO");
-      console.log(response);
 
       res.json(response);
     } catch (err) {

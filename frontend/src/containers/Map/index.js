@@ -11,11 +11,12 @@ import SearchBox from "../../components/SearchBox";
 
 function Map() {
   let zoomNumber;
-  window.innerWidth < 991 ? (zoomNumber = 6.5) : (zoomNumber = 8.2);
+  window.innerWidth < 991 ? (zoomNumber = 6.5) : (zoomNumber = 7.7);
 
   const [value, setValue] = useState("");
   const [filter, setFilter] = useState("");
   const [selectedStore, setSelectedStore] = useState(null);
+
   const [viewState, setViewState] = useState({
     latitude: 46.826908,
     longitude: 7.944633,
@@ -32,11 +33,6 @@ function Map() {
         .then((res) => res.data)
   );
 
-  const { data: profiles, isLoading: loadingProfiles } = useQuery(
-    ["profiles"],
-    () => axios.get("/api/profiles/").then((res) => res.data)
-  );
-  
   const { data: categories } = useQuery(["product-categories"], () =>
     axios.get("/api/products/categories/").then((res) => res.data)
   );
@@ -56,7 +52,7 @@ function Map() {
           actionType="STORE_LIST_RESET"
           value={value}
           setValue={setValue}
-          placeholder="Search for seller"
+          placeholder="Search by name (ex: digitec, nike)"
         />
         <Row>
           <Nav className="justify-content-evenly map-categories-bar">
@@ -81,33 +77,30 @@ function Map() {
             mapStyle="mapbox://styles/mapbox/light-v11"
             onMove={(evt) => setViewState(evt.viewState)}
           >
-            {loadingStores || loadingProfiles ? (
+            {loadingStores ? (
               <Loader />
             ) : (
               stores?.map((store, index) => {
-                const profile = profiles.find(
-                  (profile) => profile.name === store.owner_name
-                );
                 return (
                   <Marker
                     key={index}
                     latitude={store.latitude}
                     longitude={store.longitude}
                   >
-                    {profile && (
-                      <button
-                        className="marker-btn"
-                        onClick={() => {
-                          setSelectedStore(store);
-                        }}
-                      >
-                        <img
-                          className="map-seller-image"
-                          src={profile.image}
-                          alt="Store Icon"
-                        />
-                      </button>
-                    )}
+                    <button
+                      className="marker-btn"
+                      onClick={() => {
+                        setSelectedStore(null);
+                        setSelectedStore(store);
+                      }}
+                    >
+                      <img
+                        className="map-seller-image"
+                        src={store.profile_image}
+                        alt="Store Icon"
+                      />
+                    </button>
+
                     {selectedStore ? (
                       <Popup
                         latitude={selectedStore.latitude}
@@ -140,7 +133,7 @@ function Map() {
                               style={{ margin: "0", padding: "0" }}
                             >
                               Go to{" "}
-                              <a href={`#/seller/${selectedStore.owner}`}>
+                              <a href={`#/seller/${selectedStore.owner_id}`}>
                                 {selectedStore.owner_name}
                               </a>
                               's page
