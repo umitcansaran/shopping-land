@@ -43,7 +43,7 @@ function Seller() {
         })
       );
     }
-    if (store !== "" && value != "") {
+    if (store !== "" && value !== "") {
       dispatch(
         search({
           type: "products_in_store",
@@ -52,7 +52,7 @@ function Seller() {
         })
       );
     }
-  }, [store, value]);
+  }, [dispatch, store, value]);
 
   const storeSearchHandler = (e) => {
     setValue(e.target.value);

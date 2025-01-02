@@ -11,8 +11,9 @@ const crypto = require("crypto");
 const loggedInUser = require("./middleware/loggedInUser");
 const { getStoresByOwnerId } = require("./queries/storeQueries");
 const { getUserDetailsById, getAllUsers } = require("./queries/userQueries");
-const { getProductsByOwnerId } = require("./queries/productQueries");
-const { getAllStocks, getAllStocksByStore } = require("./queries/stockQueries");
+const { getProductsByOwnerId, getProductsById } = require("./queries/productQueries");
+const { getAllStocks, getAllStocksByStore, getAllStocksByProduct } = require("./queries/stockQueries");
+const { getReviewsByProductId } = require("./queries/reviewQueries");
 
 // Middleware
 app.use(cors());
@@ -41,7 +42,7 @@ pool.connect((err, client, release) => {
 app.use(express.static(path.join(__dirname, "./frontend/build")));
 
 // -------------------- HELPER FUNCTIONS
-
+ 
 // Append the S3 bucket url to the image value (relative path)
 function addToImagePath(arr, stringToAdd) {
   return arr.map((obj) => {
@@ -50,6 +51,9 @@ function addToImagePath(arr, stringToAdd) {
     }
     if (obj.hasOwnProperty("profile_image")) {
       obj.profile_image = stringToAdd + obj.profile_image;
+    }
+    if (obj.product && obj.product.hasOwnProperty("image")) {
+      obj.product.image = stringToAdd + obj.product.image;
     }
     return obj;
   });
@@ -137,7 +141,7 @@ app.get("/api/products/user/:id", async (req, res) => {
 
   try {
     const allProducts = await pool.query(
-      `SELECT base_product.brand, base_product.name, base_product.price, base_product.description, base_product.image, base_product.seller_id, auth_user.username
+      `SELECT base_product.id, base_product.brand, base_product.name, base_product.price, base_product.description, base_product.image, base_product.seller_id, auth_user.username
       FROM base_product
       LEFT JOIN auth_user ON base_product.seller_id = auth_user.id 
       WHERE auth_user.id = $1
@@ -169,7 +173,7 @@ app.get("/api/products", async (req, res) => {
 
   try {
     const allProducts = await pool.query(
-      `SELECT base_product.brand, base_product.name, base_product.price, base_product.description, base_product.image, base_product.seller_id, auth_user.username
+      `SELECT base_product.id, base_product.brand, base_product.name, base_product.price, base_product.description, base_product.image, base_product.seller_id, auth_user.username
       FROM base_product
       LEFT JOIN auth_user ON base_product.seller_id = auth_user.id 
       ORDER BY base_product.name DESC LIMIT $1 OFFSET $2`,
@@ -401,6 +405,39 @@ app.get("/api/search", async (req, res) => {
       console.error(err.message);
     }
   }
+
+  if (req.query.type === "products_in_store") {
+    try {
+      const allProducts = await pool.query(
+        `
+        SELECT base_stock.id,
+          jsonb_build_object('id', base_product.id, 'name', base_product.name, 'price', base_product.price, 'brand', base_product.brand, 'image', base_product.image) AS product,
+          base_store.name AS storeName,
+          base_stock.number,
+          base_store.id AS store 
+        FROM base_stock
+        JOIN base_store ON base_stock.store_id = base_store.id
+        JOIN base_product ON base_stock.product_id = base_product.id
+        WHERE base_store.id = $1
+        AND (CAST(base_product.id AS TEXT) ILIKE '%' || $2 || '%'
+                    OR base_product.brand ILIKE '%' || $2 || '%'
+                    OR base_product.name ILIKE '%' || $2 || '%')
+        GROUP BY base_stock.id,
+                base_product.id,
+                base_store.id;`,
+        [req.query.store_id, searchQuery]
+      );
+      
+      const response = addToImagePath(
+        allProducts.rows,
+        process.env.AWS_S3_BUCKET_URL
+      );
+      
+      res.json(response);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
 });
 
 // POST user registration
@@ -586,6 +623,39 @@ app.get("/api/products/myproducts", loggedInUser, async (req, res) => {
   try {
     const response = await getProductsByOwnerId(req.user.userId);
     res.json(response);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
+app.get("/api/stocks/product/:product_id(\\d+)", async (req, res) => { 
+  try {
+    const response = await getAllStocksByProduct(req.params.product_id);
+    res.json(response);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
+app.get("/api/products/reviews/:product_id(\\d+)", async (req, res) => { 
+  try {
+    const response = await getReviewsByProductId(req.params.product_id);
+    res.json(response);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
+app.get("/api/products/:product_id(\\d+)", async (req, res) => { 
+  try {
+    const product = await getProductsById(req.params.product_id);
+
+    const response = addToImagePath(
+      product,
+      process.env.AWS_S3_BUCKET_URL
+    );
+
+    res.json(response[0]);
   } catch (err) {
     console.error(err.message);
   }
