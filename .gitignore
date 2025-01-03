@@ -8,4 +8,4 @@ node_modules/
 .DS_Store
 
 # Ignore build folder in frontend
-**/frontend/build/
+build/
