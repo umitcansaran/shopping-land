@@ -37,6 +37,7 @@ import {
 } from "../constants/productConstants";
 
 export const createProduct = (formData) => async (dispatch, getState) => {
+
   try {
     dispatch({
       type: PRODUCT_CREATE_REQUEST,
@@ -44,16 +45,14 @@ export const createProduct = (formData) => async (dispatch, getState) => {
 
     const {
       userLogin: { userInfo },
-    } = getState();
+    } = getState(); 
 
-    const config = {
+    const { data } = await axios.post(`/api/products/new/`, formData, {
       headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${userInfo.access}`,
-      },
-    };
+        Authorization: `Bearer ${userInfo.access}` 
+      }
+    });
 
-    const { data } = await axios.post(`/api/products/new/`, formData);
     dispatch({
       type: PRODUCT_CREATE_SUCCESS,
       payload: data,

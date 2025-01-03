@@ -71,7 +71,6 @@ function Home() {
   });
 
   const fetchProducts = async (pageParam = 0) => {
-    console.log('pageParam ' + pageParam)
     const { data } = await axios.get(
       `api/products/?offset=${pageParam}&limit=12`
     );
@@ -174,10 +173,9 @@ function Home() {
             // show all products at first render
             <Row className="product-card-container">
               <Row className="product-card-row">
-                {data?.pages.map((page, index) => { 
-                  console.log('hasNextPage ' + hasNextPage)
+                {data?.pages.map((page, pageIndex) => { 
                   return page.results.map((product) => (
-                    <ProductCard product={product} key={index} />
+                    <ProductCard product={product} key={`${pageIndex}-${product.id}`} />
                   ));
                 })}
                 {data && value.length === 0 && hasNextPage && (

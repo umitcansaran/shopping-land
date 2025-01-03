@@ -209,7 +209,6 @@ export const register =
   
       dispatch(createProfile(data.id, username, password, profile));
     } catch (error) {
-      console.log(error.response.data)
       dispatch({
         type: USER_REGISTER_FAIL,
         payload:

@@ -167,7 +167,7 @@ export default function MyProducts() {
             </thead>
             <tbody>
               {myProducts.map((product, index) => (
-                <>
+                  <React.Fragment key={product.id}>
                   <tr key={product.id} style={{ textAlign: "center" }}>
                     <td>{product.id}</td>
                     <td>
@@ -239,7 +239,7 @@ export default function MyProducts() {
                       loading={loading}
                     />
                   )}
-                </>
+                  </React.Fragment>
               ))}
             </tbody>
           </Table>

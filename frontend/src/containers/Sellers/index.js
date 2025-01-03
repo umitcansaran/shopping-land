@@ -81,16 +81,20 @@ function Sellers() {
           >
             <Row style={{ width: "90%", textAlign: "center" }}>
               {profiles &&
-                profiles.map((profile, index) => {
+                profiles.map((profile) => {
                   return (
                     <>
-                      <Col xs={6} md={2} className="seller-image-col">
+                      <Col
+                        xs={6}
+                        md={2}
+                        className="seller-image-col"
+                        key={profile.id}
+                      >
                         <Link to={`/seller/${profile.id}`}>
                           <Image
                             className="p-2 seller-image"
                             src={profile.image}
                             alt={profile.name}
-                            key={index}
                             style={{
                               maxWidth: "60%",
                               maxHeight: "4rem",

@@ -11,13 +11,28 @@ const crypto = require("crypto");
 const loggedInUser = require("./middleware/loggedInUser");
 const { getStoresByOwnerId } = require("./queries/storeQueries");
 const { getUserDetailsById, getAllUsers } = require("./queries/userQueries");
-const { getProductsByOwnerId, getProductsById } = require("./queries/productQueries");
-const { getAllStocks, getAllStocksByStore, getAllStocksByProduct } = require("./queries/stockQueries");
+const {
+  getProductsByOwnerId,
+  getProductsById,
+} = require("./queries/productQueries");
+const {
+  getAllStocks,
+  getAllStocksByStore,
+  getAllStocksByProduct,
+} = require("./queries/stockQueries");
 const { getReviewsByProductId } = require("./queries/reviewQueries");
+
+const s3 = require("./s3-config");
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(bodyParser.json());
 
 // Middleware
 app.use(cors());
 app.use(express.json()); //req.body
+const multer = require("multer");
+const upload = multer(); // You can configure storage if needed
 
 // JWT secret key (store securely in env variables)
 const JWT_SECRET = process.env.JWT_SECRET_KEY;
@@ -42,7 +57,7 @@ pool.connect((err, client, release) => {
 app.use(express.static(path.join(__dirname, "./frontend/build")));
 
 // -------------------- HELPER FUNCTIONS
- 
+
 // Append the S3 bucket url to the image value (relative path)
 function addToImagePath(arr, stringToAdd) {
   return arr.map((obj) => {
@@ -59,50 +74,26 @@ function addToImagePath(arr, stringToAdd) {
   });
 }
 
-// function loggedInUser(req, res) {
-//   const authHeader = req.headers.authorization;
-
-//   if (!authHeader) {
-//     return res.status(401).json({ message: "Authorization header missing" });
-//   }
-
-//   // Extract the token from the header (assumes "Bearer <token>")
-//   const token = authHeader.split(" ")[1];
-
-//   if (!token) {
-//     return res.status(401).json({ message: "Token missing" });
-//   }
-
-//   // Use the token (e.g., validate it, decode it, etc.)
-//   const decodeJwtToken = (token) => {
-//     try {
-//       return jwt.verify(token, JWT_SECRET); // Replace with your secret key
-//     } catch (err) {
-//       throw new Error("Invalid token");
-//     }
-//   };
-//   // Perform your user-specific logic
-//   // For example, decode the token to get the user's ID or fetch the user from a database
-//   const user = decodeJwtToken(token); // Replace with your token decoding logic
-
-//   if (!user) {
-//     return res.status(404).json({ message: "User not found" });
-//   }
-//   return user;
-// }
-
 // -------------------- ROUTES
 
+const productsRoutes = require('./routes/products');
+
+// Use the routes
+app.use('/api/products', productsRoutes); 
+
 app.get("/api/profiles/:id(\\d+)", async (req, res) => {
-  const profileId = (req.params.id)
+  const profileId = req.params.id;
   try {
-    const allProfiles = await pool.query(`
+    const allProfiles = await pool.query(
+      `
       SELECT base_profile.*,
        auth_user.username AS name
       FROM base_profile
       JOIN auth_user ON base_profile.user_id = auth_user.id
       WHERE base_profile.id = $1
-      `, [profileId]);
+      `,
+      [profileId]
+    );
 
     const response = addToImagePath(
       allProfiles.rows,
@@ -136,72 +127,6 @@ app.get("/api/profiles", async (req, res) => {
   }
 });
 
-app.get("/api/products/user/:id", async (req, res) => {
-  const userId = (req.params.id)
-
-  try {
-    const allProducts = await pool.query(
-      `SELECT base_product.id, base_product.brand, base_product.name, base_product.price, base_product.description, base_product.image, base_product.seller_id, auth_user.username
-      FROM base_product
-      LEFT JOIN auth_user ON base_product.seller_id = auth_user.id 
-      WHERE auth_user.id = $1
-      ORDER BY base_product.name DESC`,
-      [userId]
-    );
-
-    const countResult = await pool.query("SELECT * FROM base_product");
-    const count = countResult.rowCount;
-
-    const response = addToImagePath(
-      allProducts.rows,
-      process.env.AWS_S3_BUCKET_URL
-    );
-
-    // Respond with the paginated products and metadata
-    res.json(response);
-  } catch (err) {
-    console.error(err.message);
-  }
-});
-
-
-// GET all products
-app.get("/api/products", async (req, res) => {
-  // Extracting limit and offset from the query params
-  const limit = parseInt(req.query.limit) || 12; // Default to 12 if not provided
-  const offset = parseInt(req.query.offset) || 0; // Default to 0 if not provided
-
-  try {
-    const allProducts = await pool.query(
-      `SELECT base_product.id, base_product.brand, base_product.name, base_product.price, base_product.description, base_product.image, base_product.seller_id, auth_user.username
-      FROM base_product
-      LEFT JOIN auth_user ON base_product.seller_id = auth_user.id 
-      ORDER BY base_product.name DESC LIMIT $1 OFFSET $2`,
-      [limit, offset]
-    );
-
-    const countResult = await pool.query("SELECT * FROM base_product");
-    const count = countResult.rowCount;
-
-    // Calculate if there is a next page
-    const next = offset + 12;
-
-    const response = addToImagePath(
-      allProducts.rows,
-      process.env.AWS_S3_BUCKET_URL
-    );
-
-    // Respond with the paginated products and metadata
-    res.json({
-      results: response,
-      next,
-      count,
-    });
-  } catch (err) {
-    console.error(err.message);
-  }
-});
-
 // GET last 5 sellers profiles registered
 app.get("/api/profiles/latest-sellers", async (req, res) => {
   try {
@@ -217,45 +142,6 @@ app.get("/api/profiles/latest-sellers", async (req, res) => {
   }
 });
 
-// GET last 5 products added
-app.get("/api/products/latest-products", async (req, res) => {
-  try {
-    const latestProducts = await pool.query(
-      'SELECT * FROM base_product ORDER BY "createdAt" DESC LIMIT 5'
-    );
-    let response = latestProducts.rows;
-
-    addToImagePath(response, process.env.AWS_S3_BUCKET_URL);
-    res.json(response);
-  } catch (err) {
-    console.error(err.message);
-  }
-});
-
-// GET last 5 product reviews added
-app.get("/api/products/latest-reviews", async (req, res) => {
-  try {
-    const reviewResult = await pool.query(
-      `SELECT base_review.name, base_review.rating, base_review.comment, base_review.product_id, base_product.brand AS product_brand, base_product.image
-      FROM base_review
-      LEFT JOIN base_product ON base_review.product_id = base_product.id
-      ORDER BY base_review."createdAt" DESC 
-      LIMIT 5`
-    );
-
-    const response = addToImagePath(
-      reviewResult.rows,
-      process.env.AWS_S3_BUCKET_URL
-    );
-
-    // // Respond with the serialized reviews
-    res.json(response);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
-
 // GET seller profiles only
 app.get("/api/profiles/sellers", async (req, res) => {
   try {
@@ -267,53 +153,6 @@ app.get("/api/profiles/sellers", async (req, res) => {
     addToImagePath(response, process.env.AWS_S3_BUCKET_URL);
 
     res.json(response);
-  } catch (err) {
-    console.error(err.message);
-  }
-});
-
-// GET product categories
-app.get("/api/products/categories", async (req, res) => {
-  async function serializeSubCategory(categoryId) {
-    const subCategoryResult = await pool.query(
-      "SELECT * FROM base_productsubcategory WHERE category_id = $1",
-      [categoryId]
-    );
-    return subCategoryResult.rows;
-  }
-
-  async function serializeCategory(category) {
-    const subcategory = await serializeSubCategory(category.id); // Fetch the related category
-    return {
-      ...category,
-      subcategory, // Add the serialized subcategories
-    };
-  }
-  try {
-    const productCategoryResult = await pool.query(
-      "SELECT * FROM base_productcategory"
-    );
-
-    // Serialize each category with the related subcategories
-    let serializedCategories = await Promise.all(
-      productCategoryResult.rows.map(
-        async (category) => await serializeCategory(category)
-      )
-    );
-
-    res.json(serializedCategories);
-  } catch (err) {
-    console.error(err.message);
-  }
-});
-
-// GET product subcategories
-app.get("/api/products/subcategories", async (req, res) => {
-  try {
-    const productSubCategories = await pool.query(
-      "SELECT * FROM base_productsubcategory"
-    );
-    res.json(productSubCategories.rows);
   } catch (err) {
     console.error(err.message);
   }
@@ -342,25 +181,77 @@ app.get("/api/search", async (req, res) => {
       console.error(err.message);
     }
   }
+
+  if (req.query.type === "products_by_seller") {
+    try {
+      const allProducts = await pool.query(
+        `
+        SELECT *
+        FROM base_product
+        LEFT JOIN auth_user ON base_product.seller_id = auth_user.id
+        WHERE (LOWER(base_product.brand) LIKE LOWER($2)
+              OR LOWER(base_product.name) LIKE LOWER($2))
+          AND auth_user.id = $1;
+        `,
+        [req.query.seller_id, searchQuery]
+      );
+
+      const response = addToImagePath(
+        allProducts.rows,
+        process.env.AWS_S3_BUCKET_URL
+      );
+
+      res.json(response);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+
+  if (req.query.type === "products") {
+    try {
+      const allProducts = await pool.query(
+        `
+        SELECT *
+        FROM base_product
+        LEFT JOIN base_productcategory ON base_productcategory.id = base_product.category_id
+        LEFT JOIN base_productsubcategory ON base_productsubcategory.id = base_product.subcategory_id
+        WHERE base_productcategory.name ILIKE $1
+          OR base_productsubcategory.name ILIKE $1;
+            `,
+        [searchQuery]
+      );
+
+      const response = addToImagePath(
+        allProducts.rows,
+        process.env.AWS_S3_BUCKET_URL
+      );
+
+      res.json(response);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+
   if (req.query.type === "products_in_my_store") {
     try {
       const allProducts = await pool.query(
         `
         SELECT base_stock.id,
-       jsonb_build_object('id', base_product.id, 'name', base_product.name, 'price', base_product.price, 'brand', base_product.brand) AS product,
-       base_store.name AS storeName,
-       base_stock.number,
-       base_store.id AS store
-    FROM base_stock
-    JOIN base_store ON base_stock.store_id = base_store.id
-    JOIN base_product ON base_stock.product_id = base_product.id
-    WHERE base_store.id = $1
-    AND (CAST(base_product.id AS TEXT) ILIKE '%' || $2 || '%'
-                OR base_product.brand ILIKE '%' || $2 || '%'
-                OR base_product.name ILIKE '%' || $2 || '%')
-    GROUP BY base_stock.id,
-            base_product.id,
-            base_store.id;`,
+              jsonb_build_object('id', base_product.id, 'name', base_product.name, 'price', base_product.price, 'brand', base_product.brand) AS product,
+              base_store.name AS storeName,
+              base_stock.number,
+              base_store.id AS store
+        FROM base_stock
+        JOIN base_store ON base_stock.store_id = base_store.id
+        JOIN base_product ON base_stock.product_id = base_product.id
+        WHERE base_store.id = $1
+          AND (CAST(base_product.id AS TEXT) ILIKE '%' || $2 || '%'
+              OR base_product.brand ILIKE '%' || $2 || '%'
+              OR base_product.name ILIKE '%' || $2 || '%')
+        GROUP BY base_stock.id,
+                base_product.id,
+                base_store.id;
+                `,
         [req.query.store_id, searchQuery]
       );
 
@@ -374,6 +265,7 @@ app.get("/api/search", async (req, res) => {
       console.error(err.message);
     }
   }
+
   if (req.query.type === "stores" || req.query.type === "map") {
     try {
       const allStores = await pool.query(
@@ -427,12 +319,12 @@ app.get("/api/search", async (req, res) => {
                 base_store.id;`,
         [req.query.store_id, searchQuery]
       );
-      
+
       const response = addToImagePath(
         allProducts.rows,
         process.env.AWS_S3_BUCKET_URL
       );
-      
+
       res.json(response);
     } catch (err) {
       console.error(err.message);
@@ -573,7 +465,7 @@ app.post("/api/users/login", async (req, res) => {
 
     // Generate tokens
     const access = jwt.sign({ userId: user.id }, JWT_SECRET, {
-      expiresIn: "15m",
+      expiresIn: "1d",
     });
     const refresh = jwt.sign({ userId: user.id }, JWT_SECRET, {
       expiresIn: "7d",
@@ -618,17 +510,7 @@ app.get("/api/stores/mystores", loggedInUser, async (req, res) => {
   }
 });
 
-// GET All products of a logged in user with a "Seller" profile
-app.get("/api/products/myproducts", loggedInUser, async (req, res) => {
-  try {
-    const response = await getProductsByOwnerId(req.user.userId);
-    res.json(response);
-  } catch (err) {
-    console.error(err.message);
-  }
-});
-
-app.get("/api/stocks/product/:product_id(\\d+)", async (req, res) => { 
+app.get("/api/stocks/product/:product_id(\\d+)", async (req, res) => {
   try {
     const response = await getAllStocksByProduct(req.params.product_id);
     res.json(response);
@@ -637,31 +519,7 @@ app.get("/api/stocks/product/:product_id(\\d+)", async (req, res) => {
   }
 });
 
-app.get("/api/products/reviews/:product_id(\\d+)", async (req, res) => { 
-  try {
-    const response = await getReviewsByProductId(req.params.product_id);
-    res.json(response);
-  } catch (err) {
-    console.error(err.message);
-  }
-});
-
-app.get("/api/products/:product_id(\\d+)", async (req, res) => { 
-  try {
-    const product = await getProductsById(req.params.product_id);
-
-    const response = addToImagePath(
-      product,
-      process.env.AWS_S3_BUCKET_URL
-    );
-
-    res.json(response[0]);
-  } catch (err) {
-    console.error(err.message);
-  }
-});
-
-// GET All stocks
+// GET - List all the stocks
 app.get("/api/stocks", async (req, res) => {
   try {
     const response = await getAllStocks();
@@ -671,7 +529,7 @@ app.get("/api/stocks", async (req, res) => {
   }
 });
 
-// GET All stocks by store
+// GET - List all the stocks of a store
 app.get("/api/stocks/store/:storeId", async (req, res) => {
   try {
     const response = await getAllStocksByStore(req.params.storeId);
@@ -682,21 +540,23 @@ app.get("/api/stocks/store/:storeId", async (req, res) => {
 });
 
 app.get("/api/stores/user/:id", async (req, res) => {
-  const userId = (req.params.id)
+  const userId = req.params.id;
   try {
-    const allStores = await pool.query(`
+    const allStores = await pool.query(
+      `
       SELECT base_store.*,
        auth_user.username AS owner_name
       FROM base_store
       LEFT JOIN auth_user ON base_store.owner_id = auth_user.id
       WHERE auth_user.id = $1
-      `, [userId]);
+      `,
+      [userId]
+    );
     res.json(allStores.rows);
   } catch (err) {
     console.error(err.message);
   }
 });
-
 
 // GET All stores
 app.get("/api/stores", async (req, res) => {
@@ -712,4 +572,3 @@ app.get("/api/stores", async (req, res) => {
     console.error(err.message);
   }
 });
-

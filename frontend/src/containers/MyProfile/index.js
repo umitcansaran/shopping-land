@@ -64,7 +64,6 @@ function Profile() {
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <strong>Category: </strong>
-                  {console.log(profile)}
                   {profile.categoryDetails.map((category) => {
                     return <li>{category.name}</li>;
                   })}
