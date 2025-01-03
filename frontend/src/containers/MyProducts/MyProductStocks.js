@@ -115,7 +115,7 @@ function MyProductStocks({
                         <i className="fa-regular fa-paper-plane-top d-none d-sm-block">
                           validate
                         </i>
-                        <i class="fa-sharp fa-solid fa-square-check d-sm-none"></i>
+                        <i className="fa-sharp fa-solid fa-square-check d-sm-none"></i>
                       </Button>
                     )}
                     <Button

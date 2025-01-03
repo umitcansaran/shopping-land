@@ -144,7 +144,7 @@ const Header = () => {
                 to="/login"
               >
                 <i
-                  class="fa-solid fa-user"
+                  className="fa-solid fa-user"
                   style={{ color: "#1e478a", marginRight: "0.3rem" }}
                 ></i>
                 Sign In

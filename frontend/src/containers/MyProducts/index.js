@@ -188,7 +188,7 @@ export default function MyProducts() {
                           stye={{ color: "#f2f5fa" }}
                           className="btn-block blue-button"
                         >
-                          <i class="fa-solid fa-angle-up"></i>
+                          <i className="fa-solid fa-angle-up"></i>
                         </Button>
                       ) : (
                         <Button
