@@ -50,6 +50,11 @@ pool.connect((err, client, release) => {
 // Serve static files from the React frontend app
 app.use(express.static(path.join(__dirname, "../frontend/build"))); 
 
+// Catch-all handler to serve React's index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+});
+
 // Append the S3 bucket url to the image value (relative path)
 function addToImagePath(arr, stringToAdd) {
   return arr.map((obj) => {
