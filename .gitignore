@@ -1,0 +1,12 @@
+# dependencies
+node_modules/
+
+# Ignore environment variables
+backend/.env
+frontend/.env.local
+
+# misc
+.DS_Store
+
+# Ignore build folder in frontend
+frontend/build/
