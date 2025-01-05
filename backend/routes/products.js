@@ -15,22 +15,7 @@ const {
   getLatestProductReviews,
 } = require("../queries/productQueries");
 const { getReviewsByProductId } = require("../queries/reviewQueries");
-
-// Append the AWS S3 bucket URL to image paths
-function addToImagePath(arr, stringToAdd) {
-  return arr.map((obj) => {
-    if (obj.hasOwnProperty("image")) {
-      obj.image = stringToAdd + obj.image;
-    }
-    if (obj.hasOwnProperty("profile_image")) {
-      obj.profile_image = stringToAdd + obj.profile_image;
-    }
-    if (obj.product && obj.product.hasOwnProperty("image")) {
-      obj.product.image = stringToAdd + obj.product.image;
-    }
-    return obj;
-  });
-}
+const { addToImagePath } = require("../helpers/addToImagePath");
 
 // List all products
 router.get("/", async (req, res) => {
@@ -70,7 +55,6 @@ router.get("/", async (req, res) => {
 router.get("/myproducts", loggedInUser, async (req, res) => {
   try {
     const response = await getMyProducts(req.user.userId);
-    console.log(response)
 
     res.json(response);
   } catch (err) {
@@ -117,6 +101,7 @@ router.post("/new", upload.single("image"), async (req, res) => {
     Key: req.file.originalname,
     Body: req.file.buffer,
   };
+  console.log(req.file);
 
   try {
     // Upload image to S3 and get the image URL

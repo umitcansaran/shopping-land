@@ -50,22 +50,6 @@ pool.connect((err, client, release) => {
 // Serve static files from the React frontend app
 app.use(express.static(path.join(__dirname, "../frontend/build"))); 
 
-// Append the S3 bucket url to the image value (relative path)
-function addToImagePath(arr, stringToAdd) {
-  return arr.map((obj) => {
-    if (obj.hasOwnProperty("image")) {
-      obj.image = stringToAdd + obj.image;
-    }
-    if (obj.hasOwnProperty("profile_image")) {
-      obj.profile_image = stringToAdd + obj.profile_image;
-    }
-    if (obj.product && obj.product.hasOwnProperty("image")) {
-      obj.product.image = stringToAdd + obj.product.image;
-    }
-    return obj;
-  });
-}
-
 // Products route
 const productsRoutes = require("./routes/products");
 app.use("/api/products", productsRoutes);
@@ -82,185 +66,189 @@ app.use("/api/users", usersRoutes);
 const sellerOrdersRoutes = require("./routes/seller-orders");
 app.use("/api/seller-orders", sellerOrdersRoutes);
 
+// Search route
+const searchRoutes = require("./routes/search");
+app.use("/api/search", searchRoutes);
 
 // ====================================================================
 
+// // GET search all products
 
-// GET search all products
-app.get("/api/search", async (req, res) => {
-  const searchQuery = req.query.search_string
-    ? `%${req.query.search_string}%`
-    : "%%";
+// app.get("/api/search", async (req, res) => {
+//   const searchQuery = req.query.search_string
+//     ? `%${req.query.search_string}%`
+//     : "%%";
 
-  if (req.query.type === "all") {
-    try {
-      const allProducts = await pool.query(
-        "SELECT * FROM base_product LEFT JOIN auth_user ON base_product.seller_id = auth_user.id WHERE LOWER(base_product.brand) LIKE LOWER($1) OR LOWER(base_product.name) LIKE LOWER($1) OR LOWER(auth_user.username) LIKE LOWER($1)",
-        [searchQuery]
-      );
+//   if (req.query.type === "all") {
+//     try {
+//       const allProducts = await pool.query(
+//         "SELECT * FROM base_product LEFT JOIN auth_user ON base_product.seller_id = auth_user.id WHERE LOWER(base_product.brand) LIKE LOWER($1) OR LOWER(base_product.name) LIKE LOWER($1) OR LOWER(auth_user.username) LIKE LOWER($1)",
+//         [searchQuery]
+//       );
 
-      const response = addToImagePath(
-        allProducts.rows,
-        process.env.AWS_S3_BUCKET_URL
-      );
+//       const response = addToImagePath(
+//         allProducts.rows,
+//         process.env.AWS_S3_BUCKET_URL
+//       );
 
-      res.json(response);
-    } catch (err) {
-      console.error(err.message);
-    }
-  }
+//       res.json(response);
+//     } catch (err) {
+//       console.error(err.message);
+//     }
+//   }
 
-  if (req.query.type === "products_by_seller") {
-    try {
-      const allProducts = await pool.query(
-        `
-        SELECT *
-        FROM base_product
-        LEFT JOIN auth_user ON base_product.seller_id = auth_user.id
-        WHERE (LOWER(base_product.brand) LIKE LOWER($2)
-              OR LOWER(base_product.name) LIKE LOWER($2))
-          AND auth_user.id = $1;
-        `,
-        [req.query.seller_id, searchQuery]
-      );
+//   if (req.query.type === "products_by_seller") {
+//     try {
+//       const allProducts = await pool.query(
+//         `
+//         SELECT *
+//         FROM base_product
+//         LEFT JOIN auth_user ON base_product.seller_id = auth_user.id
+//         WHERE (LOWER(base_product.brand) LIKE LOWER($2)
+//               OR LOWER(base_product.name) LIKE LOWER($2))
+//           AND auth_user.id = $1;
+//         `,
+//         [req.query.seller_id, searchQuery]
+//       );
 
-      const response = addToImagePath(
-        allProducts.rows,
-        process.env.AWS_S3_BUCKET_URL
-      );
+//       const response = addToImagePath(
+//         allProducts.rows,
+//         process.env.AWS_S3_BUCKET_URL
+//       );
 
-      res.json(response);
-    } catch (err) {
-      console.error(err.message);
-    }
-  }
+//       res.json(response);
+//     } catch (err) {
+//       console.error(err.message);
+//     }
+//   }
 
-  if (req.query.type === "products") {
-    try {
-      const allProducts = await pool.query(
-        `
-        SELECT *
-        FROM base_product
-        LEFT JOIN base_productcategory ON base_productcategory.id = base_product.category_id
-        LEFT JOIN base_productsubcategory ON base_productsubcategory.id = base_product.subcategory_id
-        WHERE base_productcategory.name ILIKE $1
-          OR base_productsubcategory.name ILIKE $1;
-            `,
-        [searchQuery]
-      );
+//   if (req.query.type === "products") {
+//     try {
+//       const allProducts = await pool.query(
+//         `
+//         SELECT *
+//         FROM base_product
+//         LEFT JOIN base_productcategory ON base_productcategory.id = base_product.category_id
+//         LEFT JOIN base_productsubcategory ON base_productsubcategory.id = base_product.subcategory_id
+//         WHERE base_productcategory.name ILIKE $1
+//           OR base_productsubcategory.name ILIKE $1;
+//             `,
+//         [searchQuery]
+//       );
 
-      const response = addToImagePath(
-        allProducts.rows,
-        process.env.AWS_S3_BUCKET_URL
-      );
+//       const response = addToImagePath(
+//         allProducts.rows,
+//         process.env.AWS_S3_BUCKET_URL
+//       );
 
-      res.json(response);
-    } catch (err) {
-      console.error(err.message);
-    }
-  }
+//       res.json(response);
+//     } catch (err) {
+//       console.error(err.message);
+//     }
+//   }
 
-  if (req.query.type === "products_in_my_store") {
-    try {
-      const allProducts = await pool.query(
-        `
-        SELECT base_stock.id,
-              jsonb_build_object('id', base_product.id, 'name', base_product.name, 'price', base_product.price, 'brand', base_product.brand) AS product,
-              base_store.name AS storeName,
-              base_stock.number,
-              base_store.id AS store
-        FROM base_stock
-        JOIN base_store ON base_stock.store_id = base_store.id
-        JOIN base_product ON base_stock.product_id = base_product.id
-        WHERE base_store.id = $1
-          AND (CAST(base_product.id AS TEXT) ILIKE '%' || $2 || '%'
-              OR base_product.brand ILIKE '%' || $2 || '%'
-              OR base_product.name ILIKE '%' || $2 || '%')
-        GROUP BY base_stock.id,
-                base_product.id,
-                base_store.id;
-                `,
-        [req.query.store_id, searchQuery]
-      );
+//   if (req.query.type === "products_in_my_store") {
+//     try {
+//       const allProducts = await pool.query(
+//         `
+//         SELECT base_stock.id,
+//               jsonb_build_object('id', base_product.id, 'name', base_product.name, 'price', base_product.price, 'brand', base_product.brand) AS product,
+//               base_store.name AS storeName,
+//               base_stock.number,
+//               base_store.id AS store
+//         FROM base_stock
+//         JOIN base_store ON base_stock.store_id = base_store.id
+//         JOIN base_product ON base_stock.product_id = base_product.id
+//         WHERE base_store.id = $1
+//           AND (CAST(base_product.id AS TEXT) ILIKE '%' || $2 || '%'
+//               OR base_product.brand ILIKE '%' || $2 || '%'
+//               OR base_product.name ILIKE '%' || $2 || '%')
+//         GROUP BY base_stock.id,
+//                 base_product.id,
+//                 base_store.id;
+//                 `,
+//         [req.query.store_id, searchQuery]
+//       );
 
-      const response = addToImagePath(
-        allProducts.rows,
-        process.env.AWS_S3_BUCKET_URL
-      );
+//       const response = addToImagePath(
+//         allProducts.rows,
+//         process.env.AWS_S3_BUCKET_URL
+//       );
 
-      res.json(response);
-    } catch (err) {
-      console.error(err.message);
-    }
-  }
+//       res.json(response);
+//     } catch (err) {
+//       console.error(err.message);
+//     }
+//   }
 
-  if (req.query.type === "stores" || req.query.type === "map") {
-    try {
-      const allStores = await pool.query(
-        `
-      SELECT base_store.*,
-            base_profile.image AS profile_image,
-            auth_user.username AS owner_name,
-            base_profile_category.id,
-            base_productcategory.name AS category
-      FROM base_store
-      LEFT JOIN auth_user ON base_store.owner_id = auth_user.id
-      LEFT JOIN base_profile ON auth_user.id = base_profile.user_id
-      LEFT JOIN base_profile_category ON base_profile.id = base_profile_category.profile_id
-      LEFT JOIN base_productcategory ON base_profile_category.productcategory_id = base_productcategory.id
-      WHERE ($1 = '%%'
-            OR auth_user.username ILIKE $1
-            OR base_productcategory.name ILIKE $1)
-      `,
-        [searchQuery]
-      );
+//   if (req.query.type === "stores" || req.query.type === "map") {
+//     try {
+//       const allStores = await pool.query(
+//         `
+//       SELECT base_store.*,
+//             base_profile.image AS profile_image,
+//             auth_user.username AS owner_name,
+//             base_profile_category.id,
+//             base_productcategory.name AS category
+//       FROM base_store
+//       LEFT JOIN auth_user ON base_store.owner_id = auth_user.id
+//       LEFT JOIN base_profile ON auth_user.id = base_profile.user_id
+//       LEFT JOIN base_profile_category ON base_profile.id = base_profile_category.profile_id
+//       LEFT JOIN base_productcategory ON base_profile_category.productcategory_id = base_productcategory.id
+//       WHERE ($1 = '%%'
+//             OR auth_user.username ILIKE $1
+//             OR base_productcategory.name ILIKE $1)
+//       `,
+//         [searchQuery]
+//       );
 
-      const response = addToImagePath(
-        allStores.rows,
-        process.env.AWS_S3_BUCKET_URL
-      );
+//       const response = addToImagePath(
+//         allStores.rows,
+//         process.env.AWS_S3_BUCKET_URL
+//       );
 
-      res.json(response);
-    } catch (err) {
-      console.error(err.message);
-    }
-  }
+//       res.json(response);
+//     } catch (err) {
+//       console.error(err.message);
+//     }
+//   }
 
-  if (req.query.type === "products_in_store") {
-    try {
-      const allProducts = await pool.query(
-        `
-        SELECT base_stock.id,
-          jsonb_build_object('id', base_product.id, 'name', base_product.name, 'price', base_product.price, 'brand', base_product.brand, 'image', base_product.image) AS product,
-          base_store.name AS storeName,
-          base_stock.number,
-          base_store.id AS store 
-        FROM base_stock
-        JOIN base_store ON base_stock.store_id = base_store.id
-        JOIN base_product ON base_stock.product_id = base_product.id
-        WHERE base_store.id = $1
-        AND (CAST(base_product.id AS TEXT) ILIKE '%' || $2 || '%'
-                    OR base_product.brand ILIKE '%' || $2 || '%'
-                    OR base_product.name ILIKE '%' || $2 || '%')
-        GROUP BY base_stock.id,
-                base_product.id,
-                base_store.id;`,
-        [req.query.store_id, searchQuery]
-      );
+//   if (req.query.type === "products_in_store") {
+//     try {
+//       const allProducts = await pool.query(
+//         `
+//         SELECT base_stock.id,
+//           jsonb_build_object('id', base_product.id, 'name', base_product.name, 'price', base_product.price, 'brand', base_product.brand, 'image', base_product.image) AS product,
+//           base_store.name AS storeName,
+//           base_stock.number,
+//           base_store.id AS store 
+//         FROM base_stock
+//         JOIN base_store ON base_stock.store_id = base_store.id
+//         JOIN base_product ON base_stock.product_id = base_product.id
+//         WHERE base_store.id = $1
+//         AND (CAST(base_product.id AS TEXT) ILIKE '%' || $2 || '%'
+//                     OR base_product.brand ILIKE '%' || $2 || '%'
+//                     OR base_product.name ILIKE '%' || $2 || '%')
+//         GROUP BY base_stock.id,
+//                 base_product.id,
+//                 base_store.id;`,
+//         [req.query.store_id, searchQuery]
+//       );
 
-      const response = addToImagePath(
-        allProducts.rows,
-        process.env.AWS_S3_BUCKET_URL
-      );
+//       const response = addToImagePath(
+//         allProducts.rows,
+//         process.env.AWS_S3_BUCKET_URL
+//       );
 
-      res.json(response);
-    } catch (err) {
-      console.error(err.message);
-    }
-  }
-});
+//       res.json(response);
+//     } catch (err) {
+//       console.error(err.message);
+//     }
+//   }
+// });
 
 // POST user registration
+
 app.post("/api/users/registration", async (req, res) => {
   const { username, email, password } = req.body;
 

@@ -11,22 +11,7 @@ const {
   createProfile,
   latestSellerProfiles,
 } = require("../queries/profileQuery");
-
-// Append the AWS S3 bucket URL to image paths
-function addToImagePath(arr, stringToAdd) {
-  return arr.map((obj) => {
-    if (obj.hasOwnProperty("image")) {
-      obj.image = stringToAdd + obj.image;
-    }
-    if (obj.hasOwnProperty("profile_image")) {
-      obj.profile_image = stringToAdd + obj.profile_image;
-    }
-    if (obj.product && obj.product.hasOwnProperty("image")) {
-      obj.product.image = stringToAdd + obj.product.image;
-    }
-    return obj;
-  });
-}
+const { addToImagePath } = require("../helpers/addToImagePath");
 
 // List all profiles
 router.get("/", async (req, res) => {
