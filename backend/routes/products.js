@@ -16,7 +16,7 @@ const {
 } = require("../queries/productQueries");
 const { getReviewsByProductId } = require("../queries/reviewQueries");
 
-// Append the S3 bucket URL to image paths
+// Append the AWS S3 bucket URL to image paths
 function addToImagePath(arr, stringToAdd) {
   return arr.map((obj) => {
     if (obj.hasOwnProperty("image")) {
@@ -70,6 +70,7 @@ router.get("/", async (req, res) => {
 router.get("/myproducts", loggedInUser, async (req, res) => {
   try {
     const response = await getMyProducts(req.user.userId);
+    console.log(response)
 
     res.json(response);
   } catch (err) {
@@ -79,7 +80,7 @@ router.get("/myproducts", loggedInUser, async (req, res) => {
 });
 
 // List all products by a specific seller
-router.get("/user/:id", async (req, res) => {
+router.get("/user/:id(\\d+)", async (req, res) => {
   const user_id = req.params.id;
 
   try {

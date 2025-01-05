@@ -34,6 +34,7 @@ function MyProductStocks({
                 <Row
                   className="d-flex justify-content-center"
                   style={{ width: "90%" }}
+                  key={store.id}
                 >
                   <Col
                     xs={8}
@@ -47,6 +48,7 @@ function MyProductStocks({
                         <ListGroup.Item
                           as="li"
                           className="d-flex justify-content-between align-items-center"
+                          key={store.id}
                         >
                           {store.name}
                           {stockInput[index] ? (

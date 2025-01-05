@@ -21,7 +21,7 @@ import OrderItemCard from "./OrderItemCard";
 function SellerOrder() {
   const dispatch = useDispatch();
   const params = useParams();
-  const navigate = useNavigate;
+  const navigate = useNavigate();
 
   const sellerOrderId = params.id;
 
@@ -63,13 +63,14 @@ function SellerOrder() {
       ? true
       : false;
 
+
   let pickUpLocations = sellerOrder?.inStoreOrderItems
     .reduce((accumulator, current) => {
       if (
         !accumulator.find(
           (item) =>
             item.details.seller === current.details.seller &&
-            item.store.name == current.store.name
+            item.store.name === current.store.name 
         )
       ) {
         accumulator.push(current);
@@ -77,6 +78,8 @@ function SellerOrder() {
       return accumulator;
     }, [])
     .sort((a, b) => (a.seller > b.seller ? 1 : b.seller > a.seller ? -1 : 0));
+
+    console.log(pickUpLocations)
 
   let totalInStoreOrderItems;
   let totalOnlineOrderItems;
@@ -113,10 +116,9 @@ function SellerOrder() {
     dispatch,
     navigate,
     userInfo,
-    sellerOrder,
     sellerOrderId,
     successSellerOrderSend,
-    successSellerOrderRetrieve,
+    successSellerOrderRetrieve
   ]);
 
   useEffect(() => {
@@ -133,7 +135,15 @@ function SellerOrder() {
         dispatch(getSellerOrderDetails(sellerOrderId));
       }
     }
-  }, [dispatch, hasItemNotShipped, hasItemNotRetrieved]);
+  }, [
+    dispatch,
+    sellerOrder,
+    sellerOrderId,
+    hasItemNotShipped,
+    hasItemNotRetrieved,
+    hasOnlinePurchase,
+    hasInStorePickup,
+  ]);
 
   useEffect(() => {
     if (successSellerOrderComplete) {
@@ -214,7 +224,7 @@ function SellerOrder() {
                             <OrderItemCard
                               item={item}
                               isNumberDecimal={isNumberDecimal}
-                              key={index}
+                              key={item.id}
                             />
                           );
                         })}
@@ -254,7 +264,7 @@ function SellerOrder() {
                                 item={item}
                                 pickUpHandler={pickUpHandler}
                                 sellerOrder={sellerOrder}
-                                key={index}
+                                key={item.id}
                               />
                             </>
                           );
@@ -291,7 +301,7 @@ function SellerOrder() {
                       <ListGroup.Item>
                         <h2>Pickup Location(s)</h2>
                         {pickUpLocations.map((item) => {
-                          return <p>{item.store.name}</p>;
+                          return <p key={`${item.id}-${item.store}`}>{item.store.name}</p>;
                         })}
                       </ListGroup.Item>
                     )}

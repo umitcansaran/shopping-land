@@ -74,61 +74,17 @@ app.use("/api/products", productsRoutes);
 const profilesRoutes = require("./routes/profiles");
 app.use("/api/profiles", profilesRoutes);
 
-app.get("/api/profiles/:id(\\d+)", async (req, res) => {
-  const profileId = req.params.id;
-  try {
-    const allProfiles = await pool.query(
-      `
-      SELECT base_profile.*,
-       auth_user.username AS name
-      FROM base_profile
-      JOIN auth_user ON base_profile.user_id = auth_user.id
-      WHERE base_profile.id = $1
-      `,
-      [profileId]
-    );
+// Users route
+const usersRoutes = require("./routes/users");
+app.use("/api/users", usersRoutes);
 
-    const response = addToImagePath(
-      allProfiles.rows,
-      process.env.AWS_S3_BUCKET_URL
-    );
+// Seller orders route
+const sellerOrdersRoutes = require("./routes/seller-orders");
+app.use("/api/seller-orders", sellerOrdersRoutes);
 
-    res.json(response[0]);
-  } catch (err) {
-    console.error(err.message);
-  }
-});
 
-// GET last 5 sellers profiles registered
-app.get("/api/profiles/latest-sellers", async (req, res) => {
-  try {
-    const latestSellers = await pool.query(
-      "SELECT * FROM base_profile WHERE status = 'STORE_OWNER' ORDER BY id DESC LIMIT 5"
-    );
-    let response = latestSellers.rows;
+// ====================================================================
 
-    addToImagePath(response, process.env.AWS_S3_BUCKET_URL);
-    res.json(response);
-  } catch (err) {
-    console.error(err.message);
-  }
-});
-
-// GET seller profiles only
-app.get("/api/profiles/sellers", async (req, res) => {
-  try {
-    const profiles = await pool.query(
-      "SELECT * FROM base_profile WHERE status = 'STORE_OWNER'"
-    );
-    let response = profiles.rows;
-
-    addToImagePath(response, process.env.AWS_S3_BUCKET_URL);
-
-    res.json(response);
-  } catch (err) {
-    console.error(err.message);
-  }
-});
 
 // GET search all products
 app.get("/api/search", async (req, res) => {
@@ -365,30 +321,6 @@ app.post("/api/users/registration", async (req, res) => {
   }
 });
 
-// POST create a profile
-app.post("/api/profiles/new", async (req, res) => {
-  const { user, status } = req.body;
-  try {
-    const insertProfileuery = `
-          INSERT INTO base_profile (user_id, status) 
-          VALUES ($1, $2) 
-          RETURNING id, status
-      `;
-    const insertProfileResult = await pool.query(insertProfileuery, [
-      user,
-      status,
-    ]);
-    // Return the new user (excluding the password)
-    const newProfile = insertProfileResult.rows[0];
-    res
-      .status(201)
-      .json({ detail: "Profile created successfully!", profile: newProfile });
-  } catch (err) {
-    console.error("Error registering user:", err.message);
-    res.status(500).json({ detail: "Server error." });
-  }
-});
-
 // POST login user
 app.post("/api/users/login", async (req, res) => {
   const { username, password } = req.body;
@@ -437,7 +369,7 @@ app.post("/api/users/login", async (req, res) => {
 
     // Generate tokens
     const access = jwt.sign({ userId: user.id }, JWT_SECRET, {
-      expiresIn: "1d",
+      expiresIn: "7d",
     });
     const refresh = jwt.sign({ userId: user.id }, JWT_SECRET, {
       expiresIn: "7d",

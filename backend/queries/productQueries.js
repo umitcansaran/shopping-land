@@ -50,7 +50,7 @@ const getProductsById = async (product_id) => {
 const getMyProducts = async (ownerId) => {
   const query = `
     SELECT 
-        base_product.id, 
+        base_product.id::INTEGER, 
         base_product.brand, 
         base_product.name, 
         base_product.price, 
@@ -59,8 +59,8 @@ const getMyProducts = async (ownerId) => {
         base_product.rating, 
         base_product."numReviews", 
         base_product.seller_id, 
-        base_product.category_id, 
-        base_product.subcategory_id, 
+        base_product.category_id::INTEGER, 
+        base_product.subcategory_id::INTEGER, 
         auth_user.username
     FROM 
         base_product
