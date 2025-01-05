@@ -46,7 +46,7 @@ function CustomerOrder() {
           !accumulator.find(
             (item) =>
               item.store.owner_name === current.store.owner_name &&
-              item.store.name == current.store.name
+              item.store.name === current.store.name
           )
         ) {
           accumulator.push(current);

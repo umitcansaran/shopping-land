@@ -1,6 +1,6 @@
 const pool = require("../db");
 
-const getStoresByOwnerId = async (ownerId) => {
+const getMyStores = async (ownerId) => {
   const query = `
     SELECT base_store.*,
            json_agg(DISTINCT base_productcategory.name) AS category,
@@ -34,4 +34,27 @@ const getStoresByOwnerId = async (ownerId) => {
   return result.rows;
 };
 
-module.exports = { getStoresByOwnerId };
+const getAllStores = async () => {
+  const query = `
+    SELECT base_store.*,
+      auth_user.username AS owner_name
+    FROM base_store
+    LEFT JOIN auth_user ON base_store.owner_id = auth_user.id
+  `;
+  const result = await pool.query(query);
+  return result.rows;
+};
+
+const getStoreByUserId = async (user_id) => {
+  const query = `
+    SELECT base_store.*,
+      auth_user.username AS owner_name
+    FROM base_store
+    LEFT JOIN auth_user ON base_store.owner_id = auth_user.id
+    WHERE auth_user.id = $1
+  `;
+  const result = await pool.query(query, [user_id]);
+  return result.rows;
+};
+
+module.exports = { getMyStores, getAllStores, getStoreByUserId };

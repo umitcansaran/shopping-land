@@ -1,6 +1,6 @@
 const pool = require("../db");
 
-const getUserDetailsById = async (ownerId) => {
+const getMyDetails = async (ownerId) => {
   const query = `
     SELECT auth_user.*,
        jsonb_build_object(
@@ -41,4 +41,4 @@ const getAllUsers = async () => {
   return result.rows;
 };
 
-module.exports = { getUserDetailsById, getAllUsers };
+module.exports = { getMyDetails, getAllUsers };
