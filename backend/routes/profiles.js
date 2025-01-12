@@ -1,6 +1,13 @@
 const express = require("express");
+const app = express();
 const router = express.Router();
 const pool = require("../db");
+const bodyParser = require("body-parser");
+
+// Middleware
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json()); 
+
 const multer = require("multer");
 const upload = multer();
 const s3 = require("../s3-config");
