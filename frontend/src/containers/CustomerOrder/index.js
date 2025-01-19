@@ -16,8 +16,8 @@ import { getOrderDetails, payOrder } from "../../store/actions/orderActions";
 function CustomerOrder() {
   const dispatch = useDispatch();
   const params = useParams();
-  const navigate = useNavigate;
-
+  const navigate = useNavigate();
+  
   const orderId = params.id;
 
   const [sdkReady, setSdkReady] = useState(false);
@@ -41,6 +41,8 @@ function CustomerOrder() {
 
   const hasInStorePickup = order?.sellerOrder
     .map((sellerOrder) => {
+      console.log("sellerOrder", sellerOrder)
+      console.log("inStoreOrderItems", sellerOrder.inStoreOrderItems)
       return sellerOrder.inStoreOrderItems.reduce((accumulator, current) => {
         if (
           !accumulator.find(
@@ -123,11 +125,10 @@ function CustomerOrder() {
   }, [
     dispatch,
     userInfo,
-    order,
     orderId,
     successPay,
-    successSellerOrderSend,
-    navigate,
+    successSellerOrderSend, 
+    navigate
   ]);
 
   const successPaymentHandler = (paymentResult) => {

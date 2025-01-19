@@ -32,7 +32,7 @@ router.get("/myorders", loggedInUser, async (req, res) => {
   }
 });
 
-// List all seller orders associated with the currently logged-in user (must have a seller profile)
+// List a seller order associated with the currently logged-in user (must have a seller profile)
 router.get("/:id(\\d+)", loggedInUser, async (req, res) => {
   try {
     const response = await getSellerOrder(req.params.id);

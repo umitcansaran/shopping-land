@@ -1,30 +1,18 @@
+
 const pool = require("../db");
 
-const getMySellerOrders = async (user_id) => {
+const getMyOrders = async (user_id) => {
   const query = `
-    SELECT 
-    base_sellerorder.*,
-    COALESCE(
-        jsonb_build_object(
-        'isPaid', base_order."isPaid", 
-        'paidAt', base_order."paidAt"
-        ),
-        '[]' -- Provide a default value in case no orders are found
-    ) AS "order"
-    FROM 
-    base_sellerorder
-    LEFT JOIN 
-    base_order ON base_order.id = base_sellerorder.order_id
-    WHERE 
-    base_sellerorder.seller_id = $1
-    GROUP BY 
-    base_sellerorder.id, base_order."isPaid", base_order."paidAt";
+    SELECT * 
+    FROM base_order
+    WHERE customer_id = $1
+    ORDER BY "createdAt" DESC
         `;
   const result = await pool.query(query, [user_id]);
   return result.rows;
 };
 
-const getSellerOrder = async (id) => {
+const getOrder = async (id) => {
   const query = `
     SELECT 
     base_order.*,
@@ -142,12 +130,13 @@ WHERE
     base_order.id = $1
 GROUP BY 
     base_order.id, customer.id, base_shippingaddress.id;
+
           `;
   const result = await pool.query(query, [id]);
+  console.log('result', result)
   return result.rows[0];
 };
 
 module.exports = {
-  getMySellerOrders,
-  getSellerOrder,
+  getMyOrders, getOrder
 };

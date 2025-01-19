@@ -40,6 +40,9 @@ app.use("/api/profiles", profilesRoutes);
 const usersRoutes = require("./routes/users");
 app.use("/api/users", usersRoutes);
 
+const ordersRoutes = require("./routes/orders");
+app.use("/api/orders", ordersRoutes);
+
 const sellerOrdersRoutes = require("./routes/seller-orders");
 app.use("/api/seller-orders", sellerOrdersRoutes);
 
