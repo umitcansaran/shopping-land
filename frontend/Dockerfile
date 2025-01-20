@@ -1,10 +1,9 @@
 FROM node:alpine
-
-COPY . /frontend
 WORKDIR /frontend
-
-RUN npm install --force \
-    npm run build
-
+COPY package*.json ./
+RUN npm install --force
+COPY . .
+RUN npm run build
 CMD ["npm", "start"]
+
 
