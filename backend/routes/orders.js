@@ -22,7 +22,6 @@ router.get("/myorders", loggedInUser, async (req, res) => {
 router.get("/:id(\\d+)", loggedInUser, async (req, res) => {
   try {
     const response = await getOrder(req.params.id);
-    console.log('response' , response)
 
     res.json(response);
   } catch (err) {

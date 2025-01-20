@@ -41,8 +41,6 @@ function CustomerOrder() {
 
   const hasInStorePickup = order?.sellerOrder
     .map((sellerOrder) => {
-      console.log("sellerOrder", sellerOrder)
-      console.log("inStoreOrderItems", sellerOrder.inStoreOrderItems)
       return sellerOrder.inStoreOrderItems.reduce((accumulator, current) => {
         if (
           !accumulator.find(

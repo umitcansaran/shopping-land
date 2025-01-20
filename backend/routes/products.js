@@ -101,7 +101,6 @@ router.post("/new", upload.single("image"), async (req, res) => {
     Key: req.file.originalname,
     Body: req.file.buffer,
   };
-  console.log(req.file);
 
   try {
     // Upload image to S3 and get the image URL

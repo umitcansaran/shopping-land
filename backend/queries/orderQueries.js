@@ -133,7 +133,6 @@ GROUP BY
 
           `;
   const result = await pool.query(query, [id]);
-  console.log('result', result)
   return result.rows[0];
 };
 
