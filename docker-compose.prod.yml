@@ -1,7 +1,7 @@
 services:
 
   backend:
-    image: umitcansaran/shopping-land-backend:1.0
+    image: umitcansaran/shopping-land-backend:latest
     ports:
       - "8000:8000"
     env_file:
@@ -11,7 +11,7 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: umitcansaran/shopping-land-frontend:1.0
+    image: umitcansaran/shopping-land-frontend:latest
     ports:
       - "3000:3000"
     volumes:
@@ -25,7 +25,7 @@ services:
     restart: unless-stopped
 
   nginx:
-    image: umitcansaran/shopping-land-nginx:1.0
+    image: umitcansaran/shopping-land-nginx:latest
     ports:
       - "80:80"
     volumes:
