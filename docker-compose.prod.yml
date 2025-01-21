@@ -1,0 +1,42 @@
+services:
+
+  backend:
+    image: umitcansaran/shopping-land-backend:1.0
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  frontend:
+    image: umitcansaran/shopping-land-frontend:1.0
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/build:/frontend/build
+    env_file:
+      - ./frontend/.env.local
+    networks:
+      - app-network
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+
+  nginx:
+    image: umitcansaran/shopping-land-nginx:1.0
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend/build:/usr/share/nginx/html
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - app-network
+    restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge
