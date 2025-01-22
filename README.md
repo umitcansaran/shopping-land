@@ -60,7 +60,7 @@ Log in as a **customer** or **seller** with the provided credentials to explore 
 
 - **Frontend**: React with Redux  
 - **Backend**: Node.js with Express  
-- **Database**: AWS RDS PostgreSQL  
+- **Database**: AWS RDS, PostgreSQL  
 - **File Storage**: AWS S3  
 - **DevOps**: Docker, Nginx, GitHub Actions
 - **Deployment**: Heroku  
