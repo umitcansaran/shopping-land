@@ -1,6 +1,6 @@
 build:
   docker:
-    web: Dockerfile  # Specifies the Dockerfile to build your app
+    web: docker-compose.prod  # Specifies the Dockerfile to build your app
 
 release:
   command:
