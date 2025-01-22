@@ -1,0 +1,7 @@
+build:
+  docker:
+    web: Dockerfile  # Specifies the Dockerfile to build your app
+
+release:
+  command:
+    - echo "Release phase complete. App ready to serve requests."
