@@ -25,7 +25,7 @@ services:
     restart: unless-stopped
 
   nginx:
-    image: nginx:latest
+    image: umitcansaran/shopping-land-nginx:latest
     ports:
       - "80:80"
     volumes:
