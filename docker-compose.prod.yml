@@ -14,8 +14,6 @@ services:
     image: umitcansaran/shopping-land-frontend:latest
     ports:
       - "3000:3000"
-    volumes:
-      - ./frontend/build:/frontend/build
     env_file:
       - ./frontend/.env.local
     networks:
@@ -25,7 +23,7 @@ services:
     restart: unless-stopped
 
   nginx:
-    image: umitcansaran/shopping-land-nginx:latest
+    image: nginx:latest
     ports:
       - "80:80"
     volumes:
