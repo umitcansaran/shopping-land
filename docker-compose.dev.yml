@@ -22,7 +22,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./frontend/src:/frontend/src
+      - frontend-build:/frontend/build  
     environment:
       - CHOKIDAR_USEPOLLING=true
     env_file:
@@ -34,11 +34,12 @@ services:
     restart: unless-stopped
 
   nginx:
-    image: nginx:1
+    build:
+      context: ./nginx
     ports:
       - "80:80"
     volumes:
-    - ./frontend/build:/usr/share/nginx/html
+      - frontend-build:/usr/share/nginx/html
     depends_on:
       - backend
       - frontend
@@ -49,3 +50,6 @@ services:
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  frontend-build:
