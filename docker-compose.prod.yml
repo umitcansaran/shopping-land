@@ -14,6 +14,8 @@ services:
     image: umitcansaran/shopping-land-frontend:latest
     ports:
       - "3000:3000"
+    volumes:
+      - frontend-build:./frontend/build  
     env_file:
       - ./frontend/.env.local
     networks:
@@ -27,7 +29,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./frontend/build:/usr/share/nginx/html
+      - frontend-build:/usr/share/nginx/html  # Serve build folder
     depends_on:
       - backend
       - frontend
