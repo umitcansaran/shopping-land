@@ -10,7 +10,8 @@ jobs:
     runs-on: self-hosted
 
     steps:
-    - name: Run deployment script
-      run: |
-        chmod +x deploy.sh
-        ./deploy.sh
+      - name: Run deployment script on EC2
+        run: |
+          cd /home/ubuntu
+          chmod +x deploy.sh
+          ./deploy.sh
