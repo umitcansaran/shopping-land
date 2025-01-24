@@ -6,16 +6,6 @@ const upload = multer();
 const s3 = require("../s3-config");
 const loggedInUser = require("../middleware/loggedInUser");
 const {
-  getAllProducts,
-  getMyProducts,
-  getAllProductsBySeller,
-  getProductsById,
-  createProduct,
-  getProductCategories,
-  getLatestProductReviews,
-} = require("../queries/productQueries");
-const { getReviewsByProductId } = require("../queries/reviewQueries");
-const {
   getMySellerOrders,
   getSellerOrder,
 } = require("../queries/sellerOrderQueries");
