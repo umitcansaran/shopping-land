@@ -1,0 +1,42 @@
+# Ignore node_modules and other dependency folders
+**/node_modules
+bower_components
+
+# Ignore build directories
+dist
+**/build
+
+# Ignore log files
+*.log
+
+# Ignore environment files (sensitive data)
+**/.env
+**/.env.local
+**/.env.*.local
+
+# Ignore editor and IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignore temporary files and OS-generated files
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+._*
+
+# Ignore Git-related files
+.git
+.gitignore
+
+# Ignore Docker-related files (if not needed in the image)
+.dockerignore
+docker-compose.yml
+
+# Ignore test-related files and coverage reports
+coverage
+*.test.js
+*.spec.js
+*.spec.ts
