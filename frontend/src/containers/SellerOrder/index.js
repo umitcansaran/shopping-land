@@ -118,28 +118,32 @@ function SellerOrder() {
     successSellerOrderRetrieve,
   ]);
 
+  const [completionTriggered, setCompletionTriggered] = React.useState(false);
+
   useEffect(() => {
-    if (
-      sellerOrder &&
-      !sellerOrder.isCompleted &&
-      sellerOrder.id === Number(sellerOrderId)
-    ) {
       if (
-        (!hasItemNotShipped || !hasOnlinePurchase) &&
-        (!hasItemNotRetrieved || !hasInStorePickup)
+          sellerOrder &&
+          !sellerOrder.isCompleted &&
+          sellerOrder.id === Number(sellerOrderId) &&
+          !completionTriggered
       ) {
-        dispatch(completeSellerOrder(sellerOrderId));
-        dispatch(getSellerOrderDetails(sellerOrderId));
+          if (
+              (!hasItemNotShipped || !hasOnlinePurchase) &&
+              (!hasItemNotRetrieved || !hasInStorePickup)
+          ) {
+              dispatch(completeSellerOrder(sellerOrderId));
+              setCompletionTriggered(true); // Prevent further triggering
+          }
       }
-    }
   }, [
-    dispatch,
-    sellerOrder,
-    sellerOrderId,
-    hasItemNotShipped,
-    hasItemNotRetrieved,
-    hasOnlinePurchase,
-    hasInStorePickup,
+      dispatch,
+      sellerOrder,
+      sellerOrderId,
+      hasItemNotShipped,
+      hasItemNotRetrieved,
+      hasOnlinePurchase,
+      hasInStorePickup,
+      completionTriggered,
   ]);
 
   useEffect(() => {
