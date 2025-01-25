@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Run deployment script on EC2
         run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@172.31.23.78 << 'EOF'
           cd /home/ubuntu
           chmod +x deploy.sh
           ./deploy.sh
+          EOF
