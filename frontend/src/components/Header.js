@@ -49,7 +49,7 @@ const Header = () => {
             padding: "0.2rem 0.7rem",
           }}
         >
-          <strong>shopping land testing phase 3</strong>
+          <strong>SHOPPING-LAND.CH</strong>
         </Navbar.Brand>
         <Navbar.Toggle
           aria-controls="basic-navbar-nav"
