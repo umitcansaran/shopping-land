@@ -22,7 +22,7 @@ jobs:
       run: ssh-keyscan -H {EC2 Public IP}>> ~/.ssh/known_hosts
 
       # Deploy to the EC2 instance
-    - name: Run deployment script on EC2 instanc
+    - name: Run deployment script on EC2 instance
       run: |
         ssh -o StrictHostKeyChecking=no ubuntu@18.195.245.227 << 'EOF'
         cd /home/ubuntu
