@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: CI/CD Workflow
 
 on:
   push:
@@ -7,6 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
+  # Job for building and pushing Docker images
   build:
     runs-on: ubuntu-latest
 
@@ -30,3 +31,31 @@ jobs:
       run: |
         docker build ./nginx --file nginx/Dockerfile --tag umitcansaran/shopping-land-nginx:latest
         docker push umitcansaran/shopping-land-nginx:latest
+
+  # Job for deploying to EC2, dependent on the build job
+  deploy:
+    needs: build  # This ensures the deploy job runs after the build job completes
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up SSH agent
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+
+    - name: Add EC2 host to known hosts
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan -H 18.195.245.227 >> ~/.ssh/known_hosts
+        chmod 644 ~/.ssh/known_hosts
+
+    - name: Pull latest Docker images on EC2 and deploy
+      run: |
+        ssh -o StrictHostKeyChecking=no ubuntu@18.195.245.227 << 'EOF'
+        cd /home/ubuntu
+        chmod +x deploy.sh
+        ./deploy.sh
+        EOF
