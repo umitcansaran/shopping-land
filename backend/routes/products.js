@@ -23,8 +23,8 @@ router.get("/", async (req, res) => {
   const offset = parseInt(req.query.offset) || 0; // Default to 0
 
   try {
-    const allProducts = await getAllProducts(limit, offset);
-
+    const response = await getAllProducts(limit, offset);
+ 
     // Count total products
     const countResult = await pool.query(
       "SELECT COUNT(*) AS total FROM base_product"
@@ -34,14 +34,9 @@ router.get("/", async (req, res) => {
 
     const next = offset + limit < count ? offset + limit : null;
 
-    const response = addToImagePath(
-      allProducts.rows,
-      process.env.AWS_S3_BUCKET_URL
-    );
-
     // Respond with the paginated products and metadata
     res.json({
-      results: response,
+      results: response.rows,
       count,
       next,
     });
