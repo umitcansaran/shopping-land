@@ -10,14 +10,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout the repository
       - name: Checkout the repository
         uses: actions/checkout@v4
 
+      # Set up the SSH agent and add the private key
       - name: Set up SSH agent
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
 
+      # Deploy to the EC2 instance
       - name: Run deployment script on EC2 instance
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@18.195.245.227 << 'EOF'
