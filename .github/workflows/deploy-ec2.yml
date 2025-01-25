@@ -24,7 +24,7 @@ jobs:
         ssh-keyscan -H 18.195.245.227 >> ~/.ssh/known_hosts
         chmod 644 ~/.ssh/known_hosts
 
-    - name: Run deployment script on EC2 instance
+    - name: Run deployment script on EC2 instanc
       run: |
         ssh -o StrictHostKeyChecking=no ubuntu@18.195.245.227 << 'EOF'
         cd /home/ubuntu
