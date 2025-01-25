@@ -19,7 +19,7 @@ jobs:
         ssh-private-key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
 
     - name: Add EC2 host to known hosts
-      run: ssh-keyscan -H {EC2 Public IP}>> ~/.ssh/known_hosts
+      run: ssh-keyscan -H 18.195.245.227>> ~/.ssh/known_hosts
 
       # Deploy to the EC2 instance
     - name: Run deployment script on EC2 instance
