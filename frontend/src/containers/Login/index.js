@@ -47,7 +47,7 @@ function Login() {
     <FormContainer>
       <Nav
         variant="pills"
-        defaultActiveKey="customer"
+        defaultActiveKey="store-owner"
         className="justify-content-center mt-3"
       >
         <Nav.Item>
