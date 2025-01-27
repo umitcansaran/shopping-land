@@ -12,16 +12,16 @@ import { login } from "../../store/actions/userActions";
 function Login() {
   const [username, setUsername] = useState("InterDiscount");
   const [password, setPassword] = useState("django123");
-  const [profile, setProfile] = useState("CUSTOMER");
+  const [profile, setProfile] = useState("STORE_OWNER");
 
   useEffect(() => {
-    if (profile === "CUSTOMER") {
-      setUsername("umit");
-    }
     if (profile === "STORE_OWNER") {
       setUsername("InterDiscount");
     }
-  }, [profile]);
+    if (profile === "CUSTOMER") {
+      setUsername("umit");
+    }
+  }, [profile,]);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
