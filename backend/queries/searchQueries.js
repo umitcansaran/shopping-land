@@ -47,6 +47,23 @@ const queryMapping = {
       `,
     params: (req) => [`%${req.query.search_string || ""}%`],
   },
+  profiles: {
+    query: `
+        SELECT
+          base_profile.image AS image,
+          auth_user.username AS name,
+          base_profile.id,
+          base_productcategory.name AS category
+        FROM
+          base_profile
+          LEFT JOIN auth_user ON auth_user.id = base_profile.user_id -- Fixed join with auth_user
+          LEFT JOIN base_profile_category ON base_profile.id = base_profile_category.profile_id
+          LEFT JOIN base_productcategory ON base_profile_category.productcategory_id = base_productcategory.id
+        WHERE
+          base_productcategory.name ILIKE $1;
+      `,
+    params: (req) => [`%${req.query.search_string || ""}%`],
+  },
   products_in_my_store: {
     query: `
         SELECT base_stock.id,
