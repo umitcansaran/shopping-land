@@ -27,12 +27,23 @@ const queryMapping = {
   },
   products: {
     query: `
-        SELECT * 
-        FROM base_product 
-        LEFT JOIN base_productcategory ON base_productcategory.id = base_product.category_id 
-        LEFT JOIN base_productsubcategory ON base_productsubcategory.id = base_product.subcategory_id 
-        WHERE base_productcategory.name ILIKE $1 
-            OR base_productsubcategory.name ILIKE $1
+        SELECT
+          base_product.id,
+          base_product.brand,
+          base_product.name,
+          base_product.price,
+          base_product.description,
+          base_product.image,
+          auth_user.id AS seller_id,
+          auth_user.username AS username
+        FROM
+          base_product
+          LEFT JOIN base_productcategory ON base_productcategory.id = base_product.category_id
+          LEFT JOIN base_productsubcategory ON base_productsubcategory.id = base_product.subcategory_id
+          LEFT JOIN auth_user ON auth_user.id = base_product.seller_id
+        WHERE
+          base_productcategory.name ILIKE $1
+          OR base_productsubcategory.name ILIKE $1
       `,
     params: (req) => [`%${req.query.search_string || ""}%`],
   },
